@@ -1,0 +1,7 @@
+name = "perch-artifacts"
+pages_build_output_dir = "."
+compatibility_date = "2025-06-01"
+
+[[kv_namespaces]]
+binding = "NOTES_KV"
+id = "28043d91a9bb4ac590998c373365e6e0"

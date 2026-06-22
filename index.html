@@ -159,6 +159,11 @@
   .note:focus { outline: none; border-color: rgba(120,188,230,0.45); }
   .note::placeholder { color: var(--ink-sub); }
 
+  .sync { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 5px 11px; border-radius: 999px; border: 1px solid var(--border); margin-top: 16px; transition: all .2s ease; }
+  .sync.cloud { color: var(--green); background: var(--green-dim); border-color: rgba(74,222,128,0.3); }
+  .sync.saving { color: var(--blue); background: var(--blue-dim); border-color: rgba(120,188,230,0.3); }
+  .sync.local { color: var(--ink-sub); background: var(--panel-2); }
+
   .empty { text-align: center; color: var(--ink-sub); padding: 60px 0; font-size: 14px; grid-column: 1 / -1; }
 
   /* Modal */
@@ -204,7 +209,9 @@
       <div class="name">Perch <span>· Competitive Landscape</span></div>
     </div>
     <h1>Where Perch competes — and where we could get flanked</h1>
-    <p class="sub">Perch is a complete operating system for commercial construction, so our perimeter is huge. This maps our core functions into <b>product categories</b>, groups the <b>3–5 strongest competitors</b> in each, and rates how exposed we are to being <b>flanked</b> there. Tap any logo for its angle of attack. Notes save automatically in this browser.</p>
+    <p class="sub">Perch is a complete operating system for commercial construction, so our perimeter is huge. This maps our core functions into <b>product categories</b>, groups the <b>3–5 strongest competitors</b> in each, and rates how exposed we are to being <b>flanked</b> there. Tap any logo for its angle of attack. Your notes save automatically.</p>
+
+    <div id="syncStatus" class="sync local">● Saved on this device only</div>
 
     <div class="stat-band" id="statBand"></div>
   </header>
@@ -406,8 +413,57 @@ const CATEGORIES = [
 
 const THREAT_LABEL = { high: "High threat", med: "Medium threat", low: "Low threat" };
 const NOTE_KEY = "perch-competitive-notes-v1";
+const NOTES_API = "/api/notes";
 let notes = {};
 try { notes = JSON.parse(localStorage.getItem(NOTE_KEY)) || {}; } catch (e) { notes = {}; }
+let cloudOK = false;             // server-side persistence available?
+const saveTimers = {};           // debounce timers per category
+
+function setSyncStatus(state) {
+  const el = document.getElementById("syncStatus");
+  if (!el) return;
+  const map = {
+    cloud:  "\u25CF Synced to cloud",
+    saving: "\u25CF Saving\u2026",
+    local:  "\u25CF Saved on this device only",
+  };
+  el.textContent = map[state] || map.local;
+  el.className = "sync " + (map[state] ? state : "local");
+}
+
+async function saveNoteToCloud(id, value) {
+  try {
+    const r = await fetch(NOTES_API, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ id, value }),
+    });
+    if (!r.ok) throw new Error("bad status");
+    setSyncStatus("cloud");
+  } catch (e) {
+    cloudOK = false;
+    setSyncStatus("local");
+  }
+}
+
+async function loadCloudNotes() {
+  try {
+    const r = await fetch(NOTES_API, { cache: "no-store" });
+    if (!r.ok) throw new Error("bad status");
+    const server = await r.json();
+    cloudOK = true;
+    notes = { ...notes, ...server };               // server wins on overlap
+    localStorage.setItem(NOTE_KEY, JSON.stringify(notes));
+    document.querySelectorAll(".note").forEach(t => {
+      const v = notes[t.dataset.cat];
+      if (typeof v === "string" && document.activeElement !== t) t.value = v;
+    });
+    setSyncStatus("cloud");
+  } catch (e) {
+    cloudOK = false;                                // file:// or no backend -> local-only
+    setSyncStatus("local");
+  }
+}
 
 let activeThreat = "all";
 let activePos = "all";
@@ -484,8 +540,14 @@ function render() {
 
   grid.querySelectorAll(".note").forEach(t => {
     t.addEventListener("input", () => {
-      notes[t.dataset.cat] = t.value;
-      localStorage.setItem(NOTE_KEY, JSON.stringify(notes));
+      const id = t.dataset.cat;
+      notes[id] = t.value;
+      localStorage.setItem(NOTE_KEY, JSON.stringify(notes));   // instant local cache
+      if (cloudOK) {
+        setSyncStatus("saving");
+        clearTimeout(saveTimers[id]);
+        saveTimers[id] = setTimeout(() => saveNoteToCloud(id, t.value), 500);
+      }
     });
   });
 }
@@ -535,6 +597,7 @@ document.querySelectorAll(".filter").forEach(f => {
 
 buildStats();
 render();
+loadCloudNotes();
 </script>
 </body>
 </html>
