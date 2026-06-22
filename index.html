@@ -126,11 +126,15 @@
   /* Logo grid */
   .logos { margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
   .logo-tile {
+    position: relative;
     background: #f4f6fa; border: 1px solid var(--border); border-radius: 10px;
     padding: 10px 8px 8px; cursor: pointer; text-align: center;
     transition: transform .14s ease, box-shadow .14s ease, background .14s ease;
     display: flex; flex-direction: column; align-items: center; gap: 6px;
   }
+  .logo-tile.has-note { border-color: rgba(120,188,230,0.7); }
+  .note-dot { display: none; position: absolute; top: 6px; right: 6px; width: 9px; height: 9px; border-radius: 999px; background: var(--blue); box-shadow: 0 0 0 2px #f4f6fa; }
+  .logo-tile.has-note .note-dot { display: block; }
   .logo-tile:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.35); background: #fff; }
   .logo-img-box { height: 34px; display: flex; align-items: center; justify-content: center; width: 100%; }
   .logo-img-box img { max-height: 34px; max-width: 100%; object-fit: contain; }
@@ -188,7 +192,13 @@
   .modal .m-what { font-size: 14px; color: var(--ink-body); margin-top: 16px; }
   .modal .m-angle-l { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-sub); font-weight: 700; margin-top: 18px; }
   .modal .m-angle { font-size: 13.5px; color: var(--ink); margin-top: 6px; background: var(--red-dim); border: 1px solid rgba(248,113,113,0.25); border-radius: 9px; padding: 10px 12px; }
-  .modal .m-actions { display: flex; gap: 9px; margin-top: 20px; }
+  .modal .m-note-l { display: flex; align-items: center; justify-content: space-between; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-sub); font-weight: 700; margin-top: 18px; }
+  .modal .m-note-l .m-saved { text-transform: none; letter-spacing: 0; font-weight: 600; color: var(--green); opacity: 0; transition: opacity .2s ease; }
+  .modal .m-note-l .m-saved.show { opacity: 1; }
+  .modal .m-note { width: 100%; margin-top: 7px; background: var(--panel-3); border: 1px solid var(--border); border-radius: 9px; color: var(--ink); font-size: 13.5px; font-family: inherit; padding: 10px 12px; resize: vertical; min-height: 70px; transition: border-color .15s ease; }
+  .modal .m-note:focus { outline: none; border-color: rgba(120,188,230,0.45); }
+  .modal .m-note::placeholder { color: var(--ink-sub); }
+  .modal .m-actions { display: flex; gap: 9px; margin-top: 18px; }
   .btn {
     border: 1px solid var(--border); background: var(--panel-2); color: var(--ink-body);
     padding: 9px 15px; border-radius: 9px; font-size: 13px; font-weight: 650; cursor: pointer;
@@ -209,7 +219,7 @@
       <div class="name">Perch <span>· Competitive Landscape</span></div>
     </div>
     <h1>Where Perch competes — and where we could get flanked</h1>
-    <p class="sub">Perch is a complete operating system for commercial construction, so our perimeter is huge. This maps our core functions into <b>product categories</b>, groups the <b>3–5 strongest competitors</b> in each, and rates how exposed we are to being <b>flanked</b> there. Tap any logo for its angle of attack. Your notes save automatically.</p>
+    <p class="sub">Perch is a complete operating system for commercial construction, so our perimeter is huge. This maps our core functions into <b>product categories</b>, groups the <b>3–5 strongest competitors</b> in each, and rates how exposed we are to being <b>flanked</b> there. Tap any logo for its angle of attack and to jot private notes on that competitor; each category takes notes too. Everything saves automatically.</p>
 
     <div id="syncStatus" class="sync local">● Saved on this device only</div>
 
@@ -458,11 +468,33 @@ async function loadCloudNotes() {
       const v = notes[t.dataset.cat];
       if (typeof v === "string" && document.activeElement !== t) t.value = v;
     });
+    refreshNoteDots();
     setSyncStatus("cloud");
   } catch (e) {
     cloudOK = false;                                // file:// or no backend -> local-only
     setSyncStatus("local");
   }
+}
+
+// Notes are keyed: "<categoryId>" for the category note, "<categoryId>::<slug>" per competitor.
+function noteKeyFor(catId, slug) { return catId + "::" + slug; }
+
+function persistNote(key, value) {
+  if (value === "" || value == null) delete notes[key]; else notes[key] = value;
+  localStorage.setItem(NOTE_KEY, JSON.stringify(notes));   // instant local cache
+  if (cloudOK) {
+    setSyncStatus("saving");
+    clearTimeout(saveTimers[key]);
+    saveTimers[key] = setTimeout(() => saveNoteToCloud(key, value), 500);
+  }
+}
+
+function refreshNoteDots() {
+  document.querySelectorAll(".logo-tile").forEach(tile => {
+    const key = tile.dataset.notekey;
+    const has = key && typeof notes[key] === "string" && notes[key].trim() !== "";
+    tile.classList.toggle("has-note", !!has);
+  });
 }
 
 let activeThreat = "all";
@@ -489,8 +521,10 @@ function buildStats() {
 // ---- Logo tile ----
 function logoTile(k) {
   const wm = k.name.split(/[\s.]/)[0];
+  const nk = noteKeyFor(k._cid, k.slug);
   return `
-    <div class="logo-tile" data-cat="" data-key="${k.slug}" onclick="openModal('${k._cid}','${k.slug}')">
+    <div class="logo-tile" data-notekey="${nk}" onclick="openModal('${k._cid}','${k.slug}')">
+      <span class="note-dot" title="You have notes on this competitor"></span>
       <div class="logo-img-box">
         <img src="${LOGO_DIR}/${k.slug}.png" alt="${k.name}" onerror="this.style.display='none';this.parentElement.nextElementSibling.style.display='flex';this.parentElement.style.display='none'">
       </div>
@@ -539,17 +573,10 @@ function render() {
   if (!shown) grid.innerHTML = `<div class="empty">No categories match these filters.</div>`;
 
   grid.querySelectorAll(".note").forEach(t => {
-    t.addEventListener("input", () => {
-      const id = t.dataset.cat;
-      notes[id] = t.value;
-      localStorage.setItem(NOTE_KEY, JSON.stringify(notes));   // instant local cache
-      if (cloudOK) {
-        setSyncStatus("saving");
-        clearTimeout(saveTimers[id]);
-        saveTimers[id] = setTimeout(() => saveNoteToCloud(id, t.value), 500);
-      }
-    });
+    t.addEventListener("input", () => persistNote(t.dataset.cat, t.value));
   });
+
+  refreshNoteDots();
 }
 
 function escapeHtml(s) { return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
@@ -559,6 +586,7 @@ function openModal(catId, slug) {
   const cat = CATEGORIES.find(c => c.id === catId);
   const k = cat.competitors.find(c => c.slug === slug);
   const wm = k.name.split(/[\s.]/)[0];
+  const nk = noteKeyFor(catId, slug);
   const modal = document.getElementById("modal");
   modal.innerHTML = `
     <div class="modal-top">
@@ -574,12 +602,24 @@ function openModal(catId, slug) {
     <div class="m-what">${k.what}</div>
     <div class="m-angle-l">Angle of attack on Perch</div>
     <div class="m-angle">${k.angle}</div>
+    <div class="m-note-l">Your notes <span class="m-saved" id="modalSaved">Saved</span></div>
+    <textarea class="m-note" id="modalNote" placeholder="Private notes on ${k.name} in ${cat.name}\u2026">${notes[nk] ? escapeHtml(notes[nk]) : ""}</textarea>
     <div class="m-actions">
       <a class="btn primary" href="${k.url}" target="_blank" rel="noopener">Visit site \u2197</a>
       <button class="btn" onclick="closeModal()">Close</button>
     </div>
   `;
   document.getElementById("overlay").classList.add("show");
+
+  const mn = document.getElementById("modalNote");
+  const saved = document.getElementById("modalSaved");
+  mn.addEventListener("input", () => {
+    persistNote(nk, mn.value);
+    refreshNoteDots();
+    saved.classList.add("show");
+    clearTimeout(mn._savedTimer);
+    mn._savedTimer = setTimeout(() => saved.classList.remove("show"), 1200);
+  });
 }
 function closeModal() { document.getElementById("overlay").classList.remove("show"); }
 document.getElementById("overlay").addEventListener("click", e => { if (e.target.id === "overlay") closeModal(); });
