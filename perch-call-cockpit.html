@@ -284,6 +284,7 @@ const PB = {
 
 /* ============================ STATE ============================ */
 const DATA = JSON.parse(document.getElementById('companyData').textContent);
+const BUILD = '2026-07-02.5-receipts'; // bump every deploy — shown in ☁ badge title, greppable in prod
 const LSK = 'perch-call-cockpit-v2';
 let store = JSON.parse(localStorage.getItem(LSK) || '{}'); // {company: {calls:[...], override:{icp,size}}}
 
@@ -297,10 +298,10 @@ let syncKey = localStorage.getItem(SYNCK) || '';
 let syncState = 'off'; // off | ok | err
 function setSyncBadge(){
   const el=document.getElementById('syncBadge'); if(!el) return;
-  el.textContent = syncState==='ok'?'☁ synced':syncState==='err'?'☁ sync error':'☁ local only';
+  el.textContent = syncState==='ok'?('☁ synced'+(cloudCalls!=null?` · ${cloudCalls} calls`:'')):syncState==='err'?'☁ SYNC ERROR':'☁ local only';
   el.style.color = syncState==='ok'?'var(--green,#3ecf8e)':syncState==='err'?'#ff7a7a':'var(--ink3)';
-  el.title = syncState==='ok'?'Cloud sync active (shared across your devices)'
-    :'Click to enter the sync key and enable cloud sync';
+  el.title = (syncState==='ok'?'Cloud sync active — count is the SERVER-confirmed total across your devices'
+    :'Click to enter the sync key and enable cloud sync')+` · build ${BUILD}`;
 }
 /* TOMB: "__deleted" {ts:true} map at the top of the store. Union-only merge
    means a plain delete resurrects from any other device — a tombstone is the
@@ -332,15 +333,17 @@ function mergeStores(a,b){ // union of calls per company by (ts), overrides: a<-
   });
   return out;
 }
-let pushTimer=null, dirty=false;
+let pushTimer=null, dirty=false, cloudCalls=null;
 async function flushCloud(useBeacon){
-  if(!syncKey||!dirty) return;
+  if(!syncKey||!dirty) return false;
   try{
     const r=await fetch('/api/log',{method:'PUT',keepalive:!!useBeacon,
       headers:{'x-sync-key':syncKey,'content-type':'application/json'},body:JSON.stringify(store)});
     syncState=r.ok?'ok':'err'; if(r.ok)dirty=false;
+    if(r.ok&&!useBeacon){try{const j=await r.json(); if(typeof j.liveCalls==='number')cloudCalls=j.liveCalls;}catch(e){}}
   }catch(e){syncState='err';}
   setSyncBadge();
+  return syncState==='ok';
 }
 function pushCloud(){
   if(!syncKey) return;
@@ -365,6 +368,7 @@ async function pullCloud(quiet){
     syncState='ok'; setSyncBadge(); dirty=true; flushCloud(false);
     render(); if(selKey){const c=DATA.find(x=>x.company===selKey); if(c) renderRight(c);}
     const n=companies().reduce((a,k)=>a+liveCalls(k).length,0);
+    cloudCalls=n; setSyncBadge();
     if(!quiet) toast(`☁ synced — ${n} call${n===1?'':'s'} in the cloud log`);
   }catch(e){syncState='err';setSyncBadge();if(!quiet)toast('☁ sync error — network');}
 }
@@ -680,7 +684,14 @@ function saveCall(){
   };
   rec(c.company).calls.push(entry); save(); clearDraft();
   draft={}; render(); renderRight(c);
-  toast('Call logged ✓');
+  // SERVER-CONFIRMED receipt: push immediately (no debounce) and report the
+  // cloud's own liveCalls count back — or say loudly that it did NOT save.
+  toast('Logging…');
+  clearTimeout(pushTimer); dirty=true;
+  flushCloud(false).then(ok=>{
+    toast(ok?`✓ saved to cloud — ${cloudCalls!=null?cloudCalls+' calls total':'confirmed'}`
+            :'⚠ logged on THIS DEVICE ONLY — cloud push failed (check ☁ badge)');
+  });
 }
 function nextUncalled(){
   const c=DATA.find(x=>!lastOutcome(x.company));
