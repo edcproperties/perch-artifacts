@@ -28,8 +28,10 @@ Setup per run: `localStorage.clear()`, set `perch-cockpit-sync-key` +
 8. **Counters exclude tombstones** — header Dialed/Calls/Productive match the
    live (non-tombstoned) set only; `__deleted` never appears as a company.
 
-9. **Record view (THE rule: saved notes stay on screen)** — company with saved
-   calls opens to the filled record (contact, fields, SAVED banner, granola),
-   NOT a blank form; after `saveCall()` the typed values remain visible with
-   the saved banner; blank form only via "Log another call"; an in-progress
-   draft takes precedence over the record view.
+9. **History-first layout (THE rule: saved notes stay on screen, every call
+   is its own entry)** — company with saved calls opens with the CALL HISTORY
+   block at TOP (count + latest call's full notes + collapsed earlier calls),
+   then the capture form labeled "NEW CALL · #N" with the never-overwrites
+   note; after `saveCall()` the count increments, the just-saved notes appear
+   at the top, panel scrolls to top, form resets labeled #N+1; fresh company
+   shows "this will be call #1" and no history block.
