@@ -284,7 +284,7 @@ const PB = {
 
 /* ============================ STATE ============================ */
 const DATA = JSON.parse(document.getElementById('companyData').textContent);
-const BUILD = '2026-07-02.6-neon'; // bump every deploy — shown in ☁ badge title, greppable in prod
+const BUILD = '2026-07-02.7-record-view'; // bump every deploy — shown in ☁ badge title, greppable in prod
 const LSK = 'perch-call-cockpit-v2';
 let store = JSON.parse(localStorage.getItem(LSK) || '{}'); // {company: {calls:[...], override:{icp,size}}}
 
@@ -489,7 +489,7 @@ function enrichMeta(c){
 
 /* ============================ PROFILE + SCRIPT ============================ */
 function select(key){
-  selKey=key; draft={};
+  selKey=key; draft={}; newCallMode=false;
   render();
   const c=DATA.find(x=>x.company===key);
   renderCenter(c); renderRight(c);
@@ -588,7 +588,62 @@ function setOverride(k,v){
 function copyPhone(p){navigator.clipboard.writeText(p);toast('Phone copied');}
 
 /* ============================ DISPOSITION / CAPTURE ============================ */
+/* THE RULE (learned the hard way, 2026-07-02): saved notes must stay ON SCREEN.
+   A company you've called opens to its SAVED RECORD — your notes, filled in,
+   with a saved banner. A blank capture form appears ONLY on "Log another call"
+   (or when an in-progress draft exists). Save -> you see what you saved. */
+let newCallMode=false;
+
+function _fieldRow(label,val,color){
+  return val?`<div style="margin-top:8px"><div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)">${label}</div><div style="color:${color||'var(--ink)'};margin-top:2px;white-space:pre-wrap">${val}</div></div>`:'';
+}
+function renderRecordView(c){
+  const calls=liveCalls(c.company);
+  const h=calls[calls.length-1];
+  const oc=ocById(h.outcome)||{l:h.outcome,c:'var(--ink3)'};
+  const stars=h.interest?'★'.repeat(+h.interest)+'☆'.repeat(5-+h.interest):'';
+  const earlier=calls.slice(0,-1).reverse().map(renderHItem).join('');
+  document.getElementById('right').innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div class="sechead" style="margin:0">Saved call · ${new Date(h.ts).toLocaleString()}</div>
+      <span class="pill" style="background:${oc.c};color:#06101f">${oc.l}</span>
+    </div>
+    <div style="margin-top:10px;padding:6px 10px;border-left:3px solid var(--green,#3ecf8e);background:rgba(62,207,142,.07);border-radius:4px;color:var(--green,#3ecf8e);font-size:12px;font-weight:600">
+      ✓ SAVED — these notes are stored in the cloud (see ☁ badge)</div>
+    <div style="margin-top:6px;padding:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:8px">
+      ${h.contact?`<div style="font-size:15px"><b>${h.contact}</b>${h.title?' · '+h.title:''}</div>`:''}
+      ${h.persona&&h.persona!=='Unknown'?`<div style="color:var(--ink3);font-size:12px;margin-top:2px">${h.persona}</div>`:''}
+      ${stars?`<div style="color:var(--gold);margin-top:4px">${stars}</div>`:''}
+      ${(h.tools&&h.tools.length)?`<div class="tags" style="margin-top:8px">${h.tools.map(t=>`<span class="tag">${t}</span>`).join('')}</div>`:''}
+      ${_fieldRow('Objection raised',h.objection)}
+      ${_fieldRow('Pain discovered',h.pain,'var(--ink2)')}
+      ${_fieldRow('Question that landed',h.question)}
+      ${_fieldRow('🏆 Golden quote',h.quote&&`"${h.quote}"`,'var(--gold)')}
+      ${_fieldRow('Next step',h.next)}
+      ${_fieldRow('Wedge that resonated',h.wedge)}
+      ${_fieldRow('Notes',h.notes,'var(--ink2)')}
+      ${h.granola?`<div style="margin-top:10px;padding:7px 9px;background:rgba(150,125,255,.07);border-left:2px solid #8f7aff;border-radius:4px">
+        <a href="${h.granola.url}" target="_blank" style="color:#ab99ff;font-weight:600;text-decoration:none;font-size:11px">📝 Granola notes · ${h.granola.title||''} ↗</a>
+        ${h.granola.summary?`<div style="color:var(--ink2);margin-top:4px;white-space:pre-wrap;font-size:11px;line-height:1.45;max-height:130px;overflow:auto">${h.granola.summary.replace(/</g,'&lt;')}</div>`:''}</div>`:''}
+    </div>
+    <button class="savebtn" style="margin-top:14px" onclick="startNewCall()">＋ Log another call</button>
+    ${earlier?`<div class="hist"><div class="sechead">Earlier calls · ${c.company}</div>${earlier}</div>`:''}`;
+}
+function startNewCall(){
+  newCallMode=true;
+  const c=DATA.find(x=>x.company===selKey); if(c) renderRight(c);
+}
+function _draftHasContent(company){
+  try{
+    const d=JSON.parse(localStorage.getItem(DRAFTK)||'null');
+    return !!(d&&d.company===company&&(d.outcome||(d.tools||[]).length||Object.values(d.f||{}).some(v=>v&&v.trim())));
+  }catch(e){return false;}
+}
 function renderRight(c){
+  // saved record first; blank form only for first call, explicit new call, or an in-progress draft
+  if(liveCalls(c.company).length && !newCallMode && !_draftHasContent(c.company)){
+    renderRecordView(c); return;
+  }
   const icp=effIcp(c);
   const oc=PB.outcomes.map(o=>`
     <button class="oc" style="color:${o.c}" data-k="${o.k}" onclick="pickOutcome('${o.k}',this)">
@@ -683,7 +738,7 @@ function saveCall(){
     interest:draft.stars||'', notes:val('f_notes')
   };
   rec(c.company).calls.push(entry); save(); clearDraft();
-  draft={}; render(); renderRight(c);
+  draft={}; newCallMode=false; render(); renderRight(c); // -> record view: your notes stay on screen
   // SERVER-CONFIRMED receipt: push immediately (no debounce) and report the
   // cloud's own liveCalls count back — or say loudly that it did NOT save.
   toast('Logging…');

@@ -64,6 +64,12 @@ def check(name, cond, detail=""):
     print(f"  {'✓' if cond else '✗ FAIL'} {name}" + (f" — {detail}" if detail and not cond else ""))
 
 
+import time
+# unique per run — tombstone-dominates means fixed ids from a prior run stay
+# dead forever (by design), so ids must never repeat. Offset far above real
+# Date.now() ts values so QA rows can never collide with real calls.
+_TS0 = 9_000_000_000_000_000 + int(time.time() * 1000)
+TS_A, TS_B, TS_C = _TS0, _TS0 + 1, _TS0 + 2
 Q = "QA::TestCo"      # test-only namespace
 Q2 = "QA::OtherCo"
 
@@ -84,39 +90,39 @@ if pre_tombs:
     put({"__deleted": pre_tombs})
 
 # ── union merge: two devices push different calls concurrently ──
-put({Q: {"calls": [{"ts": 9001, "contact": "devA", "rev": 1}]}})
-put({Q: {"calls": [{"ts": 9002, "contact": "devB", "rev": 1}]}})   # device B never saw 9001
+put({Q: {"calls": [{"ts": TS_A, "contact": "devA", "rev": 1}]}})
+put({Q: {"calls": [{"ts": TS_B, "contact": "devB", "rev": 1}]}})   # device B never saw 9001
 s = get_store()
-check("union: both devices' calls survive", {c["ts"] for c in live(s, Q)} >= {9001, 9002})
+check("union: both devices' calls survive", {c["ts"] for c in live(s, Q)} >= {TS_A, TS_B})
 
 # ── rev-wins: field edit propagates, stale copy can't clobber it back ──
-put({Q: {"calls": [{"ts": 9001, "contact": "devA-EDITED", "extra": "enriched", "rev": 2}]}})
-put({Q: {"calls": [{"ts": 9001, "contact": "devA", "rev": 1}]}})   # stale device re-pushes old copy
+put({Q: {"calls": [{"ts": TS_A, "contact": "devA-EDITED", "extra": "enriched", "rev": 2}]}})
+put({Q: {"calls": [{"ts": TS_A, "contact": "devA", "rev": 1}]}})   # stale device re-pushes old copy
 s = get_store()
-c9001 = next(c for c in live(s, Q) if c["ts"] == 9001)
+c9001 = next(c for c in live(s, Q) if c["ts"] == TS_A)
 check("rev-wins: edit sticks", c9001["contact"] == "devA-EDITED" and c9001.get("extra") == "enriched",
       f"got {c9001.get('contact')}")
 
 # ── tombstone: delete sticks even when a stale device resurrects it ──
-put({"__deleted": {"9002": True}})
-put({Q: {"calls": [{"ts": 9002, "contact": "devB", "rev": 1}]}})   # stale device pushes the dead call again
+put({"__deleted": {str(TS_B): True}})
+put({Q: {"calls": [{"ts": TS_B, "contact": "devB", "rev": 1}]}})   # stale device pushes the dead call again
 s = get_store()
-check("tombstone: deleted call stays dead", 9002 not in {c["ts"] for c in live(s, Q)})
-check("tombstone: map persisted", s.get("__deleted", {}).get("9002") is True)
+check("tombstone: deleted call stays dead", TS_B not in {c["ts"] for c in live(s, Q)})
+check("tombstone: map persisted", s.get("__deleted", {}).get(str(TS_B)) is True)
 
 # ── granola carry: attaching granola without rev bump must not drop fields ──
-put({Q: {"calls": [{"ts": 9001, "granola": {"id": "g1", "url": "u", "title": "t", "summary": "s"}}]}})
+put({Q: {"calls": [{"ts": TS_A, "granola": {"id": "g1", "url": "u", "title": "t", "summary": "s"}}]}})
 s = get_store()
-c9001 = next(c for c in live(s, Q) if c["ts"] == 9001)
+c9001 = next(c for c in live(s, Q) if c["ts"] == TS_A)
 check("granola: attaches to existing call", (c9001.get("granola") or {}).get("id") == "g1")
 check("granola: does NOT clobber existing fields", c9001["contact"] == "devA-EDITED")
 
 # ── reset semantics: tombstone-all clears globally, later stale pushes stay dead ──
-put({Q2: {"calls": [{"ts": 9100, "contact": "x", "rev": 1}]}})
+put({Q2: {"calls": [{"ts": TS_C, "contact": "x", "rev": 1}]}})
 s = get_store()
 all_ts = {str(c["ts"]): True for co in (Q, Q2) for c in live(s, co)}
 put({"__deleted": all_ts})
-put({Q2: {"calls": [{"ts": 9100, "contact": "x", "rev": 1}]}})     # zombie push after reset
+put({Q2: {"calls": [{"ts": TS_C, "contact": "x", "rev": 1}]}})     # zombie push after reset
 s = get_store()
 check("reset: QA namespace fully dead incl. zombie pushes",
       not live(s, Q) and not live(s, Q2))

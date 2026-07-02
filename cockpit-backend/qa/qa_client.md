@@ -27,3 +27,9 @@ Setup per run: `localStorage.clear()`, set `perch-cockpit-sync-key` +
    zombie re-push stays dead.
 8. **Counters exclude tombstones** — header Dialed/Calls/Productive match the
    live (non-tombstoned) set only; `__deleted` never appears as a company.
+
+9. **Record view (THE rule: saved notes stay on screen)** — company with saved
+   calls opens to the filled record (contact, fields, SAVED banner, granola),
+   NOT a blank form; after `saveCall()` the typed values remain visible with
+   the saved banner; blank form only via "Log another call"; an in-progress
+   draft takes precedence over the record view.
