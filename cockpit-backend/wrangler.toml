@@ -1,0 +1,7 @@
+name = "perch-call-cockpit"
+compatibility_date = "2026-06-01"
+pages_build_output_dir = "."
+
+[[kv_namespaces]]
+binding = "COCKPIT_KV"
+id = "e19dce371d06427ca0d1f2174da27f6c"
