@@ -536,11 +536,10 @@ function renderCenter(c){
       ${enrichMeta(c)}
       ${spec}
       ${c.description?`<div class="desc">Procore: "${c.description}"</div>`:''}
-      <div class="grid4" style="margin-top:14px">
+      <div class="grid4" style="grid-template-columns:repeat(3,1fr);margin-top:14px">
         <div class="kv"><b>${c.totalProjects??'—'}</b><span>Total projects</span></div>
         <div class="kv"><b>${c.activeProjects??'—'}</b><span>Active now</span></div>
         <div class="kv"><b>${c.avgSize||'—'}</b><span>Avg job (bldg)</span></div>
-        <div class="kv"><b>${c.estVolume||'—'}</b><span>Est. volume</span></div>
       </div>
       ${c.trades.length?`<div class="tags">${c.trades.map(t=>`<span class="tag">${t}</span>`).join('')}</div>`:''}
       ${c.sectors.length?`<div class="tags">${c.sectors.map(t=>`<span class="tag" style="color:var(--ink3)">${t}</span>`).join('')}</div>`:''}
