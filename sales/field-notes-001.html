@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Field Notes № 001 · First Day on the Phones</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E8E6DF;
+    --surface:#F5F3EE;
+    --surface-2:#FBFAF6;
+    --ink:#181917;
+    --slate:#5D5F5A;
+    --faint:#8A8B84;
+    --line:#CECBC1;
+    --line-soft:#DEDBD2;
+    --signal:#D2531D;
+    --signal-deep:#A23C12;
+    --green:#5E7E52;
+    --gold:#9A7B1F;
+    --blue:#3E6E8E;
+    --red:#B23A2E;
+    --sans:'Archivo','Helvetica Neue',Arial,sans-serif;
+    --mono:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+    --maxw:980px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+  header{padding:72px 0 40px;border-bottom:2px solid var(--ink)}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--signal);font-weight:600}
+  h1{font-size:clamp(34px,5.5vw,56px);font-weight:800;letter-spacing:-.02em;line-height:1.05;margin:14px 0 18px}
+  .dek{font-size:20px;color:var(--slate);max-width:720px;line-height:1.5}
+  .byline{font-family:var(--mono);font-size:13px;color:var(--faint);margin-top:22px}
+  section{padding:52px 0 8px}
+  .sec-label{display:flex;align-items:baseline;gap:14px;border-bottom:1px solid var(--ink);padding-bottom:10px;margin-bottom:28px}
+  .sec-letter{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--signal)}
+  .sec-label h2{font-size:26px;font-weight:700;letter-spacing:-.01em}
+  h3{font-size:19px;font-weight:700;margin:30px 0 10px}
+  p{margin:0 0 16px;max-width:760px}
+  p.note{font-size:14px;color:var(--faint);font-family:var(--mono);max-width:760px}
+  .statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:8px 0 26px}
+  .stat{background:var(--surface-2);border:1px solid var(--line);padding:18px 16px 14px}
+  .stat b{display:block;font-size:32px;font-weight:800;letter-spacing:-.02em;line-height:1}
+  .stat span{display:block;font-family:var(--mono);font-size:11.5px;color:var(--slate);margin-top:8px;line-height:1.45}
+  .stat.hot b{color:var(--signal)}
+  .funnel{margin:26px 0 10px}
+  .frow{display:flex;align-items:center;gap:14px;margin-bottom:9px}
+  .flabel{font-family:var(--mono);font-size:12.5px;width:220px;flex-shrink:0;color:var(--slate)}
+  .fbarwrap{flex:1;background:var(--surface);border:1px solid var(--line-soft);height:30px;position:relative}
+  .fbar{height:100%;background:var(--ink);display:flex;align-items:center}
+  .fbar.sig{background:var(--signal)}
+  .fnum{font-family:var(--mono);font-size:13px;font-weight:600;padding-left:10px;color:var(--paper)}
+  .fnum.out{color:var(--ink);position:absolute;left:calc(var(--w) + 10px);top:50%;transform:translateY(-50%)}
+  table{border-collapse:collapse;width:100%;margin:18px 0 26px;font-size:15px}
+  th{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;text-align:left;color:var(--slate);border-bottom:2px solid var(--ink);padding:8px 12px 8px 0;font-weight:600}
+  td{border-bottom:1px solid var(--line-soft);padding:10px 12px 10px 0;vertical-align:top}
+  td.mono, span.mono{font-family:var(--mono);font-size:13.5px}
+  .good{color:var(--green);font-weight:600}
+  .bad{color:var(--red);font-weight:600}
+  .mid{color:var(--gold);font-weight:600}
+  .receipt{background:var(--surface-2);border-left:3px solid var(--signal);padding:16px 20px;margin:14px 0 22px;max-width:760px}
+  .receipt q{display:block;font-size:16.5px;font-style:italic;line-height:1.55;quotes:'\201C' '\201D'}
+  .receipt .who{font-family:var(--mono);font-size:12px;color:var(--slate);margin-top:10px;display:block}
+  .move{border:1px solid var(--line);background:var(--surface-2);padding:22px 24px;margin:0 0 18px}
+  .move .mv-head{display:flex;gap:14px;align-items:baseline;margin-bottom:8px}
+  .move .mv-num{font-family:var(--mono);color:var(--signal);font-weight:600;font-size:14px}
+  .move h4{font-size:18px;font-weight:700}
+  .move p{margin-bottom:10px;font-size:16px}
+  .move .receipt{margin:12px 0 4px;background:var(--paper)}
+  .timeline{border-left:2px solid var(--ink);margin:22px 0 26px 6px;padding-left:24px}
+  .tl{position:relative;margin-bottom:20px;max-width:720px}
+  .tl::before{content:'';position:absolute;left:-30px;top:7px;width:10px;height:10px;background:var(--paper);border:2px solid var(--ink);border-radius:50%}
+  .tl.hot::before{background:var(--signal);border-color:var(--signal)}
+  .tl .t{font-family:var(--mono);font-size:12px;color:var(--signal);font-weight:600;letter-spacing:.06em}
+  .tl p{margin:4px 0 0;font-size:15.5px}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+  @media(max-width:760px){.twocol{grid-template-columns:1fr}.flabel{width:130px}}
+  .panel{background:var(--surface-2);border:1px solid var(--line);padding:22px 24px;margin-bottom:18px}
+  .panel h4{font-size:16px;font-weight:700;margin-bottom:8px}
+  .panel p{font-size:15px;margin-bottom:8px}
+  .tag{display:inline-block;font-family:var(--mono);font-size:11.5px;border:1px solid var(--line);padding:3px 10px;margin:0 6px 8px 0;background:var(--surface);white-space:nowrap}
+  .tag b{color:var(--signal-deep)}
+  ul.tight{margin:0 0 18px 22px;max-width:740px}
+  ul.tight li{margin-bottom:8px;font-size:16px}
+  .rule-card{border:2px solid var(--ink);padding:24px 26px;margin:26px 0;background:var(--surface-2);max-width:760px}
+  .rule-card .rk{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--signal);font-weight:600}
+  .rule-card p{font-size:18px;font-weight:600;margin:8px 0 0;line-height:1.5}
+  footer{margin-top:70px;border-top:2px solid var(--ink);padding:26px 0 60px}
+  footer p{font-family:var(--mono);font-size:12px;color:var(--faint);max-width:100%}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="kicker">Perch · Sales Field Notes · № 001</div>
+    <h1>First Day on the Phones</h1>
+    <p class="dek">One rep, one phone, a full day of cold calls into Utah contractors. What connected, what died at the front desk, and what we know now that we didn't at 11:12 AM. Every claim below has a receipt from a call transcript.</p>
+    <p class="byline">Jeremy Palmer · first sales hire · July 2, 2026 · Procore-100 call list, Salt Lake &amp; Utah counties</p>
+  </div>
+</header>
+
+<section id="tldr" style="padding-top:44px">
+  <div class="wrap">
+    <div class="rule-card" style="max-width:100%;margin:0 0 8px">
+      <span class="rk">TL;DR</span>
+      <div class="twocol" style="margin-top:16px">
+        <div>
+          <h4 style="font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);margin-bottom:12px">What we learned</h4>
+          <ul class="tight" style="margin-bottom:0">
+            <li style="font-size:15.5px;font-weight:400">The student ask opens doors. 38% of dials reached a human, one brush-off all day, and receptionists turned into advocates.</li>
+            <li style="font-size:15.5px;font-weight:400">Cell numbers skip gatekeepers entirely. Zero screens on 17 cell dials, and both owner conversations came off the flagged-cell list.</li>
+            <li style="font-size:15.5px;font-weight:400">Say "estimating" or "bidding." "Pre-con" confused sub-side front desks twice and triggered the day's only brush-off.</li>
+            <li style="font-size:15.5px;font-weight:400">The gold is after the goodbye. Roughly 35 of the best call's 45 minutes came after the wrap attempt.</li>
+            <li style="font-size:15.5px;font-weight:400">Bad plans and vague specs are the market's #1 pain. Four companies confirmed it independently in one day.</li>
+            <li style="font-size:15.5px;font-weight:400">Windows decide outcomes. Conversation rate before 4:30 was 21%; after, 6%. The noon hour hit recorded lunch greetings.</li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--signal);margin-bottom:12px">Carry into the next call day</h4>
+          <ul class="tight" style="margin-bottom:0">
+            <li style="font-size:15.5px;font-weight:400">Work the Monday queue first (section H): 16 warm re-entries with names. Brian, Gary, Spencer Nelson, Kelly, Bill or Sean.</li>
+            <li style="font-size:15.5px;font-weight:400">Exit checklist on every discovery call: full name, direct line or email, and "can I call you again when I've got more questions?"</li>
+            <li style="font-size:15.5px;font-weight:400">One story. Pick a school and keep every detail identical on every call.</li>
+            <li style="font-size:15.5px;font-weight:400">Dial estimators 9:00 to 11:45 and 1:00 to 4:00. Save owner cells for off-hours. Skip pre-holiday afternoons.</li>
+            <li style="font-size:15.5px;font-weight:400">Log at hangup, every time. Twenty seconds while it's fresh beats an hour of reconciliation later.</li>
+            <li style="font-size:15.5px;font-weight:400">Voicemail policy: nothing on office boxes; a 15-second student line on named personal cells.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="numbers">
+  <div class="wrap">
+    <div class="sec-label"><span class="sec-letter">A</span><h2>The day in numbers</h2></div>
+    <div class="statgrid">
+      <div class="stat"><b>47</b><span>dials · 47 companies<br>11:12 AM to 5:24 PM</span></div>
+      <div class="stat"><b>18</b><span>humans reached<br>38% of dials</span></div>
+      <div class="stat hot"><b>7</b><span>real conversations<br>15% of dials</span></div>
+      <div class="stat hot"><b>2</b><span>owners reached<br>both on flagged cell numbers</span></div>
+      <div class="stat"><b>~1h 42m</b><span>total talk time<br>avg conversation ≈ 12.5 min</span></div>
+      <div class="stat"><b>25</b><span>names captured<br>17 companies now have a named target</span></div>
+    </div>
+
+    <div class="funnel">
+      <div class="frow"><div class="flabel">Dials</div><div class="fbarwrap"><div class="fbar" style="width:100%"><span class="fnum">47</span></div></div></div>
+      <div class="frow"><div class="flabel">Reached a human</div><div class="fbarwrap"><div class="fbar" style="width:38%"><span class="fnum">18</span></div></div></div>
+      <div class="frow"><div class="flabel">Real conversation</div><div class="fbarwrap"><div class="fbar sig" style="width:15%"><span class="fnum">7</span></div></div></div>
+      <div class="frow"><div class="flabel">Discovery-grade (4+ min)</div><div class="fbarwrap"><div class="fbar sig" style="width:12.8%"><span class="fnum">6</span></div></div></div>
+      <div class="frow"><div class="flabel">Owner on the line</div><div class="fbarwrap"><div class="fbar sig" style="width:4.2%"><span class="fnum">2</span></div></div></div>
+    </div>
+
+    <h3>Where the 47 dials ended up</h3>
+    <table>
+      <tr><th>Outcome</th><th style="width:70px">Count</th><th>What it looked like</th></tr>
+      <tr><td class="good">Real conversation</td><td class="mono">7</td><td>SUNROC (Tom), IMS Masonry (Nick), Hunsaker (Chance), Boswell (Cody), Burbach (Jonas), Maverix (Nate), Alliance (Gary)</td></tr>
+      <tr><td class="mid">Stopped at the gatekeeper</td><td class="mono">11</td><td>Reached a receptionist; target out, gone for the day, or mis-transferred. Ten of the eleven still produced a name or a callback window.</td></tr>
+      <tr><td>Voicemail / no answer</td><td class="mono">21</td><td>Includes two lunch-hour greetings, an after-hours block of twelve, and zero messages left (see E-5)</td></tr>
+      <tr><td>IVR dead end</td><td class="mono">3</td><td>Grant Mackay, TK Elevator (national line), Artistic Roofing. All three have a direct estimating path for the retry.</td></tr>
+      <tr><td class="bad">Dead line</td><td class="mono">1</td><td>Nicolson Construction: carrier says restricted or unavailable. Needs a new number.</td></tr>
+      <tr><td>Disqualified on the spot</td><td class="mono">4</td><td>Brailsford Cast Stone, Oasis Stage Werks, Metal Line Fabrication, Lawson Landscape (out of ICP)</td></tr>
+    </table>
+    <p class="note">Numbers reconciled against 37 Granola transcripts. The raw log had 52 entries: 6 were duplicate saves while learning the logging tool, and 1 call (Olympus Precast) was never logged. Talk time estimated from transcript length at ~160 wpm; the Maverix figure matches the "45 minutes" stated on the call itself. Four conversations account for 78% of total talk time.</p>
+  </div>
+</section>
+
+<section id="channels">
+  <div class="wrap">
+    <div class="sec-label"><span class="sec-letter">B</span><h2>Two different weapons: office lines and cell numbers</h2></div>
+    <p>Before the afternoon block we ran a carrier lookup on all 75 numbers in the queue and flagged the 17 that are mobile lines (8 Verizon, 6 T-Mobile, 3 AT&amp;T). The theory: owner-operators publish their cells, so a mobile number should skip the front desk entirely. Day-one evidence says the theory holds, with a nuance worth keeping.</p>
+    <table>
+      <tr><th></th><th>Cell numbers (17 dials)</th><th>Office lines (30 dials)</th></tr>
+      <tr><td>Real conversations</td><td class="mono">2 <span class="good">· both were owners</span></td><td class="mono">5 · all required a receptionist transfer</td></tr>
+      <tr><td>Stopped by a gatekeeper</td><td class="mono good">0</td><td class="mono bad">11</td></tr>
+      <tr><td>Who the voicemail belongs to</td><td>A person: "you've reached Scott Denny's cell phone," "you've reached Lindsey"</td><td>A department or a machine</td></tr>
+      <tr><td>Callable window</td><td>Gary answered his own line at 5:10 PM</td><td>Effectively dead after ~4:30 PM</td></tr>
+    </table>
+    <p>The nuance: cells don't raise the connect <em>rate</em> (most of them were dialed after 4:40 PM and went to voicemail like everything else). What they change is <em>who answers when someone answers</em>. Every cell connect was a decision-maker. Every office-line connect went through a screen first, and eleven dials never got past it. Meanwhile the five best estimator conversations (SUNROC, IMS, Hunsaker, Boswell, Burbach) all came through office lines on the student ask. So the play is both: office line + student ask to reach estimators during business hours, flagged cell to reach the owner, any hour.</p>
+
+    <h3>When conversations actually happened</h3>
+    <table>
+      <tr><th>Window</th><th style="width:70px">Dials</th><th style="width:130px">Conversations</th><th>What happened</th></tr>
+      <tr><td class="mono">11:00 to 12:00</td><td class="mono">2</td><td class="mono good">1 (50%)</td><td>SUNROC's head of pre-con, before the lunch window</td></tr>
+      <tr><td class="mono">12:00 to 1:00</td><td class="mono">15</td><td class="mono mid">2 (13%)</td><td>The lunch trap: two companies played "closed until 1 PM" greetings</td></tr>
+      <tr><td class="mono">1:00 to 2:00</td><td class="mono">4</td><td class="mono good">1 (25%)</td><td>Boswell, the second-best call of the day</td></tr>
+      <tr><td class="mono">2:56 to 3:36</td><td class="mono">8</td><td class="mono good">2 (25%)</td><td>Burbach and Maverix. The golden window.</td></tr>
+      <tr><td class="mono">4:41 to 5:24</td><td class="mono">18</td><td class="mono bad">1 (6%)</td><td>Twelve voicemails in a row. The one connect was an owner's cell.</td></tr>
+    </table>
+    <p>July 4th made Thursday afternoon worse than it will normally be: six companies explicitly said the estimators had left for the holiday (UMC, Wall 2 Wall, Clients Design, Schoonover, Gene Peterson, Burbach's commercial side). On a normal week several of those are probably conversations.</p>
+    <div class="rule-card"><span class="rk">Standing rule № 1</span><p>Dial estimators 9:00 to 11:45 and 1:00 to 4:00. Dial owner cells anytime. Never burn the queue between noon and 1:00, after 4:30, or the afternoon before a holiday weekend.</p></div>
+  </div>
+</section>
+
+<section id="moves">
+  <div class="wrap">
+    <div class="sec-label"><span class="sec-letter">C</span><h2>The moves that worked, with receipts</h2></div>
+
+    <div class="move">
+      <div class="mv-head"><span class="mv-num">C-1</span><h4>The two-question student ask disarms everyone</h4></div>
+      <p>The frame ("I'm a student, I have a couple quick questions about how you do estimating, do you have like two seconds?") got through every screen it met except one. Receptionists didn't just pass the call; some became advocates. Jordan at Intermountain Aquatech physically went upstairs looking for her estimator, then wrote a sticky note promising a callback. The only pushback all day was about timing, never about the ask.</p>
+      <div class="receipt"><q>I told my front desk this guy has the balls to call here, just cold call and I'll give him some time.</q><span class="who">Cody, sole estimator, Boswell Millwork (15-minute call)</span></div>
+    </div>
+
+    <div class="move">
+      <div class="mv-head"><span class="mv-num">C-2</span><h4>Say "estimating" or "bidding." Never say "pre-con" to a sub.</h4></div>
+      <p>"Pre-con" is GC vocabulary. At Western Fence it confused the gatekeeper into a brush-off; at RC Hunt it got misheard as "prefab" and produced a blind transfer to the wrong employee. The plain ask for the "bidding department" at IMS Masonry produced an instant clean transfer to an estimator.</p>
+      <div class="receipt"><q>Commercial pre con? What do you mean by that? &hellip; We're not interested.</q><span class="who">Megan, front desk, Western Fence, before the recovery in C-3</span></div>
+    </div>
+
+    <div class="move">
+      <div class="mv-head"><span class="mv-num">C-3</span><h4>The first "no" is soft. Re-anchor once.</h4></div>
+      <p>Megan said "we're not interested" and was one breath from hanging up. Re-anchoring on the student frame ("I'm just a student, literally two questions") flipped her into transferring the call and volunteering the commercial estimator's full name, Spencer Nelson. One polite second attempt, no pushiness, name in the ledger.</p>
+      <div class="receipt"><q>Let me see if Spencer's available. Hold on.</q><span class="who">Megan, same call, ninety seconds later</span></div>
+    </div>
+
+    <div class="move">
+      <div class="mv-head"><span class="mv-num">C-4</span><h4>Convert every miss into a name</h4></div>
+      <p>When Gene Peterson's receptionist said the estimators were out, the counter wasn't a message. It was "who should I ask for next time I call?" Answer: Bill or Sean. That question turns a dead dial into a warm re-entry, and it worked everywhere it was used: Kelly at TST, Brian at Wall 2 Wall (plus his return date), Kevin at Aquatech. Seventeen of the 47 companies now have a named target. The one time the free hook was declined (Amber at Schoonover offered to take a message), the callback starts cold again.</p>
+      <div class="receipt"><q>Bill or Sean, either one of them.</q><span class="who">Front desk, Gene Peterson Concrete, in exchange for one question</span></div>
+    </div>
+
+    <div class="move">
+      <div class="mv-head"><span class="mv-num">C-5</span><h4>Mirror what they said, then chain the next question onto it</h4></div>
+      <p>The Boswell and Maverix calls stayed alive on one engine: play back what they just told you in your own words, get the "100% correct," then push one layer deeper. Short reflections ("So 10 times." "Chicken and egg problem?") did more work than long questions. It proves you're listening, and experts keep teaching people who are visibly learning.</p>
+      <div class="receipt"><q>So it sounds like you guys have a pretty good process through Building Connected&hellip; what's that next step?</q><span class="who">The playback-then-chain pattern, Boswell call</span></div>
+    </div>
+
+    <div class="move">
+      <div class="mv-head"><span class="mv-num">C-6</span><h4>Spitball naively and let them correct you</h4></div>
+      <p>"I'm just spitballing here" followed by a half-right guess made Nate correct the record in detail, twice. People can't resist fixing a wrong model of their own business. The correction is always richer than the answer to a direct question would have been.</p>
+    </div>
+
+    <div class="move">
+      <div class="mv-head"><span class="mv-num">C-7</span><h4>The fake goodbye is where the goldmine is</h4></div>
+      <p>Ten minutes into the Maverix call came the polite wrap: "I didn't want to eat up too much of your time." Nate then talked for another thirty-five minutes, unprompted: pricing calibration, material economics, cash-flow mechanics, the Oracle origin story, his evidence-collection playbook. The same thing happened in miniature with Cody. Once you stop asking, they relax and volunteer the real stuff. When the goodbye triggers a monologue, go silent and take notes.</p>
+    </div>
+
+    <div class="move">
+      <div class="mv-head"><span class="mv-num">C-8</span><h4>Take the downgrade</h4></div>
+      <p>At Burbach the commercial estimators were gone. Instead of hanging up, the call took the junior residential estimator ("maybe they're a little bit closer to being a student than the other person anyways"). That downgraded call produced the day's most important competitive signal: Burbach already pays for a company-wide AI account with a shared database that auto-generates bids, builds customer profiles, and tracks job costing.</p>
+      <div class="receipt"><q>When one employee does something and interacts with it or puts in a pricing sheet or a bid or an estimate, it all goes to the main database.</q><span class="who">Jonas, estimator, Burbach Companies, on their corporate AI account</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="anatomy">
+  <div class="wrap">
+    <div class="sec-label"><span class="sec-letter">D</span><h2>Anatomy of the best call: 45 minutes with the owner of Maverix</h2></div>
+    <p>Nate runs a $6M/yr Division-8 door supply company he started two years ago. He answered his own cell (an AT&amp;T number off the flag list), gave a masterclass in his own business, and never once asked who was really calling. This is the call to study. 7,995 words of transcript, 183 speaker turns, roughly 45 minutes.</p>
+    <div class="timeline">
+      <div class="tl"><span class="t">0:00</span><p>"Hello?" No IVR, no receptionist. The cell number <em>was</em> the routing.</p></div>
+      <div class="tl"><span class="t">0:10</span><p>Micro-ask: "Do you have like two seconds?" Two seconds is deniable; it always becomes more.</p></div>
+      <div class="tl"><span class="t">~2:00</span><p>Pain probe gets "Not really, no." A rookie moves on. The follow-up ("what makes a good plan?") cracks it open: door consultants vs. architects who write their own specs and get hardware wrong.</p></div>
+      <div class="tl"><span class="t">~6:00</span><p>Spitballed a half-right theory about specialization. Nate corrects it and, in correcting it, explains how GCs force split bids and cherry-pick scopes.</p></div>
+      <div class="tl hot"><span class="t">~10:00</span><p>The wrap attempt: "I didn't want to eat up too much of your time." Nate relaunches, unprompted.</p></div>
+      <div class="tl hot"><span class="t">10:00 to 44:00</span><p>The monologue: a year to dial in pricing. Material is the cost driver ($250 labor vs $2,500 material per door). Brands won't sign up new suppliers. Five door-supply players in Utah. Cash cycle is 3 to 5 months out at all times; manufacturers demand 100% prepay until you earn net-30/60. First job was an Oracle data-center order at 70-80% margin, paid upfront, which seeded the operating float he later grew to ~$700K by billing a disorganized GC 70% up front. And the discipline that protects all of it: evidence collection, "per our conversation" emails after every phone change.</p></div>
+      <div class="tl"><span class="t">44:00</span><p>"I didn't even catch your name. I'm so sorry." Nate. The only thread back, caught at the last second.</p></div>
+    </div>
+    <div class="receipt"><q>Evidence collection is like the difference maker&hellip; They're trying to find where you messed up and pin you with it.</q><span class="who">Nate, owner, Maverix Contracting</span></div>
+    <p><strong>Why it worked, in one sentence:</strong> a no-threat caller reached a founder directly, mirrored his language, guessed wrong on purpose, and then had the discipline to stay quiet after the goodbye.</p>
+    <p><strong>What it cost us:</strong> no email, no explicit permission to call again. See E-1.</p>
+  </div>
+</section>
+
+<section id="failures">
+  <div class="wrap">
+    <div class="sec-label"><span class="sec-letter">E</span><h2>What failed, and the fix</h2></div>
+    <div class="panel"><h4>E-1 · The two best calls ended with no path back</h4>
+      <p>Boswell ended on pure thanks: no last name, no direct line, no permission to follow up, with the single most valuable discovery contact of the day. Maverix got a first name in the final ten seconds. <strong>Fix:</strong> a hard exit checklist on every discovery call. First and last name, direct line or email, and one sentence: "Can I call you again when I've got more questions?" Nobody who just talked for 15 minutes says no.</p></div>
+    <div class="panel"><h4>E-2 · The story drifted between schools</h4>
+      <p>Seven calls said "student at the Y," nine said "student up at the U," sometimes within the same hour. Utah construction is a small world and these people talk to each other. <strong>Fix:</strong> pick one program and one class, and keep every detail of the story stable across the whole list.</p></div>
+    <div class="panel"><h4>E-3 · Eighteen dials were spent when nobody answers the phone</h4>
+      <p>The 4:41-to-5:24 block produced twelve voicemails, one dead line, and one lucky owner connect. The noon hour hit two recorded lunch-closure greetings. That's ~40% of the day's dials aimed at windows where connects are structurally unlikely. <strong>Fix:</strong> Standing rule № 1, plus save the cell-number list for off-hours blocks, since owners answer their own phones when offices don't.</p></div>
+    <div class="panel"><h4>E-4 · Logging happened in batches, not at hangup</h4>
+      <p>Six duplicate log entries, one call never logged, and the best call of the day logged 63 minutes late. Reconstructing true dispositions for this report required reading transcripts. <strong>Fix:</strong> log at hangup, every time. The cockpit's draft autosave makes it a 20-second habit; the granola sync backfills the rest.</p></div>
+    <div class="panel"><h4>E-5 · Twenty-one voicemails, zero messages left</h4>
+      <p>Defensible on office lines (a student VM to a department box does nothing). But two of those boxes were owners' personal cells with their names in the greeting (Scott Denny, Lindsey). A 15-second message there warms the redial. <strong>Fix:</strong> a two-line policy. Office box: hang up, redial another day. Named personal cell: leave the student line and a callback number.</p></div>
+  </div>
+</section>
+
+<section id="intel">
+  <div class="wrap">
+    <div class="sec-label"><span class="sec-letter">F</span><h2>What they told us: the pains, ranked by independent confirmation</h2></div>
+    <table>
+      <tr><th style="width:36px">#</th><th>Pain</th><th style="width:90px">Heard from</th><th>The receipt</th></tr>
+      <tr><td class="mono">1</td><td><strong>Bad plans and vague specs</strong> are the tax on everything</td><td class="mono">4 cos</td><td>"If the plans are vague, that makes our job 10 times harder" (Hunsaker). ~40% of material schedules missing color/finish, a $25-30/sqft quartz swing (Boswell). "If the plan sucks, it's going to be way more difficult" (Maverix). SUNROC re-runs every takeoff to verify.</td></tr>
+      <tr><td class="mono">2</td><td><strong>Scope trust and bid leveling</strong>: GCs can't compare bids without forcing structure</td><td class="mono">3 cos</td><td>SUNROC redoes takeoffs "to compare apples to apples." GCs make Maverix split bids by subsection so they can cherry-pick. IMS writes inclusions/exclusions "manually" off the drawings.</td></tr>
+      <tr><td class="mono">3</td><td><strong>Cash flow</strong> is the sub's existential problem</td><td class="mono">1 co, deep</td><td>3-5 months from order to payment, 100% prepay to manufacturers until terms are earned, banks offering a $3,000 card after two years (Maverix).</td></tr>
+      <tr><td class="mono">4</td><td><strong>Disorganized GCs</strong> push chaos downstream</td><td class="mono">2 cos</td><td>The Deer Valley project: field changes for three months, plans no longer match reality, subs eat it unless they kept email evidence (Maverix). RC Hunt's own front desk blind-transfers into the void.</td></tr>
+      <tr><td class="mono">5</td><td><strong>Price-only competition</strong> compresses quality subs</td><td class="mono">1 co</td><td>"We can only go so low" (Burbach).</td></tr>
+    </table>
+    <h3>Tools spotted in the wild</h3>
+    <p>
+      <span class="tag"><b>BuildingConnected</b> · Boswell, IMS</span>
+      <span class="tag"><b>SmartBid</b> · IMS</span>
+      <span class="tag"><b>Bluebeam</b> · Boswell</span>
+      <span class="tag"><b>PlanSwift</b> · SUNROC</span>
+      <span class="tag"><b>Trimble</b> · SUNROC earthwork</span>
+      <span class="tag"><b>HeavyBid</b> · SUNROC bidding</span>
+      <span class="tag"><b>Tradesman</b> · IMS takeoffs</span>
+      <span class="tag"><b>Custom door software</b> · Maverix</span>
+      <span class="tag"><b>Spreadsheets</b> · Hunsaker, Boswell</span>
+      <span class="tag"><b>Corporate AI + shared DB</b> · Burbach</span>
+    </p>
+    <p>Two product-shaped observations from one day: every sub we reached mitigates pain № 1 with assumptions, supplier phone calls, or redone takeoffs, because RFIs come back too slow to matter. And a mid-size exteriors sub already wired a shared AI database into bidding and job costing without waiting for the industry. The market is not early; it's unevenly distributed.</p>
+  </div>
+</section>
+
+<section id="rig">
+  <div class="wrap">
+    <div class="sec-label"><span class="sec-letter">G</span><h2>The rig behind the day</h2></div>
+    <p>None of this required a sales team or a data vendor. The stack is one browser tab and an AI assistant, and each piece earned its place today.</p>
+    <table>
+      <tr><th style="width:230px">Piece</th><th>What it did today</th></tr>
+      <tr><td><strong>Call cockpit</strong><br><span class="mono" style="font-size:12px">perch-call-cockpit.pages.dev</span></td><td>75 fit-gated companies scored and queued, GC/sub × size scripts auto-routed per call, structured capture on every dial, log persisted to Postgres. 52 entries captured live.</td></tr>
+      <tr><td><strong>Granola on the phone</strong></td><td>Auto-transcribed 37 of 47 dials verbatim. Notes auto-attach to the matching cockpit call each sync. Every receipt in this document comes from those transcripts.</td></tr>
+      <tr><td><strong>Carrier flags (📱)</strong></td><td>Free NANPA block-data lookup classified all 75 numbers in an afternoon: 17 cells (8 Verizon, 6 T-Mobile, 3 AT&amp;T). Both owner conversations of the day came off that list, and two more flagged numbers turned out to be principals' personal cells (Scott Denny, Lindsey). Cost: $0.</td></tr>
+      <tr><td><strong>Same-day synthesis</strong></td><td>Transcripts cross-referenced against the log and the company data the same evening, producing this document, the Monday queue below, and reconciled metrics. The learning loop closes in hours.</td></tr>
+    </table>
+    <div class="rule-card"><span class="rk">Standing rule № 2</span><p>Enrich before you dial. A number that's flagged as an owner's cell is a different play than a switchboard, and knowing which one you're about to call costs nothing.</p></div>
+  </div>
+</section>
+
+<section id="monday">
+  <div class="wrap">
+    <div class="sec-label"><span class="sec-letter">H</span><h2>The Monday queue</h2></div>
+    <p>What a day of dials actually bought: a list where the next call is warm. Ordered by expected value.</p>
+    <table>
+      <tr><th>Company</th><th>Ask for</th><th>The move</th></tr>
+      <tr><td>Wall 2 Wall</td><td class="mono">Brian</td><td>Monday morning, committed window. Shanna volunteered his name and return date.</td></tr>
+      <tr><td>Alliance Energy</td><td class="mono">Gary (cell)</td><td>He invited it: "put me on the list, maybe call back a little bit better time."</td></tr>
+      <tr><td>Burbach / Commercial Exterior</td><td class="mono">via Stephanie</td><td>Commercial estimator, per her suggestion. Jonas is a friendly re-entry if needed.</td></tr>
+      <tr><td>Western Fence</td><td class="mono">Spencer Nelson</td><td>Ask by name; skips Megan's screen entirely.</td></tr>
+      <tr><td>TST Fire Protection</td><td class="mono">Kelly</td><td>Ask by name; unscreened transfer confirmed.</td></tr>
+      <tr><td>Gene Peterson Concrete</td><td class="mono">Bill or Sean</td><td>Ask by name.</td></tr>
+      <tr><td>Intermountain Aquatech</td><td class="mono">Kevin</td><td>Callback promised via Jordan's sticky note, but the number read-back was garbled on the call. Don't wait; redial.</td></tr>
+      <tr><td>Utah Mechanical</td><td class="mono">via Priscilla</td><td>Estimators back after the holiday week.</td></tr>
+      <tr><td>Clients Design</td><td class="mono">front desk</td><td>"Check back Monday," estimators confirmed to exist.</td></tr>
+      <tr><td>Climb Concrete</td><td class="mono">Scott Denny (cell)</td><td>Confirmed personal cell. Business hours, leave a VM if missed.</td></tr>
+      <tr><td>Advanced Heating &amp; Cooling</td><td class="mono">Lindsey (cell)</td><td>Named personal line. Same play.</td></tr>
+      <tr><td>Geopier Northwest</td><td class="mono">David Plen</td><td>Direct line confirmed by greeting.</td></tr>
+      <tr><td>Speirs Plumbing / Mountain States</td><td class="mono">front desk</td><td>Both close for lunch. Call before noon or right after 1:00.</td></tr>
+      <tr><td>Grant Mackay / Artistic Roofing</td><td class="mono">IVR path</td><td>Both have a dedicated estimating extension (press 1 / press 3). Dial at a staffed hour.</td></tr>
+      <tr><td>Boswell Millwork</td><td class="mono">Cody</td><td>The relationship to protect. He respects the cold call; re-enter with a specific question he'd enjoy answering.</td></tr>
+      <tr><td>Maverix Contracting</td><td class="mono">Nate (cell)</td><td>Same. He taught for 45 minutes; the next call should give something back.</td></tr>
+    </table>
+    <p>Fix-the-data errands: source a working number for Nicolson (current one is dead at the carrier), find a human channel for Croft-Beck (voicemail box full) and Momentum (greeting is six months stale), and get TK Elevator's local branch line instead of the national IVR.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Sources: 37 Granola call transcripts and the cockpit call log for July 2, 2026, reconciled entry by entry. Durations estimated from transcript length at ~160 wpm. Carrier data from NANPA prefix-block assignments; ported numbers can differ.</p>
+  </div>
+</footer>
+
+</body>
+</html>

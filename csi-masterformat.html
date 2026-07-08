@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSI MasterFormat — the interactive division explorer</title>
+<meta name="description" content="All CSI MasterFormat divisions, searchable — with the DOPL license class each maps to and a line to say on the phone.">
+<style>
+  :root{
+    --ground:#0d1418; --ground-2:#121c22; --ground-3:#182530; --ground-4:#1e2d38;
+    --line:rgba(198,220,230,.10); --line-strong:rgba(198,220,230,.20);
+    --bone:#ece6d8; --muted:#93a0a8; --muted-2:#6c7a82;
+    --accent:#e0a24c; --accent-soft:rgba(224,162,76,.14); --accent-line:rgba(224,162,76,.42);
+    --good:#7bb98a; --bad:#c9705f; --slate:#7f9aa8; --blue:#78bce6; --violet:#a58fd0;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--ground);color:var(--bone);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;padding:0 20px 120px}
+  .wrap{max-width:1040px;margin:0 auto}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-line)}
+  a:hover{color:var(--bone)}
+  ::selection{background:var(--accent);color:#141414}
+  /* mast */
+  .mast{position:relative;padding:60px 0 26px;border-bottom:1px solid var(--line-strong);
+    background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:34px 34px;background-position:center top}
+  .mast::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 92% at 50% -10%,transparent 38%,var(--ground) 90%);pointer-events:none}
+  .mast>*{position:relative;z-index:1}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(32px,6vw,52px);line-height:1.03;letter-spacing:-.01em;margin:0;text-wrap:balance}
+  h1 .em{font-style:italic;color:var(--accent)}
+  .dek{font-family:var(--mono);font-size:13px;color:var(--muted);margin:16px 0 0;max-width:62ch}
+  .howto{margin:22px 0 0;font-family:var(--mono);font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+  .howto .code{font-size:15px;color:var(--accent);letter-spacing:.06em;background:var(--ground-3);border:1px solid var(--line);border-radius:5px;padding:3px 10px}
+  .howto .step{color:#cfd6da} .howto .arw{color:var(--muted-2)}
+  /* control bar */
+  .controls{position:sticky;top:0;z-index:30;background:rgba(13,20,24,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line-strong);margin:0 -20px;padding:14px 20px 12px}
+  .controls .inner{max-width:1040px;margin:0 auto}
+  .searchrow{display:flex;gap:10px;align-items:center}
+  #q{flex:1;background:var(--ground-2);border:1px solid var(--line-strong);border-radius:9px;color:var(--bone);font-family:var(--sans);font-size:15px;padding:11px 14px;outline:none}
+  #q:focus{border-color:var(--accent-line)}
+  #q::placeholder{color:var(--muted-2)}
+  .count{font-family:var(--mono);font-size:11.5px;color:var(--muted-2);white-space:nowrap}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+  .chip{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:#cfd6da;background:var(--ground-2);border:1px solid var(--line-strong);border-radius:18px;padding:5px 12px;cursor:pointer;transition:.14s;white-space:nowrap}
+  .chip:hover{border-color:var(--accent-line);color:var(--bone)}
+  .chip.on{background:var(--accent);color:#141414;border-color:var(--accent);font-weight:700}
+  .chip .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;transform:translateY(-1px)}
+  /* subgroup + grid */
+  .sub{margin:30px 0 0}
+  .sub-h{display:flex;align-items:baseline;gap:12px;margin:0 0 12px;padding-bottom:7px;border-bottom:1px solid var(--line)}
+  .sub-h .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase}
+  .sub-h .rng{font-family:var(--mono);font-size:11px;color:var(--muted-2)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(224px,1fr));gap:10px}
+  .card{position:relative;background:var(--ground-2);border:1px solid var(--line);border-radius:10px;padding:14px 15px;cursor:pointer;transition:.15s;overflow:hidden}
+  .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--sg)}
+  .card:hover{border-color:var(--line-strong);transform:translateY(-2px);background:var(--ground-3)}
+  .card .top{display:flex;align-items:center;gap:10px}
+  .card .num{font-family:var(--mono);font-size:19px;font-weight:700;color:var(--sg);font-variant-numeric:tabular-nums;letter-spacing:.02em}
+  .card .badges{margin-left:auto;display:flex;gap:5px}
+  .b{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border-radius:4px;font-weight:700}
+  .b.hot{color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent-line)}
+  .b.carve{color:var(--blue);background:rgba(120,188,230,.1);border:1px solid rgba(120,188,230,.3)}
+  .card .nm{font-family:var(--serif);font-size:17px;color:var(--bone);margin:8px 0 5px;line-height:1.15}
+  .card .who{font-size:12px;color:var(--muted);line-height:1.4}
+  .card .dopl{margin-top:9px;display:flex;flex-wrap:wrap;gap:4px}
+  .card .dopl span{font-family:var(--mono);font-size:10px;color:var(--muted-2);border:1px solid var(--line);border-radius:4px;padding:1px 6px}
+  .empty{padding:50px 0;text-align:center;font-family:var(--mono);color:var(--muted-2);font-size:13px}
+  /* modal */
+  .backdrop{position:fixed;inset:0;background:rgba(6,10,12,.72);backdrop-filter:blur(3px);z-index:50;opacity:0;pointer-events:none;transition:.18s}
+  .backdrop.on{opacity:1;pointer-events:auto}
+  .modal{position:fixed;z-index:51;left:50%;top:50%;transform:translate(-50%,-46%);width:min(680px,94vw);max-height:88vh;overflow-y:auto;
+    background:var(--ground-2);border:1px solid var(--line-strong);border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:.2s}
+  .modal.on{opacity:1;pointer-events:auto;transform:translate(-50%,-50%)}
+  .m-top{position:relative;padding:26px 28px 20px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,var(--ground-3),var(--ground-2))}
+  .m-top::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--sg)}
+  .m-close{position:absolute;top:16px;right:18px;width:32px;height:32px;border-radius:8px;border:1px solid var(--line-strong);background:var(--ground);color:var(--muted);font-size:17px;cursor:pointer;line-height:1}
+  .m-close:hover{color:var(--bone);border-color:var(--accent-line)}
+  .m-sg{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--sg)}
+  .m-num{font-family:var(--mono);font-size:46px;font-weight:700;color:var(--sg);line-height:1;margin:6px 0 2px;letter-spacing:.02em}
+  .m-nm{font-family:var(--serif);font-size:27px;color:var(--bone);line-height:1.1;margin:0 0 2px}
+  .m-badges{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px}
+  .m-body{padding:22px 28px 26px}
+  .m-lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-2);margin:20px 0 9px}
+  .m-lbl:first-child{margin-top:0}
+  .m-covers{font-size:15.5px;color:#d9d5c9}
+  .m-secs{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  .m-secs .s{background:var(--ground-2);padding:8px 12px;font-size:12.5px;color:#cfd6da;display:flex;gap:9px;align-items:baseline}
+  .m-secs .s .c{font-family:var(--mono);font-size:11px;color:var(--sg);white-space:nowrap;font-variant-numeric:tabular-nums}
+  .m-who{font-size:14.5px;color:#d9d5c9}
+  .m-dopl{display:flex;flex-wrap:wrap;gap:7px}
+  .m-dopl span{font-family:var(--mono);font-size:12px;color:var(--bone);background:var(--ground-3);border:1px solid var(--line-strong);border-radius:5px;padding:4px 10px}
+  .m-dopl span b{color:var(--accent);font-weight:700}
+  .carvebox{margin-top:18px;background:rgba(120,188,230,.07);border:1px solid rgba(120,188,230,.24);border-left:2px solid var(--blue);border-radius:6px;padding:13px 16px;font-size:13.5px;color:#cfe3f0}
+  .carvebox b{color:var(--blue)}
+  .say{margin-top:18px;background:var(--ground-3);border:1px solid var(--line);border-radius:7px;padding:14px 16px}
+  .say .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--good);margin-bottom:7px}
+  .say .line{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--bone);line-height:1.4}
+  .m-nav{display:flex;justify-content:space-between;gap:10px;margin-top:24px;padding-top:16px;border-top:1px solid var(--line)}
+  .m-nav button{flex:1;background:var(--ground);border:1px solid var(--line-strong);border-radius:8px;color:var(--muted);font-family:var(--mono);font-size:11.5px;padding:9px;cursor:pointer;transition:.14s}
+  .m-nav button:hover{color:var(--bone);border-color:var(--accent-line)}
+  /* generic sections */
+  section.blk{padding:46px 0 4px;border-top:1px solid var(--line);margin-top:34px}
+  .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted-2);margin:0 0 10px}
+  h2{font-family:var(--serif);font-weight:600;font-size:25px;line-height:1.16;letter-spacing:-.006em;margin:0 0 13px;text-wrap:balance}
+  h3{font-family:var(--serif);font-weight:600;font-size:18px;margin:24px 0 8px}
+  p{font-size:15px;color:#d6d2c6;margin:0 0 13px}
+  p b{color:var(--bone);font-weight:600}
+  .case{background:linear-gradient(180deg,var(--ground-3),var(--ground-2));border:1px solid var(--line-strong);border-radius:10px;padding:24px 26px 20px}
+  .case .who{font-family:var(--mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--blue);margin:0 0 8px}
+  .path{font-family:var(--mono);font-size:13.5px;color:#cfd6da;margin:14px 0;padding:12px 15px;background:var(--ground);border:1px solid var(--line);border-radius:7px;line-height:1.9}
+  .path b{color:var(--accent)} .path .arw{color:var(--muted-2);padding:0 6px}
+  ul{margin:0 0 13px;padding-left:0;list-style:none}
+  ul li{position:relative;padding-left:19px;margin:7px 0;font-size:14.5px;color:#d6d2c6}
+  ul li::before{content:"—";position:absolute;left:0;color:var(--muted-2)}
+  .tt{margin:14px 0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .tt .bad{padding:11px 16px;background:rgba(201,112,95,.08);font-size:14px;color:#c9a99f}
+  .tt .good{padding:12px 16px;background:rgba(123,185,138,.07);font-size:15px;color:#d6e6d9;border-top:1px solid var(--line)}
+  .tt .tag{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;margin-right:9px}
+  .tt .bad .tag{color:var(--bad)} .tt .good .tag{color:var(--good)}
+  .tt .good b{color:#fff}
+  .note{background:var(--ground-2);border:1px solid var(--line-strong);border-left:2px solid var(--accent-line);border-radius:6px;padding:15px 18px;margin:16px 0;font-size:14px}
+  .note .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 7px}
+  code{font-family:var(--mono);font-size:.88em;background:var(--ground-3);border:1px solid var(--line);border-radius:4px;padding:1px 6px;color:var(--accent)}
+  .hh{color:var(--blue);font-weight:700}
+  .foot{margin-top:20px;font-family:var(--mono);font-size:11px;color:var(--muted-2);line-height:1.7}
+  /* classifier */
+  .clf{margin:28px 0 6px;background:linear-gradient(180deg,var(--ground-3),var(--ground-2));border:1px solid var(--accent-line);border-radius:12px;padding:24px 26px 22px}
+  .clf-row{display:flex;gap:10px}
+  #clfIn{flex:1;background:var(--ground);border:1px solid var(--line-strong);border-radius:9px;color:var(--bone);font-family:var(--sans);font-size:15px;padding:12px 14px;outline:none;min-width:0}
+  #clfIn:focus{border-color:var(--accent-line)}
+  #clfIn::placeholder{color:var(--muted-2)}
+  #clfBtn{background:var(--accent);color:#141414;border:0;border-radius:9px;font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.04em;padding:0 22px;cursor:pointer;white-space:nowrap}
+  #clfBtn:disabled{opacity:.55;cursor:wait}
+  .clf-status{font-family:var(--mono);font-size:12px;color:var(--muted);padding:16px 2px 2px}
+  .clf-res{margin-top:18px;border:1px solid var(--line-strong);border-radius:10px;overflow:hidden}
+  .clf-prime{position:relative;padding:20px 22px;background:var(--ground-2);border-left:4px solid var(--sg,var(--accent))}
+  .clf-prime .conf{position:absolute;top:16px;right:18px;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;border-radius:4px}
+  .conf.strong{color:var(--good);border:1px solid rgba(123,185,138,.4);background:rgba(123,185,138,.1)}
+  .conf.moderate{color:var(--accent);border:1px solid var(--accent-line);background:var(--accent-soft)}
+  .conf.thin{color:var(--muted);border:1px solid var(--line-strong)}
+  .clf-prime .dnum{font-family:var(--mono);font-size:38px;font-weight:700;color:var(--sg,var(--accent));line-height:1}
+  .clf-prime .dnm{font-family:var(--serif);font-size:23px;color:var(--bone);margin:2px 0 8px}
+  .clf-why{font-size:14px;color:#d6d2c6;margin:8px 0 10px}
+  .evs{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}
+  .ev{font-family:var(--mono);font-size:11px;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:14px;padding:3px 10px}
+  .clf-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .clf-meta span{font-family:var(--mono);font-size:11.5px;color:#cfd6da;background:var(--ground-3);border:1px solid var(--line);border-radius:5px;padding:4px 10px}
+  .clf-meta span b{color:var(--accent)}
+  .angles{margin-top:14px;background:var(--ground-3);border:1px solid var(--line);border-radius:7px;padding:14px 17px}
+  .angles .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--good);margin-bottom:8px}
+  .angles li{font-size:13.5px;margin:6px 0}
+  .clf-alt{padding:12px 22px;background:var(--ground);border-top:1px solid var(--line);display:flex;align-items:baseline;gap:12px;cursor:pointer;transition:.13s}
+  .clf-alt:hover{background:var(--ground-3)}
+  .clf-alt .n2{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--sg2,var(--muted))}
+  .clf-alt .t3{font-size:13.5px;color:#cfd6da}
+  .clf-alt .why2{font-family:var(--mono);font-size:11px;color:var(--muted-2);margin-left:auto;text-align:right}
+  @media(max-width:560px){.clf-row{flex-direction:column}#clfBtn{padding:12px}}
+  /* intel row + call sheet */
+  .intel{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+  .intel span{font-family:var(--mono);font-size:11.5px;color:#cfd6da;background:var(--ground-3);border:1px solid var(--line);border-radius:5px;padding:4px 10px}
+  .intel span.plat{color:var(--accent);border-color:var(--accent-line);background:var(--accent-soft)}
+  .intel span.warn{color:var(--bad);border-color:rgba(201,112,95,.4);background:rgba(201,112,95,.08)}
+  .intel span.gc{color:var(--blue);border-color:rgba(120,188,230,.3);background:rgba(120,188,230,.08)}
+  .intel span.ok2{color:var(--good);border-color:rgba(123,185,138,.35);background:rgba(123,185,138,.08)}
+  .intel button{background:none;border:0;color:inherit;font:inherit;cursor:pointer;padding:0}
+  .cs{margin-top:12px;border:1px solid var(--line);border-radius:7px;background:var(--ground-3)}
+  .cs summary{cursor:pointer;list-style:none;padding:12px 16px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  .cs summary::before{content:"▸ ";color:var(--muted-2)}
+  .cs[open] summary::before{content:"▾ "}
+  .cs .inner2{padding:2px 17px 16px}
+  .cs .sl{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-2);margin:14px 0 7px}
+  .cs .sl:first-child{margin-top:4px}
+  .cs li{font-size:13.5px;margin:6px 0}
+  .cs .toolchips{display:flex;flex-wrap:wrap;gap:6px}
+  .cs .toolchips span{font-family:var(--mono);font-size:11.5px;color:var(--blue);background:rgba(120,188,230,.08);border:1px solid rgba(120,188,230,.28);border-radius:14px;padding:3px 11px}
+  .cs .obj .t4{color:#c9a99f;font-size:13.5px}
+  .cs .obj .r4{color:#d6e6d9;font-size:13.5px;margin-top:5px}
+  .cs .obj .r4 b{color:#fff}
+  .cs .wedge{font-size:13.5px;color:var(--bone);border-left:2px solid var(--accent-line);padding-left:12px}
+  .hist{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+  .hist button{font-family:var(--mono);font-size:11px;color:var(--muted);background:var(--ground);border:1px solid var(--line);border-radius:14px;padding:4px 11px;cursor:pointer}
+  .hist button:hover{color:var(--bone);border-color:var(--accent-line)}
+  .hist button b{color:var(--accent)}
+  .briefbtn{background:none;border:1px solid var(--line-strong);border-radius:7px;color:var(--muted);font-family:var(--mono);font-size:11px;padding:7px 14px;cursor:pointer}
+  .briefbtn:hover{color:var(--bone);border-color:var(--accent-line)}
+  @media(max-width:560px){
+    .m-secs{grid-template-columns:1fr}
+    .howto{font-size:11.5px}
+    .grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="mast">
+    <p class="eyebrow">Field Reference · The language of the bid</p>
+    <h1>The CSI <span class="em">MasterFormat</span> explorer</h1>
+    <p class="dek">Every division of the construction spec book — searchable, with the Utah license class each maps to and a line to say on the phone. The <a href="https://www.procore.com/library/csi-masterformat" target="_blank" rel="noopener">Dewey-Decimal system of construction</a>: learn to speak it and you stop sounding like a vendor.</p>
+    <div class="howto">
+      <span class="code">23&nbsp;52&nbsp;00</span>
+      <span class="arw">=</span><span class="step">Div <b style="color:var(--bone)">23</b> HVAC</span>
+      <span class="arw">›</span><span class="step">§<b style="color:var(--bone)">52</b> Heating Boilers</span>
+      <span class="arw">›</span><span class="step">broad scope</span>
+    </div>
+  </header>
+
+  <!-- ========== classifier ========== -->
+  <section class="clf" id="classify">
+    <p class="kicker" style="color:var(--accent)">Pre-call scan</p>
+    <h2 style="margin-bottom:6px">Paste a company's website. Get their division.</h2>
+    <p style="margin-bottom:14px">Reads their site and ranks the divisions they bid in — with the evidence, the license class, and what to talk about on estimating &amp; bidding. Multi-trade shops rank in 2–3 divisions; lead with the primary, probe the rest.</p>
+    <div class="clf-row">
+      <input id="clfIn" type="text" inputmode="url" placeholder="mountainstainless.com — or paste a sentence about what they do" autocomplete="off" spellcheck="false">
+      <button id="clfBtn" onclick="classify()">Scan →</button>
+    </div>
+    <div class="hist" id="clfHist"></div>
+    <div id="clfOut"></div>
+  </section>
+
+  <div class="controls">
+    <div class="inner">
+      <div class="searchrow">
+        <input id="q" type="search" placeholder="Search a trade, division, or code — “boiler”, “roof”, “23”, “drywall”…" autocomplete="off">
+        <span class="count" id="count"></span>
+      </div>
+      <div class="chips" id="filters">
+        <button class="chip on" data-f="all">All</button>
+        <button class="chip" data-f="hot"><span class="dot" style="background:var(--accent)"></span>Perch trades</button>
+        <button class="chip" data-f="carve"><span class="dot" style="background:var(--blue)"></span>Bid carve-outs</button>
+        <button class="chip" data-f="construction"><span class="dot" style="background:var(--bone)"></span>Construction</button>
+        <button class="chip" data-f="services"><span class="dot" style="background:var(--blue)"></span>Facility Services</button>
+        <button class="chip" data-f="site"><span class="dot" style="background:var(--good)"></span>Site &amp; Infrastructure</button>
+        <button class="chip" data-f="process"><span class="dot" style="background:var(--slate)"></span>Process</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="grid"></div>
+
+  <!-- ========== worked example ========== -->
+  <section class="blk" id="example">
+    <p class="kicker">Worked example</p>
+    <h2>How to read a lead: Holiday Heating.</h2>
+    <div class="case">
+      <p class="who">Provo, UT · DOPL S350 HVAC · Kevin Crickenberger, owner · 20+ yrs on boilers</p>
+      <p style="margin-bottom:0">Serves <b>residential, commercial, and industrial</b> — radiant floors up to <i>“large-scale industrial steam systems.”</i> On their own site: <i>“other contractors often call us when they’re stumped on a boiler issue.”</i> The boiler authority other trades defer to.</p>
+      <div class="path"><b>S350</b> HVAC license <span class="arw">→</span> Division <b>23</b> <span class="arw">→</span> §<b>23&nbsp;52&nbsp;00</b> Heating Boilers <span class="arw">→</span> their industrial steam brushes the <b>Division 40s</b> (Process Heating)</div>
+      <ul>
+        <li><b>Do they bid commercial? Yes.</b> HVAC is one of only ~4 trades a <b>B100 GC can’t self-perform</b> — so it’s always bid out. Holiday Heating is structurally locked into the invitation-to-bid pain Perch fixes.</li>
+        <li><b>The insider distinction:</b> building heat = <code>Div 23</code> (hydronic/heating boilers); industrial <i>process</i> steam = <code>Div 42</code>. Ask which side their work falls on and you instantly read as someone who’s been on a jobsite.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ========== talk tracks ========== -->
+  <section class="blk">
+    <p class="kicker">Talk tracks</p>
+    <h2>Drop the code, earn the room.</h2>
+    <p>Goals first — the division talk is <i>seasoning</i> that proves you belong, not the opener. Use it once or twice, then get back to their goals and pain. Every division card above has its own line ready to lift.</p>
+    <div class="tt">
+      <div class="bad"><span class="tag">Vendor</span>“So… what kind of work do you guys bid on?”</div>
+      <div class="good"><span class="tag">Insider</span>“You’re a <b>Division 23</b> shop — bidding the mechanical scope straight to GCs, or coming in under a mechanical prime?”</div>
+    </div>
+    <div class="tt">
+      <div class="bad"><span class="tag">Vendor</span>“Do you get a lot of bid requests?”</div>
+      <div class="good"><span class="tag">Insider</span>“When the GC sends the ITB, is it a clean <b>23 00 00</b> section, or are they lumping 22 and 23 so you price plumbing scope that isn’t yours?”</div>
+    </div>
+    <div class="tt">
+      <div class="bad"><span class="tag">Vendor</span>“How do you pick which jobs to chase?”</div>
+      <div class="good"><span class="tag">Insider</span>“HVAC’s a scope the GC can’t self-perform, so you’re always invited — drowning in invites and cherry-picking, or chasing to keep the pipeline full?”</div>
+    </div>
+    <div class="note">
+      <p class="t">The reflex to build</p>
+      <p style="margin:0">Before each call, glance at the DOPL class on the card → say the division out loud once. <code>S280</code> → “Division 7, roofing.” <code>E200</code> → “Division 26, electrical.” A week of that and it’s automatic.</p>
+    </div>
+    <p class="foot">
+      All active divisions of the 2020 MasterFormat numbering scheme (00–48; reserved slots omitted). License classes per Utah <a href="https://adminrules.utah.gov/public/rule/R156-55a/Current%20Rules" target="_blank" rel="noopener">R156-55a</a>. Section titles via <a href="https://www.designguide.com/csi-masterformat-index" target="_blank" rel="noopener">MasterFormat index</a>.<br>
+      A GC’s B100 covers every specialty <b>except</b> HVAC (S350), electrical (E200/E201), plumbing (P200/P201), and elevator (S510) — the four “bid carve-outs” marked in blue.
+    </p>
+  </section>
+
+</div>
+
+<!-- ========== modal ========== -->
+<div class="backdrop" id="backdrop"></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true"></div>
+
+<script>
+const DIV = [
+  {n:"00",name:"Procurement & Contracting Requirements",g:"gen",hot:false,carve:false,
+   covers:"The front matter of every bid: how to submit, the forms to use, and the conditions of the contract you're signing up to.",
+   sec:[["00 10 00","Solicitation"],["00 20 00","Instructions for Procurement"],["00 40 00","Procurement Forms & Supplements"],["00 50 00","Contracting Forms"],["00 70 00","Conditions of the Contract"]],
+   who:"Owner · GC · architect — the rules of the bid itself.",dopl:[],
+   say:"Divisions 0 and 1 are the general conditions — the fine print subs skip and then eat on. Who reads those for your bids?"},
+  {n:"01",name:"General Requirements",g:"gen",hot:false,carve:false,
+   covers:"Project-wide rules that touch every trade: schedule, submittals, quality control, temporary facilities, and closeout.",
+   sec:[["01 20 00","Price & Payment Procedures"],["01 30 00","Administrative Requirements"],["01 40 00","Quality Requirements"],["01 50 00","Temporary Facilities & Controls"],["01 70 00","Execution & Closeout"]],
+   who:"The GC's rulebook — binds every sub on the job.",dopl:[],
+   say:"Division 1 is where the GC's schedule and submittal rules live — how much of your bid pain is really Division 1 stuff, not the actual scope?"},
+  {n:"02",name:"Existing Conditions",g:"construction",hot:false,carve:false,
+   covers:"Everything before you build: demolition, hazardous-material abatement, site assessment, and subsurface investigation.",
+   sec:[["02 20 00","Assessment"],["02 30 00","Subsurface Investigation"],["02 40 00","Demolition"],["02 50 00","Site Remediation"],["02 60 00","Contaminated Material Removal"]],
+   who:"Demolition, abatement, and environmental subs.",dopl:["S310"],
+   say:"You're on the demo/site-prep side — bidding Division 2 scope direct to GCs, or under the earthwork package?"},
+  {n:"03",name:"Concrete",g:"construction",hot:true,carve:false,
+   covers:"Formwork, reinforcing steel, cast-in-place and precast concrete, grouting — the structural backbone.",
+   sec:[["03 10 00","Concrete Forming & Accessories"],["03 20 00","Concrete Reinforcing"],["03 30 00","Cast-in-Place Concrete"],["03 40 00","Precast Concrete"],["03 60 00","Grouting"]],
+   who:"Concrete contractors, rebar placers, precast erectors.",dopl:["S260"],
+   say:"You're a Division 3 shop — are you self-performing formwork and rebar, or subbing those out and just placing?"},
+  {n:"04",name:"Masonry",g:"construction",hot:true,carve:false,
+   covers:"Brick, block, and stone assemblies set in mortar — structural and veneer.",
+   sec:[["04 20 00","Unit Masonry"],["04 40 00","Stone Assemblies"],["04 50 00","Refractory Masonry"],["04 70 00","Manufactured Masonry"]],
+   who:"Masonry contractors — brick, block, stone.",dopl:["S230"],
+   say:"Division 4 masonry — bidding to GCs on commercial, and is it structural block or veneer that's most of your work?"},
+  {n:"05",name:"Metals",g:"construction",hot:true,carve:false,
+   covers:"Structural steel framing, joists, decking, cold-formed (light-gauge) framing, and miscellaneous metal fabrications.",
+   sec:[["05 10 00","Structural Metal Framing"],["05 20 00","Metal Joists"],["05 30 00","Metal Decking"],["05 40 00","Cold-Formed Metal Framing"],["05 50 00","Metal Fabrications"]],
+   who:"Steel erectors, fabricators, light-gauge framers.",dopl:[],
+   say:"You're Division 5 — structural steel, or the cold-formed framing side? And are you fabricating or just erecting?"},
+  {n:"06",name:"Wood, Plastics & Composites",g:"construction",hot:true,carve:false,
+   covers:"Rough and finish carpentry, architectural woodwork, casework and millwork.",
+   sec:[["06 10 00","Rough Carpentry"],["06 20 00","Finish Carpentry"],["06 40 00","Architectural Woodwork"],["06 60 00","Plastic Fabrications"]],
+   who:"Carpenters, millwork and casework shops.",dopl:["S220"],
+   say:"Division 6 — rough framing carpentry or architectural millwork? Those are two very different bid worlds."},
+  {n:"07",name:"Thermal & Moisture Protection",g:"construction",hot:true,carve:false,
+   covers:"Keeping water and heat where they belong: waterproofing, insulation, roofing, metal panels, flashing, firestopping, and sealants.",
+   sec:[["07 10 00","Dampproofing & Waterproofing"],["07 20 00","Thermal Insulation"],["07 30 00","Steep Slope Roofing"],["07 50 00","Membrane Roofing"],["07 60 00","Flashing & Sheet Metal"],["07 90 00","Joint Protection (Sealants)"]],
+   who:"Roofers, waterproofers, insulators, panel installers.",dopl:["S280"],
+   say:"You're Division 7 — roofing scope to GCs? And are they handing you the full moisture-protection section, or just the roof membrane?"},
+  {n:"08",name:"Openings",g:"construction",hot:true,carve:false,
+   covers:"Doors, frames, windows, storefronts, curtain wall, glazing, skylights, and door hardware.",
+   sec:[["08 10 00","Doors & Frames"],["08 30 00","Specialty Doors"],["08 40 00","Entrances & Storefronts"],["08 50 00","Windows"],["08 70 00","Hardware"],["08 80 00","Glazing"]],
+   who:"Door/frame/hardware and glass & glazing contractors.",dopl:["S230"],
+   say:"Division 8 — are you doing doors/frames/hardware, the glass & glazing, or the full storefront package?"},
+  {n:"09",name:"Finishes",g:"construction",hot:true,carve:false,
+   covers:"The visible interior: drywall and plaster, tile, ceilings, flooring, wall finishes, acoustics, and paint.",
+   sec:[["09 20 00","Plaster & Gypsum Board"],["09 30 00","Tiling"],["09 50 00","Ceilings"],["09 60 00","Flooring"],["09 80 00","Acoustic Treatment"],["09 90 00","Painting & Coating"]],
+   who:"Drywall, paint, tile, flooring, and acoustic subs.",dopl:["S270","S220"],
+   say:"Division 9 finishes — bidding drywall and paint as one package, or getting pulled apart scope by scope?"},
+  {n:"10",name:"Specialties",g:"construction",hot:false,carve:false,
+   covers:"Manufactured items with a niche: signage, toilet partitions, lockers, fire extinguisher cabinets, and more.",
+   sec:[["10 10 00","Information Specialties (Signage)"],["10 20 00","Interior Specialties"],["10 40 00","Safety Specialties"],["10 50 00","Storage Specialties"]],
+   who:"Specialty product installers, signage contractors.",dopl:["S440"],
+   say:"Division 10 specialties — is signage/partitions a bid-and-install package for you, or supply-only?"},
+  {n:"11",name:"Equipment",g:"construction",hot:false,carve:false,
+   covers:"Building-specific equipment: foodservice, healthcare, laboratory, educational, and commercial gear.",
+   sec:[["11 20 00","Commercial Equipment"],["11 40 00","Foodservice Equipment"],["11 50 00","Educational & Scientific"],["11 70 00","Healthcare Equipment"]],
+   who:"Equipment suppliers and installers.",dopl:[],
+   say:"Division 11 equipment is often supply-and-install — are you bidding that scope on commercial fit-outs?"},
+  {n:"12",name:"Furnishings",g:"construction",hot:false,carve:false,
+   covers:"Casework, window treatments, furniture, and fixed seating — the FF&E layer.",
+   sec:[["12 20 00","Window Treatments"],["12 30 00","Casework"],["12 50 00","Furniture"],["12 60 00","Multiple Seating"]],
+   who:"Casework shops, FF&E and furniture dealers.",dopl:[],
+   say:"Division 12 casework — is that shop work you bid to GCs, or direct-to-owner FF&E?"},
+  {n:"13",name:"Special Construction",g:"construction",hot:false,carve:false,
+   covers:"The unusual: pools, saunas, clean rooms, pre-engineered metal buildings, and integrated assemblies.",
+   sec:[["13 10 00","Special Facility Components"],["13 20 00","Special Purpose Rooms"],["13 30 00","Special Structures"],["13 40 00","Integrated Construction"]],
+   who:"Specialty structure and system builders.",dopl:[],
+   say:"Division 13 is the specialty stuff — pre-engineered buildings, pools, clean rooms. Any of that in your wheelhouse?"},
+  {n:"14",name:"Conveying Equipment",g:"construction",hot:false,carve:true,
+   covers:"Moving people and goods vertically: elevators, escalators, moving walks, lifts, and dumbwaiters.",
+   sec:[["14 10 00","Dumbwaiters"],["14 20 00","Elevators"],["14 30 00","Escalators & Moving Walks"],["14 40 00","Lifts"]],
+   who:"Elevator contractors (a licensed carve-out trade).",dopl:["S510"],
+   say:"Elevator's Division 14 and always bid out separately — getting invited on most of the mid-rise commercial jobs around here?"},
+  {n:"21",name:"Fire Suppression",g:"services",hot:true,carve:false,
+   covers:"Life-safety water systems: sprinklers, standpipes, fire pumps, and clean-agent extinguishing.",
+   sec:[["21 10 00","Water-Based Fire-Suppression"],["21 20 00","Fire-Extinguishing Systems"],["21 30 00","Fire Pumps"],["21 40 00","Fire-Suppression Water Storage"]],
+   who:"Fire sprinkler / fire protection contractors.",dopl:["S370"],
+   say:"You're Division 21 fire protection — are GCs sending you a clean scope, or is it buried inside the mechanical set?"},
+  {n:"22",name:"Plumbing",g:"services",hot:true,carve:true,
+   covers:"Water in, waste out: domestic water, sanitary and storm drainage, gas piping, and fixtures.",
+   sec:[["22 10 00","Plumbing Piping"],["22 30 00","Plumbing Equipment"],["22 40 00","Plumbing Fixtures"],["22 60 00","Gas & Vacuum Systems"]],
+   who:"Plumbing contractors (a licensed carve-out trade).",dopl:["P200","P201"],
+   say:"When the ITB lands, is Division 22 clean, or are they lumping plumbing and HVAC so you price scope that isn't yours?"},
+  {n:"23",name:"Heating, Ventilating & Air Conditioning",g:"services",hot:true,carve:true,
+   covers:"Conditioning the building: ductwork and air distribution, piping and pumps, central heating (boilers), central cooling, and controls.",
+   sec:[["23 10 00","Facility Fuel Systems"],["23 20 00","HVAC Piping & Pumps"],["23 30 00","HVAC Air Distribution"],["23 50 00","Central Heating (Boilers 23 52 00)"],["23 60 00","Central Cooling"],["23 70 00","Central HVAC Equipment"]],
+   who:"Mechanical / HVAC contractors (a licensed carve-out). ← Holiday Heating",dopl:["S350"],
+   say:"You're a Division 23 shop — bidding mechanical straight to GCs, or under a mechanical prime? And is your boiler work building-heat or industrial process?"},
+  {n:"25",name:"Integrated Automation",g:"services",hot:false,carve:false,
+   covers:"The building's brain: building automation systems (BAS), controllers, and the network that ties HVAC, lighting, and metering together.",
+   sec:[["25 10 00","Network Equipment"],["25 30 00","Instrumentation & Terminal Devices"],["25 50 00","Facility Controls"],["25 90 00","Control Sequences"]],
+   who:"Controls / building-automation integrators.",dopl:[],
+   say:"Division 25 controls — are you bidding the BAS as its own package, or riding along on the mechanical contractor's scope?"},
+  {n:"26",name:"Electrical",g:"services",hot:true,carve:true,
+   covers:"Power and light: medium- and low-voltage distribution, gear, generators, protection, and lighting.",
+   sec:[["26 10 00","Medium-Voltage Distribution"],["26 20 00","Low-Voltage Distribution"],["26 30 00","Power Generation & Storage"],["26 50 00","Lighting"]],
+   who:"Electrical contractors (a licensed carve-out trade).",dopl:["E200","E201"],
+   say:"You're Division 26 — bidding the electrical package direct, and are you pulling any of the 27/28 low-voltage with it?"},
+  {n:"27",name:"Communications",g:"services",hot:false,carve:false,
+   covers:"Low-voltage data and voice: structured cabling, data and voice networks, and audio-video systems.",
+   sec:[["27 10 00","Structured Cabling"],["27 20 00","Data Communications"],["27 30 00","Voice Communications"],["27 40 00","Audio-Video Communications"]],
+   who:"Low-voltage / structured-cabling integrators.",dopl:[],
+   say:"Division 27 low-voltage — is that its own bid for you, or bundled with the electrical (26) package?"},
+  {n:"28",name:"Electronic Safety & Security",g:"services",hot:false,carve:false,
+   covers:"Access control, video surveillance, intrusion detection, and electronic life-safety and fire alarm.",
+   sec:[["28 10 00","Access Control"],["28 20 00","Video Surveillance"],["28 30 00","Security Detection & Monitoring"],["28 40 00","Life Safety (Fire Alarm)"]],
+   who:"Security and fire-alarm integrators.",dopl:[],
+   say:"Division 28 security/fire-alarm — bidding to GCs on new construction, or mostly owner-direct retrofits?"},
+  {n:"31",name:"Earthwork",g:"site",hot:true,carve:false,
+   covers:"Moving dirt: site clearing, excavation and grading, shoring and underpinning, and deep foundations (piles, caissons).",
+   sec:[["31 10 00","Site Clearing"],["31 20 00","Earth Moving"],["31 40 00","Shoring & Underpinning"],["31 60 00","Special Foundations & Piles"],["31 70 00","Tunneling"]],
+   who:"Excavation, grading, shoring, and pile contractors.",dopl:["S310","E100"],
+   say:"You're Division 31 earthwork — bidding sitework as a prime to GCs, or subbing the mass-excavation under a civil package?"},
+  {n:"32",name:"Exterior Improvements",g:"site",hot:true,carve:false,
+   covers:"Everything outside the building line: asphalt and concrete paving, curbs, site amenities, irrigation, and planting.",
+   sec:[["32 10 00","Bases, Ballasts & Paving"],["32 30 00","Site Improvements"],["32 80 00","Irrigation"],["32 90 00","Planting"]],
+   who:"Paving and landscape contractors.",dopl:["S260","S330"],
+   say:"Division 32 exterior — is it the paving side or landscape/irrigation that's most of your commercial bidding?"},
+  {n:"33",name:"Utilities",g:"site",hot:true,carve:false,
+   covers:"Underground service lines: water, sanitary sewer, storm drainage, gas, site electrical, and district hydronic/steam energy.",
+   sec:[["33 10 00","Water Utilities"],["33 30 00","Sanitary Sewerage"],["33 40 00","Stormwater Utilities"],["33 60 00","Hydronic & Steam Energy"],["33 70 00","Electrical Utilities"]],
+   who:"Underground / wet-utility contractors.",dopl:["S410","E100"],
+   say:"Division 33 wet utilities — bidding the underground scope to GCs, and how often does it overlap the Division 31 earthwork package?"},
+  {n:"34",name:"Transportation",g:"site",hot:false,carve:false,
+   covers:"Heavy horizontal transit: railways and guideways, traction power, signaling, and bridges.",
+   sec:[["34 10 00","Guideways / Railways"],["34 20 00","Traction Power"],["34 40 00","Signaling & Control"],["34 80 00","Bridges"]],
+   who:"Heavy-civil and transit contractors.",dopl:["E100"],
+   say:"Division 34 is heavy transit/bridge work — is that a lane you bid, or more the DOT-prime world?"},
+  {n:"35",name:"Waterway & Marine Construction",g:"site",hot:false,carve:false,
+   covers:"On and around the water: coastal work, waterway and marine construction, and dams.",
+   sec:[["35 20 00","Waterway & Marine Construction"],["35 30 00","Coastal Construction"],["35 50 00","Marine Construction"],["35 70 00","Dam Construction"]],
+   who:"Marine and heavy-civil water contractors.",dopl:["E100"],
+   say:"Division 35 marine work is niche — do you self-perform any waterway/shoreline scope?"},
+  {n:"40",name:"Process Interconnections",g:"process",hot:false,carve:false,
+   covers:"Industrial-plant piping and controls: gas, liquid and solids piping, process control systems, and instrumentation.",
+   sec:[["40 10 00","Gas & Vapor Process Piping"],["40 20 00","Liquids Process Piping"],["40 60 00","Process Control Systems"],["40 70 00","Process Instrumentation"]],
+   who:"Industrial / process-piping contractors.",dopl:["S410"],
+   say:"Division 40 is industrial process piping — is that a market you're in, or strictly commercial building work?"},
+  {n:"41",name:"Material Processing & Handling Equipment",g:"process",hot:false,carve:false,
+   covers:"Conveyors, cranes, hoists, and manufacturing and storage equipment for plants.",
+   sec:[["41 10 00","Bulk Material Processing"],["41 20 00","Piece Material Handling"],["41 30 00","Manufacturing Equipment"],["41 50 00","Material Storage"]],
+   who:"Millwrights and industrial-equipment installers.",dopl:[],
+   say:"Division 41 is conveyors and plant equipment — millwright territory. In your scope at all?"},
+  {n:"42",name:"Process Heating, Cooling & Drying",g:"process",hot:false,carve:false,
+   covers:"Industrial process thermal equipment: process boilers and furnaces, process cooling, and drying — where large industrial steam lives.",
+   sec:[["42 10 00","Process Heating Equipment"],["42 20 00","Process Cooling Equipment"],["42 30 00","Process Drying Equipment"]],
+   who:"Industrial mechanical / process contractors.",dopl:["S410"],
+   say:"When a boiler shop mentions ‘industrial steam,’ this is the division — process heat, not building heat. Are you on the process side?"},
+  {n:"43",name:"Process Gas & Liquid Handling, Purification & Storage",g:"process",hot:false,carve:false,
+   covers:"Pumps, compressors, blowers, purification equipment, and process storage tanks.",
+   sec:[["43 10 00","Gas Handling Equipment"],["43 20 00","Liquid Handling Equipment"],["43 30 00","Purification Equipment"],["43 40 00","Process Storage Tanks"]],
+   who:"Process-equipment and tank contractors.",dopl:[],
+   say:"Division 43 is pumps, compressors, and process tanks — industrial only. Not usually a commercial building scope."},
+  {n:"44",name:"Pollution & Waste Control Equipment",g:"process",hot:false,carve:false,
+   covers:"Air, water, noise, and odor pollution control, plus solid-waste and thermal (incineration) processing.",
+   sec:[["44 10 00","Air Pollution Control"],["44 40 00","Water Pollution Control"],["44 50 00","Solid Waste Control"],["44 60 00","Thermal Processing"]],
+   who:"Environmental-systems contractors.",dopl:[],
+   say:"Division 44 is pollution-control equipment — heavy-industrial and municipal. Rarely a commercial building trade."},
+  {n:"45",name:"Industry-Specific Manufacturing Equipment",g:"process",hot:false,carve:false,
+   covers:"Machinery for a specific industry: oil & gas, mining, food, beverage, and textiles.",
+   sec:[["45 11 00","Oil & Gas Extraction"],["45 13 00","Mining Machinery"],["45 15 00","Food Manufacturing"],["45 17 00","Beverage & Tobacco"]],
+   who:"Industry-specific equipment integrators.",dopl:[],
+   say:"Division 45 is factory-line machinery for a specific industry — a plant world, not a bidding-GC world."},
+  {n:"46",name:"Water & Wastewater Equipment",g:"process",hot:false,carve:false,
+   covers:"Treatment-plant equipment: preliminary treatment, chemical feed, clarification, and secondary/advanced treatment.",
+   sec:[["46 20 00","Preliminary Treatment"],["46 30 00","Chemical Feed"],["46 40 00","Clarification & Mixing"],["46 50 00","Secondary Treatment"]],
+   who:"Water/wastewater treatment specialists.",dopl:[],
+   say:"Division 46 is treatment-plant equipment — municipal and industrial. Usually a specialty prime, not a GC sub."},
+  {n:"48",name:"Electrical Power Generation",g:"process",hot:false,carve:false,
+   covers:"Generating power: generation equipment, combined heat & power (cogeneration), and utility-scale testing.",
+   sec:[["48 10 00","Electrical Power Generation Equipment"],["48 30 00","Combined Heat & Power"],["48 70 00","Testing"]],
+   who:"Power-generation and cogen contractors.",dopl:[],
+   say:"Division 48 is power generation — plants and cogen. Adjacent to solar/energy work if you're in that space."}
+];
+
+const GROUPS = [
+  {k:"gen",         lbl:"General",              rng:"00 – 01", col:"var(--muted)"},
+  {k:"construction",lbl:"Facility Construction",rng:"02 – 14", col:"var(--bone)"},
+  {k:"services",    lbl:"Facility Services",    rng:"21 – 28", col:"var(--blue)"},
+  {k:"site",        lbl:"Site & Infrastructure",rng:"31 – 35", col:"var(--good)"},
+  {k:"process",     lbl:"Process Equipment",    rng:"40 – 48", col:"var(--slate)"}
+];
+const SGC = {gen:"var(--muted)",construction:"var(--bone)",services:"var(--blue)",site:"var(--good)",process:"var(--slate)"};
+
+let filter = "all", query = "";
+const grid = document.getElementById("grid");
+const countEl = document.getElementById("count");
+
+function matches(d){
+  if(filter==="hot" && !d.hot) return false;
+  if(filter==="carve" && !d.carve) return false;
+  if(["gen","construction","services","site","process"].includes(filter) && d.g!==filter) return false;
+  if(query){
+    const hay = (d.n+" "+d.name+" "+d.covers+" "+d.who+" "+d.dopl.join(" ")+" "+d.sec.map(s=>s.join(" ")).join(" ")).toLowerCase();
+    if(!hay.includes(query)) return false;
+  }
+  return true;
+}
+
+function cardHTML(d){
+  const badges = (d.hot?'<span class="b hot">Perch</span>':'')+(d.carve?'<span class="b carve">Bid&nbsp;carve-out</span>':'');
+  const dopl = d.dopl.length?`<div class="dopl">${d.dopl.map(x=>`<span>${x}</span>`).join("")}</div>`:"";
+  return `<div class="card" style="--sg:${SGC[d.g]}" data-n="${d.n}" tabindex="0">
+    <div class="top"><span class="num">${d.n}</span><span class="badges">${badges}</span></div>
+    <div class="nm">${d.name}</div>
+    <div class="who">${d.who.replace('← Holiday Heating','<b class="hh">← Holiday Heating</b>')}</div>
+    ${dopl}
+  </div>`;
+}
+
+function render(){
+  const shown = DIV.filter(matches);
+  countEl.textContent = `${shown.length} of ${DIV.length}`;
+  if(!shown.length){ grid.innerHTML = `<div class="empty">No divisions match “${query}”. Try a trade name or a 2-digit number.</div>`; return; }
+  let html = "";
+  for(const gr of GROUPS){
+    const items = shown.filter(d=>d.g===gr.k);
+    if(!items.length) continue;
+    html += `<div class="sub">
+      <div class="sub-h"><span class="lbl" style="color:${gr.col}">${gr.lbl}</span><span class="rng">Div ${gr.rng}</span></div>
+      <div class="grid">${items.map(cardHTML).join("")}</div>
+    </div>`;
+  }
+  grid.innerHTML = html;
+}
+
+// ---- modal ----
+const backdrop = document.getElementById("backdrop");
+const modal = document.getElementById("modal");
+let curN = null;
+
+function openModal(n){
+  const d = DIV.find(x=>x.n===n); if(!d) return;
+  curN = n;
+  const badges = (d.hot?'<span class="b hot">Perch trade</span>':'')+(d.carve?'<span class="b carve">Bid carve-out</span>':'');
+  const secs = d.sec.map(([c,t])=>`<div class="s"><span class="c">${c}</span><span>${t}</span></div>`).join("");
+  const dopl = d.dopl.length
+    ? `<div class="m-lbl">Utah license class → this division</div><div class="m-dopl">${d.dopl.map(x=>`<span><b>${x}</b></span>`).join("")}</div>`
+    : "";
+  const carve = d.carve
+    ? `<div class="carvebox"><b>Bid carve-out.</b> A B100 general contractor legally can’t self-perform this scope — so on every commercial job it gets bid out to a specialty sub. These firms are <b>always</b> invited, always inside the invitation-to-bid grind.</div>`
+    : "";
+  modal.style.setProperty("--sg", SGC[d.g]);
+  modal.innerHTML = `
+    <div class="m-top">
+      <button class="m-close" aria-label="Close" onclick="closeModal()">✕</button>
+      <div class="m-sg">${GROUPS.find(g=>g.k===d.g).lbl}</div>
+      <div class="m-num">${d.n}</div>
+      <div class="m-nm">${d.name}</div>
+      <div class="m-badges">${badges||'<span class="b" style="color:var(--muted-2);border:1px solid var(--line)">Reference</span>'}</div>
+    </div>
+    <div class="m-body">
+      <div class="m-lbl">What it covers</div>
+      <div class="m-covers">${d.covers}</div>
+      <div class="m-lbl">Major sections</div>
+      <div class="m-secs">${secs}</div>
+      <div class="m-lbl">Who bids it</div>
+      <div class="m-who">${d.who.replace('← Holiday Heating','<b class="hh">← this is Holiday Heating</b>')}</div>
+      ${dopl}
+      ${carve}
+      <div class="say"><div class="lbl">Try saying</div><div class="line">“${d.say}”</div></div>
+      <div class="m-nav">
+        <button onclick="stepModal(-1)">← prev division</button>
+        <button onclick="stepModal(1)">next division →</button>
+      </div>
+    </div>`;
+  modal.scrollTop = 0;
+  backdrop.classList.add("on"); modal.classList.add("on");
+}
+function closeModal(){ backdrop.classList.remove("on"); modal.classList.remove("on"); curN=null; }
+function stepModal(dir){
+  const i = DIV.findIndex(x=>x.n===curN);
+  const next = DIV[(i+dir+DIV.length)%DIV.length];
+  openModal(next.n);
+}
+
+// ---- events ----
+grid.addEventListener("click", e=>{ const c=e.target.closest(".card"); if(c) openModal(c.dataset.n); });
+grid.addEventListener("keydown", e=>{ if(e.key==="Enter"){ const c=e.target.closest(".card"); if(c) openModal(c.dataset.n); } });
+backdrop.addEventListener("click", closeModal);
+document.addEventListener("keydown", e=>{
+  if(e.key==="Escape") closeModal();
+  else if(curN && e.key==="ArrowRight") stepModal(1);
+  else if(curN && e.key==="ArrowLeft") stepModal(-1);
+  else if(!curN && e.key==="/" && document.activeElement.id!=="q"){ e.preventDefault(); document.getElementById("q").focus(); }
+});
+document.getElementById("filters").addEventListener("click", e=>{
+  const b=e.target.closest(".chip"); if(!b) return;
+  document.querySelectorAll("#filters .chip").forEach(c=>c.classList.toggle("on",c===b));
+  filter=b.dataset.f; render();
+});
+document.getElementById("q").addEventListener("input", e=>{ query=e.target.value.trim().toLowerCase(); render(); });
+
+render();
+
+/* ================= classifier ================= */
+// Estimating & bidding talk angles per division — what to probe once you know where they live.
+const ANGLES = {
+  "02":["Demo bids live and die on unknowns — ask how they price what the drawings don't show (and who eats the surprise)","Abatement scope is often a separate allowance — chronic gap between their bid and the GC's assumption"],
+  "03":["Ask how long they can hold a number against concrete + rebar price moves between bid day and pour","Takeoff spans structural AND architectural sheets — who checks the pour schedule against both?","Embeds/anchor bolts for the steel sub = classic scope-gap zone between Div 3 and Div 5"],
+  "04":["Masonry takeoff is brutal manual counting — block, brick, reinforcing, grout lifts. Ask what tool, if any","Veneer vs structural scope split with the framer is a recurring bid-day ambiguity"],
+  "05":["Shop drawings are the bottleneck — late approvals stall fab and 'botch the whole schedule' (a Div-6 estimator's exact words to us)","Steel price volatility: how do they handle escalation between bid and buyout?","Embeds + connections coordinate with Div 3 — ask where scope gaps bite them"],
+  "06":["Millwork is drawn in elevations the spec book barely covers — ask how they catch scope the plans imply but never state","Finish schedules change late and often — how do they track addenda against a bid already out the door?"],
+  "07":["Roofing bids hinge on manufacturer systems + warranties — ask if specs lock a system or allow 'or equal' (that's where margin hides)","Ask who verifies tapered-insulation takeoff against the drainage plan — a classic quiet money-loser"],
+  "08":["Door hardware sets are the most error-prone spec section in the book — ask who reads the 087100 schedule line by line","Storefront/curtain-wall shop drawings + lead times drive the dry-in date — late glass wrecks everyone downstream"],
+  "09":["Finish trades price off finish schedules that change with every addendum — ask how they catch the deltas","Drywall counts by the sheet off wall types the plans show inconsistently — plan-quality pain lives here ×4 (our most-heard theme)"],
+  "10":["Div 10 is a 'catch-all' the GC often buys as one messy package — ask what scope creeps in that isn't theirs"],
+  "11":["Foodservice packages are spec'd by a kitchen consultant — ask who levels the 40-page equipment schedule, item by item","Every equipment item needs plumbing/electrical/ventilation rough-ins from Div 22/23/26 — the scope-gap + change-order goldmine","Long-lead equipment and custom-fab shop drawings drive kitchen turnover dates — late approvals kill openings"],
+  "12":["Casework/FF&E splits awkwardly with Div 6 millwork — ask where the line is drawn on their typical job (nobody agrees)"],
+  "13":["Pre-engineered buildings bundle design + supply + erect — ask how GCs level their lump-sum against stick-built alternates"],
+  "14":["Elevator is a carve-out with 2-3 national players — ask how often they see real competition vs allowance pricing"],
+  "21":["Fire protection is design-build off performance specs — they're doing engineering during bid week, ask how they scope it that fast","Ceiling-space coordination with Div 22/23 ducts and pipe = their chronic clash zone"],
+  "22":["Fixture counts off plumbing schedules that conflict with architectural sheets — ask which set they trust","Ask how they handle the 22/23 split when the GC lumps 'mechanical' into one ITB — pricing scope that isn't theirs"],
+  "23":["Long-lead equipment (RTUs, chillers, boilers) quotes expire before buyout — ask how they bridge the gap","Supplier bids land the morning bids are due — the leveling scramble in their words (our #1 heard pain)","If they do boilers: building heat (23 52) or industrial process steam (Div 42)? Instant insider signal"],
+  "25":["Controls ride the mechanical sub's coattails — ask if they bid direct to GCs or under the Div 23 prime"],
+  "26":["Gear + switchboard lead times are the schedule's critical path — ask how they price around 40-week deliveries","Lighting packages get VE'd late — ask how many times they re-price the same job","Ask if they pull Div 27/28 low-voltage with the power bid or a separate shop takes it"],
+  "27":["Low-voltage rides between owner-direct and GC-bid — ask which channel feeds them and who writes the spec"],
+  "28":["Fire alarm is code-driven design-build — ask who stamps the drawings and how that's priced at bid time"],
+  "31":["Earthwork quantity is a model, not a count — ask what software they trust for cut/fill and who verifies it","Unknown soil = the risk they carry — ask how geotech-report gaps get priced (contingency or exclusion?)"],
+  "32":["Paving prices float on oil — ask how long asphalt numbers actually hold","Landscape is last-money-on-the-job — ask how often their scope gets VE'd after they've already held a price for months"],
+  "33":["Wet-utility bids hinge on depth, dewatering, and existing-utility unknowns — ask what the plans never show","Overlap with the Div 31 mass-ex package = who digs the trench? Chronic double-carry or gap"],
+  "40":["Process work is owner-direct or CM-led, spec'd to ASME — different bid world; ask what share of revenue it is"],
+  "42":["Industrial steam/refrigeration is engineered procurement — ask if they estimate from P&IDs or performance specs"],
+  "48":["Utility-scale power work runs EPC — ask if they're bidding as sub to an EPC or direct to the owner"]
+};
+const GENERIC_ANGLES = ["Ask how the last bid invite arrived (email? platform?) and who decided it was worth pricing","Ask what part of their takeoff still happens in Excel or on paper — that's the wedge"];
+
+// Full call sheet per trade: goals-first probes, the takeoff/estimating software that trade
+// actually runs (name-dropping it = instant insider), listen-for cues, likely objection +
+// comeback, and the Perch wedge in their language.
+const CALLSHEET = {
+  "02":{tools:["Bluebeam","B2W Estimate"],probes:["Selective interior demo for TIs, or structural/whole-building?","How do you price what the drawings don't show — allowance, exclusion, or gut feel?","Who surveys before the number goes out?"],listen:["“we always find surprises” — unknowns eaten as margin","abatement handled by a separate allowance","“we walk every job” — no plan trust at all"],obj:{t:"Demo can't be estimated off plans — it's all field conditions.",r:"Agreed — so the win isn't the takeoff, it's catching what CHANGED between the bid set and the permit set before you're contractually holding it."},wedge:"Exclusions live or die on scope language — comparing their exclusions to the GC's scope sheet is the whole game."},
+  "03":{tools:["Bluebeam","PlanSwift","HCSS HeavyBid","aSa / Tekla (rebar)"],probes:["What's the mix — structural packages for GCs, or site concrete and flatwork?","Who does takeoff, and is it on-screen or still highlighters on paper?","How do you get rebar, pump, and finish crews into one number under a Friday deadline?"],listen:["“we re-do quantities from scratch” — zero trust in the GC's numbers","“price is locked but their schedule slipped” — escalation eaten","winter/weather contingency guessing"],obj:{t:"Every pour is different — software can't price concrete.",r:"Not pricing — the compare step. Catching that the footing schedule changed between addendum 1 and 3 before you pour it wrong."},wedge:"Structural sheets churn with every addendum — the delta between bid set and IFC set is where concrete busts live."},
+  "04":{tools:["PlanSwift","Tradesman's Software","Bluebeam"],probes:["Structural block or veneer-heavy work?","How do you count — course-by-course off PDFs still?","Whose scope is the flashing and the veneer ties — yours or the framer's?"],listen:["hand-counting brick off half-scale PDFs","“supplier quote's only good 30 days”","scope line with the framer decided per-job"],obj:{t:"My estimator's been counting block for 30 years by hand.",r:"Keep the hand check — the win is catching what the plans hid, like the wall-type switch buried in addendum 2."},wedge:"Wall types drift between architectural and structural sheets — that inconsistency is masonry's classic bust."},
+  "05":{tools:["Tekla PowerFab","SDS/2","Bluebeam"],probes:["Fab and erect, or fab-only with others hanging it?","Award to approved shop drawings — how many weeks, and who's the bottleneck?","How do you price connections the engineer left ‘by fabricator’?"],listen:["“waiting on approvals” — shop-drawing stall (heard 7/7: it botches whole schedules)","connection design dumped on the fabricator","“our steel quote expired before buyout”"],obj:{t:"Our work is custom — no two jobs alike.",r:"Exactly why the compare step matters — custom means every addendum can silently move your scope, and nobody flags it for you."},wedge:"Shop-drawing turnaround + steel escalation between bid day and buyout — both are timing problems Perch surfaces early."},
+  "06":{tools:["Cabinet Vision","Microvellum","Bluebeam"],probes:["AWI-grade commercial millwork, or custom one-offs?","Who reads the finish schedule against the elevations — and how often do they disagree?","How many shop-drawing rounds before approval on a typical job?"],listen:["“elevations don't match the schedule” — plan-quality pain","architect swaps profiles/finishes late","measuring the site because plans can't be trusted"],obj:{t:"Millwork is art — you can't automate it.",r:"The craft stays yours. The grunt work — checking 40 elevation sheets against a finish schedule that changed twice — that's what should be automatic."},wedge:"Finish schedules change with every addendum; catching the delta before fab starts is pure margin."},
+  "07":{tools:["EagleView","RoofSnap","Bluebeam"],probes:["What's the mix — new-construction bid work vs re-roof and service?","What do you price off — the architectural set, or a roof consultant's spec?","Who verifies the tapered-insulation layout against the drainage plan?"],listen:["“we measure every roof ourselves” — zero plan trust","“the manufacturer rep does our takeoff” — dependency","400-page spec, bid due Friday"],obj:{t:"We get all our work from the same five GCs.",r:"Then invites aren't your problem — leveling is. When those five send addenda, who catches what changed in the roof spec?"},wedge:"Specs lock a manufacturer system or allow ‘or equal’ — knowing which, fast, is where roofing margin hides."},
+  "08":{tools:["PartnerPak Studio","GlasPacLX","Bluebeam"],probes:["Storefront and curtain wall, or doors-frames-hardware?","Who reads the 08 71 00 hardware sets line by line — and how often are they wrong?","Glass lead times against the dry-in date — how do you commit?"],listen:["“the hardware schedule is always wrong” — most error-prone spec section in the book","glass quotes good for two weeks","glazing shop drawings gating the schedule"],obj:{t:"Hardware is too fiddly for software.",r:"That's the point — it's the most error-prone section in the spec book precisely because humans eyeball it at 11pm before bid day."},wedge:"Hardware-set errors are the quiet margin-killer — a machine-check against the door schedule catches them in minutes."},
+  "09":{tools:["On-Screen Takeoff + Quick Bid","PlanSwift","Bluebeam"],probes:["Commercial TI or ground-up work?","Which sheet set do you trust for wall types — architectural or the partition schedule?","When a finish schedule changes by addendum, how do you catch it?"],listen:["“wall types are inconsistent between sheets” — our #1 heard pain, 4 separate trades","“we've repriced this same job three times”","counting sheets off a half-coordinated set"],obj:{t:"We already use On-Screen Takeoff.",r:"Keep it — takeoff isn't the gap. The gap is what changed BETWEEN the set you took off and the set you're contracted to."},wedge:"Plan-quality pain is the drywall pain — say it back to them and watch them light up."},
+  "11":{tools:["AutoQuotes (AQ)","Revit / KCL blocks"],probes:["Who's the kitchen consultant on most of your jobs — and who levels the equipment schedule item by item?","What's the custom-fab vs buyout split?","Where do rough-in gaps with plumbing and electrical land — your change order or theirs?"],listen:["“the item numbers don't match the schedule” — spec-book chaos","rough-in change orders every job","long-lead equipment wrecking turnover dates"],obj:{t:"AutoQuotes already handles our quoting.",r:"AQ prices the equipment — it doesn't check the 40-page schedule against the MEP drawings. That gap is where your change orders come from."},wedge:"Every equipment item needs Div 22/23/26 rough-ins — the scope seams between those divisions are chronic change-order territory."},
+  "13":{tools:["Butler / Nucor configurators","Bluebeam"],probes:["Pre-engineered packages design-build, or bidding against stick-built alternates?","Who levels your lump-sum against a conventional structure when the GC runs both?","Foundation design coordination — whose scope?"],listen:["“they compare us apples-to-oranges against stick-built”","foundation loads arriving after the bid","erector vs supplier scope confusion"],obj:{t:"Our manufacturer does the engineering.",r:"Right — and the GC still has to level your package against alternates. Helping them compare correctly wins you jobs you're losing on optics."},wedge:"PEMB bids lose on comparison confusion, not price — clean apples-to-apples leveling is your friend, not your enemy."},
+  "14":{tools:["manufacturer configurators"],probes:["New installation or modernization-heavy?","How often do you see real competition vs allowance pricing on mid-rise work?","Who coordinates hoistway dimensions with the GC — and when does that go wrong?"],listen:["allowance carried, real bid never happened","hoistway built wrong before drawings approved"],obj:{t:"It's a three-player market — we know our competition.",r:"Then the edge isn't winning bids, it's catching coordination errors before they're poured into the hoistway."},wedge:"Div 14 is always a carve-out — you're structurally locked into every commercial ITB stream."},
+  "21":{tools:["AutoSPRINK","HydraCAD","HydraCALC"],probes:["Design-build off performance specs — who runs the hydraulic calcs during bid week?","Ceiling coordination with mechanical — who moves when you clash?","NICET-certified designers — how deep is your bench?"],listen:["“we're engineering during the bid” — compressed design-build","clash-driven rework in the field","fire pump lead times"],obj:{t:"Every AHJ is different — software can't handle that.",r:"The AHJ variance is exactly why the spec-vs-code delta needs a systematic check instead of tribal memory."},wedge:"You're pricing engineering in bid week off performance specs — anything that pre-digests the spec buys your designers time."},
+  "22":{tools:["Trimble AutoBid","FastPIPE","Bluebeam"],probes:["Fixture counts — do you trust the plumbing schedule or the architectural sheets when they disagree?","Med-gas or standard commercial scope?","When a GC lumps plumbing and HVAC into one ‘mechanical’ ITB, how do you carve your number out?"],listen:["“the schedules never match” — plan-quality again","pricing scope that turns out to be the mechanical sub's","water heater / fixture package lead times"],obj:{t:"We've bid with the same GCs for years.",r:"Then you know their sets — the question is whether their addenda still surprise you. What changed on the last one?"},wedge:"The 22/23 lump-ITB split is chronic — a clean scope carve is worth real money every bid."},
+  "23":{tools:["Trimble AutoBid SheetMetal","FastDUCT","Wendes"],probes:["What's your equipment lead-time story right now — RTUs, chillers, boilers?","When do supplier quotes actually land relative to bid deadline?","If you do boilers — building heat, or industrial process steam?"],listen:["“quotes land the morning bids are due” — THE #1 pain we hear","equipment pricing expired before buyout","“we just carry last job's numbers” — stale pricing risk"],obj:{t:"We already use BuildingConnected / Procore.",r:"Those move the invite — they don't level the scope. What still ends up in Excel after the invite arrives?"},wedge:"The supplier-quote scramble on bid morning — every mechanical estimator lives it, and it's exactly the leveling problem Perch kills."},
+  "25":{tools:["ALC / Niagara / JCI ecosystems"],probes:["Do you bid direct to GCs or ride under the Div 23 mechanical prime?","Whose spec are you pricing — the engineer's sequence or your own design?","Integration scope with fire alarm and lighting — where's the line?"],listen:["“we're always a sub to the sub” — margin squeezed twice","sequences of operation half-written at bid time"],obj:{t:"Controls specs are always vague.",r:"Vague spec = risk you're pricing blind. Making the vagueness visible before bid day is the entire value."},wedge:"Controls scope hides inside three other divisions' specs — surfacing your scope boundaries early is survival."},
+  "26":{tools:["Accubid (Trimble)","ConEst IntelliBid","McCormick"],probes:["Gear and switchboard lead times — how do you hold a number over a 40-week delivery?","How many VE rounds before the lighting package settles — and do you get paid to reprice?","Do you take the Div 27/28 low-voltage scope too, or does a separate shop?"],listen:["“switchgear is 50 weeks out” — escalation risk carried free","“we've repriced this job four times” — uncompensated churn","fixture package substitutions late"],obj:{t:"We run Accubid — we're covered.",r:"Accubid prices what you tell it. Who tells you the feeder schedule changed in addendum 3? That's the gap."},wedge:"Reprice churn is a compare problem, not a takeoff problem — each VE round means re-leveling everything that touched it."},
+  "27":{tools:["Accubid","Bluebeam"],probes:["Owner-direct or through the GC — which channel feeds you?","Who writes the spec you price — an RCDD or the electrical engineer's boilerplate?","Do you ride the Div 26 bid or stand alone?"],listen:["boilerplate specs that don't match the building","scope confusion with the electrician on pathways"],obj:{t:"Our work comes from relationships, not bids.",r:"Then protect the relationship — catching a pathway scope gap before it's a change order keeps you the good guy."},wedge:"Pathways vs cabling scope with Div 26 is the classic seam — clean scope definition wins."},
+  "28":{tools:["AutoCAD + manufacturer tools","Bluebeam"],probes:["Who stamps your fire-alarm drawings — in-house NICET or an outside engineer?","Access control and cameras too, or FA only?","Code-driven redesign after AHJ review — who eats that cost?"],listen:["AHJ kickbacks forcing free redesign","device counts off reflected ceiling plans that changed"],obj:{t:"Fire alarm is all code — no software helps.",r:"Code drives the design; the drawings still drift every addendum. Catching device-count deltas is money."},wedge:"Life-safety scope touches every ceiling change — you're re-counting devices constantly; that's automatable."},
+  "31":{tools:["AGTEK","Trimble Business Center","HCSS HeavyBid"],probes:["Cut/fill from the surface model, or do you re-build it from the civil sheets?","Geotech gaps at bid time — price the risk or exclude it?","Who owns export trucking and disposal risk in your numbers?"],listen:["“no geotech report at bid” — pricing blind","“the site changed since the survey”","fuel/trucking escalation eaten"],obj:{t:"Dirt is dirt — software can't see underground.",r:"True — which is why the paper trail matters more: your exclusions vs their geotech vs the addenda. That's a document problem."},wedge:"Earthwork busts trace to document deltas — the civil set changed and nobody re-ran the model."},
+  "32":{tools:["HCSS HeavyBid","LMN (landscape)","AGTEK"],probes:["Paving or landscape side — and public or private work?","How long does an asphalt number actually hold with oil moving?","How often does your scope get VE'd after you've held a price for months?"],listen:["“we're the last money on the job” — VE target","asphalt index escalation unpriced","irrigation scope tangled with the GC's site package"],obj:{t:"Our bids are simple — square footage and done.",r:"Simple until the site plan revs three times and your quantities are stale. Who tells you it changed?"},wedge:"Exterior scope is where GCs cut late — knowing your bid's still aligned with the current site plan protects the number."},
+  "33":{tools:["HCSS HeavyBid","AGTEK","Bluebeam"],probes:["Wet utilities as a prime to the GC, or under the excavation package?","Depth, dewatering, existing-utility unknowns — how do you price what the plans never show?","Where's the trench line between you and the Div 31 mass-ex sub?"],listen:["“the existing utilities weren't where the plans said”","dewatering carried as pure risk","“who digs the trench” fought every job"],obj:{t:"Underground is all unknowns anyway.",r:"The unknowns are why your exclusions and the GC's scope sheet have to match perfectly — that's a compare problem."},wedge:"The 31/33 trench seam is a chronic double-carry or gap — clean scope leveling pays for itself on one job."}
+};
+const GENERIC_SHEET={tools:["Bluebeam","Excel"],probes:["Walk me through the last bid you actually priced — how it arrived, who reviewed it, where it was tracked","What's the goal this year — more bids out the door, or a better hit rate on the ones you price?","What part of the process still lives in Excel, email, or someone's head?"],listen:["“it's all in my head” — owner bottleneck","invites arriving five different ways","no record of why they lost the last three"],obj:{t:"We're too small to need software.",r:"It's not about size — it's whether your one estimator's Friday disappears into re-checking things a machine should flag."},wedge:"Whatever the trade: the plans changed, the scope moved, and nobody told the estimator. That's the wedge."};
+
+async function classify(){
+  const inp=document.getElementById('clfIn'), out=document.getElementById('clfOut'), btn=document.getElementById('clfBtn');
+  const v=inp.value.trim();
+  if(!v){ inp.focus(); return; }
+  btn.disabled=true;
+  out.innerHTML=`<div class="clf-status">Reading the site — homepage + about/services pages…</div>`;
+  try{
+    const r=await fetch('/api/classify',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({input:v})});
+    const j=await r.json();
+    if(j.error && !(j.top&&j.top.length)){ out.innerHTML=`<div class="clf-status">✗ ${j.error}</div>`; return; }
+    renderVerdict(j);
+  }catch(e){
+    out.innerHTML=`<div class="clf-status">✗ Network hiccup — try again.</div>`;
+  }finally{ btn.disabled=false; }
+}
+
+function renderVerdict(j){
+  const out=document.getElementById('clfOut');
+  if(!j.top || !j.top.length){
+    out.innerHTML=`<div class="clf-status">No trade signal found${j.title?` on “${j.title}”`:''} — the site may be JS-rendered or too thin. Paste a sentence describing what they do instead.</div>`;
+    return;
+  }
+  const prime=j.top[0], alts=j.top.slice(1).filter(a=>a.score>=Math.max(3,prime.score*0.25));
+  const d=DIV.find(x=>x.n===prime.div);
+  if(!d){ out.innerHTML=`<div class="clf-status">✗ Unexpected division ${prime.div}</div>`; return; }
+  const conf = prime.score>=12 && (!j.top[1]||prime.score>=j.top[1].score*1.6) ? "strong" : prime.score>=6 ? "moderate" : "thin";
+  const confLbl = {strong:"strong signal",moderate:"moderate signal",thin:"thin signal — verify on the call"}[conf];
+  const grp=GROUPS.find(g=>g.k===d.g);
+  const angles=(ANGLES[d.n]||GENERIC_ANGLES).map(a=>`<li>${a}</li>`).join("");
+  const sheet=CALLSHEET[d.n]||GENERIC_SHEET;
+  window.__scan={j,d,sheet};
+  pushHist(document.getElementById('clfIn').value.trim(),j,d);
+  const dopl=d.dopl.length?`<span>DOPL <b>${d.dopl.join(" / ")}</b></span>`:"";
+  const carve=d.carve?`<span style="color:var(--blue)">bid carve-out — GC can't self-perform, always invited</span>`:"";
+  const why = j.mode==="text"
+    ? `Based on your description — matched: `
+    : `${j.title?`“${esc2(j.title)}”`:"Their site"}${j.pages&&j.pages.length>1?` (read ${j.pages.length} pages)`:""} reads as a <b>${d.name}</b> shop — their own words: `;
+  const cs=`<details class="cs"><summary>Full call sheet — probes · their software · objection · listen-fors</summary><div class="inner2">
+      <div class="sl">Discovery probes — goals first, then process, then pain</div>
+      <ul style="margin:0">${sheet.probes.map(p=>`<li>${p}</li>`).join("")}</ul>
+      <div class="sl">Software their trade runs — name-drop it (“are you guys on ${esc2(sheet.tools[0])}?”)</div>
+      <div class="toolchips">${sheet.tools.map(t=>`<span>${esc2(t)}</span>`).join("")}</div>
+      <div class="sl">Listen for — these answers = pain, dig there</div>
+      <ul style="margin:0">${sheet.listen.map(x=>`<li>${x}</li>`).join("")}</ul>
+      <div class="sl">Likely objection</div>
+      <div class="obj"><div class="t4">“${sheet.obj.t}”</div><div class="r4"><b>→</b> ${sheet.obj.r}</div></div>
+      <div class="sl">The Perch wedge, in their language</div>
+      <div class="wedge">${sheet.wedge}</div>
+    </div></details>`;
+  out.innerHTML=`<div class="clf-res">
+    <div class="clf-prime" style="--sg:${SGC[d.g]}">
+      <span class="conf ${conf}">${confLbl}</span>
+      <div class="dnum">${d.n}</div>
+      <div class="dnm">${d.name}</div>
+      <div style="font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:${SGC[d.g]}">${grp.lbl}</div>
+      <div class="clf-why">${why}</div>
+      <div class="evs">${prime.evidence.map(e=>`<span class="ev">${esc2(e)}</span>`).join("")}</div>
+      <div class="clf-meta">${dopl}${carve?`<span>${carve}</span>`:""}</div>
+      ${renderIntel(j.intel)}
+      <div class="angles"><div class="lbl">Estimating &amp; bidding — what to probe</div><ul style="margin:0">${angles}</ul></div>
+      ${cs}
+      <div class="say" style="margin-top:12px"><div class="lbl">Try saying</div><div class="line">“${d.say}”</div></div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="briefbtn" onclick="copyBrief()">⧉ copy call brief</button>
+        <button class="briefbtn" onclick="openModal('${d.n}')">full Division ${d.n} card →</button>
+      </div>
+    </div>
+    ${alts.map(a=>{const ad=DIV.find(x=>x.n===a.div); if(!ad) return "";
+      return `<div class="clf-alt" style="--sg2:${SGC[ad.g]}" onclick="openModal('${ad.n}')">
+        <span class="n2">${ad.n}</span><span class="t3">also reads as <b style="color:var(--bone)">${ad.name}</b></span>
+        <span class="why2">${a.evidence.slice(0,3).map(esc2).join(" · ")}</span></div>`;}).join("")}
+  </div>
+  ${alts.length?`<div class="clf-status">Multi-division shop — open with Division ${d.n}, then probe the adjacent scope${alts.length>1?"s":""} (${alts.map(a=>a.div).join(", ")}). Scope <i>between</i> divisions is where their change-orders live.</div>`:""}`;
+}
+const esc2=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+document.getElementById('clfIn').addEventListener('keydown',e=>{ if(e.key==='Enter') classify(); });
+
+function fmtP(p){return p&&p.length===10?`(${p.slice(0,3)}) ${p.slice(3,6)}-${p.slice(6)}`:p;}
+const PLATLBL={buildingconnected:"BuildingConnected",procore:"Procore",smartbid:"SmartBid",planhub:"PlanHub",isqft:"iSqFt"};
+function renderIntel(it){
+  if(!it) return "";
+  const s=[];
+  it.phones.forEach(p=>s.push(`<span title="on their site — tap to copy"><button onclick="navigator.clipboard.writeText('${p}');this.textContent='✓ copied'">☎ ${fmtP(p)}</button></span>`));
+  it.emails.forEach(e=>s.push(`<span>✉ ${esc2(e)}</span>`));
+  if(it.founded) s.push(`<span>est. ${it.founded}${(+it.founded)<1995?" — old guard: pitch “keep your judgment, stop missing things”":""}</span>`);
+  it.platforms.forEach(p=>s.push(`<span class="plat">⚡ runs ${PLATLBL[p]||p} — proven software buyer</span>`));
+  if(it.gcSignal) s.push(`<span class="gc">🏗 has a subs / plan-room page — they BUY sub bids (GC-side)</span>`);
+  const {commercial:c,residential:r}=it.mix||{};
+  if(c||r){
+    if(r>c*1.5&&r>2) s.push(`<span class="warn">⚠ residential-leaning (${r}× res vs ${c}× com) — verify fit before dialing</span>`);
+    else if(c>=r&&c>0) s.push(`<span class="ok2">✓ commercial-leaning (${c}× com vs ${r}× res)</span>`);
+    else s.push(`<span>◐ mixed com/res (${c}× vs ${r}×) — ask their split on the call</span>`);
+  }
+  return s.length?`<div class="sl" style="font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-2);margin:14px 0 7px">On their site</div><div class="intel">${s.join("")}</div>`:"";
+}
+
+function copyBrief(){
+  const S=window.__scan; if(!S) return;
+  const {j,d,sheet}=S; const it=j.intel||{};
+  const lines=[
+    `${j.title||document.getElementById('clfIn').value} — Division ${d.n} ${d.name}`,
+    `Evidence: ${j.top[0].evidence.join(", ")}`,
+    d.dopl.length?`DOPL: ${d.dopl.join("/")}${d.carve?" (carve-out — always bid out)":""}`:"",
+    it.phones&&it.phones.length?`Phones on site: ${it.phones.map(fmtP).join("  ")}`:"",
+    it.platforms&&it.platforms.length?`Runs: ${it.platforms.map(p=>PLATLBL[p]||p).join(", ")}`:"",
+    ``,`PROBES:`,...sheet.probes.map(p=>`- ${p}`),
+    ``,`THEIR SOFTWARE: ${sheet.tools.join(", ")}`,
+    ``,`LISTEN FOR:`,...sheet.listen.map(x=>`- ${x.replace(/<[^>]+>/g,"")}`),
+    ``,`OBJECTION: "${sheet.obj.t}" → ${sheet.obj.r}`,
+    ``,`WEDGE: ${sheet.wedge}`,
+    ``,`OPENER SEASONING: "${d.say}"`
+  ].filter(x=>x!==null&&x!==undefined&&x!=="").join("\n");
+  navigator.clipboard.writeText(lines);
+  document.querySelectorAll('.briefbtn')[0].textContent='✓ brief copied';
+}
+
+/* recent scans — localStorage, last 8 */
+const HK='csi-scan-history';
+function pushHist(q,j,d){
+  try{
+    let h=JSON.parse(localStorage.getItem(HK)||'[]').filter(x=>x.q!==q);
+    h.unshift({q,t:(j.title||q).slice(0,40),n:d.n});
+    localStorage.setItem(HK,JSON.stringify(h.slice(0,8)));
+    renderHist();
+  }catch(e){}
+}
+function renderHist(){
+  try{
+    const h=JSON.parse(localStorage.getItem(HK)||'[]');
+    document.getElementById('clfHist').innerHTML=h.map(x=>
+      `<button onclick="document.getElementById('clfIn').value='${esc2(x.q)}';classify()"><b>${x.n}</b> ${esc2(x.t)}</button>`).join("");
+  }catch(e){}
+}
+renderHist();
+</script>
+</body>
+</html>

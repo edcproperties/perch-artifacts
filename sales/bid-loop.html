@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perch · The Bid-Surface Loop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E8E6DF;--surface:#F5F3EE;--surface-2:#FBFAF6;
+    --ink:#181917;--slate:#5D5F5A;--faint:#8A8B84;
+    --line:#CECBC1;--line-soft:#DEDBD2;
+    --signal:#D2531D;--signal-deep:#A23C12;
+    --sans:'Archivo','Helvetica Neue',Arial,sans-serif;
+    --mono:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+    --maxw:980px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+  .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--signal-deep);font-weight:500}
+  .label{font-family:var(--mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);font-weight:500}
+  h1{font-weight:800;letter-spacing:-.02em;line-height:1.05;font-size:clamp(2.2rem,5.2vw,3.6rem)}
+  h2{font-weight:700;letter-spacing:-.01em;font-size:clamp(1.45rem,3vw,2rem)}
+  h3{font-weight:700;font-size:1.04rem}
+  p{color:var(--slate)}
+  strong{color:var(--ink);font-weight:600}
+  .lead{font-size:clamp(1.04rem,1.7vw,1.2rem);color:var(--ink);font-weight:400;line-height:1.5}
+
+  header.hero{padding:74px 0 40px;border-bottom:1.5px solid var(--ink)}
+  .hero-top{display:flex;justify-content:space-between;align-items:baseline;gap:18px;flex-wrap:wrap;margin-bottom:40px}
+  .hero h1{max-width:18ch;margin:22px 0 20px}
+  .hero .lead{max-width:60ch}
+
+  section{padding:52px 0;border-bottom:1px solid var(--line-soft)}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:28px}
+  .sec-head .num{font-family:var(--mono);font-size:.78rem;color:var(--signal-deep);font-weight:600;padding-top:.25em}
+
+  /* loop diagram */
+  .loopwrap{background:var(--surface-2);border:1px solid var(--line);padding:18px}
+  .draft .edge{stroke:var(--line);stroke-width:1.1;fill:none}
+  .draft .edge-live{stroke:var(--signal);stroke-width:1.5;fill:none}
+  .draft .node{fill:var(--surface-2);stroke:var(--ink);stroke-width:1.5}
+  .draft .node-new{fill:var(--paper);stroke:var(--signal);stroke-width:1.7}
+  .draft text{font-family:var(--mono);fill:var(--slate);font-size:10px;letter-spacing:.06em}
+  .draft .t-live{fill:var(--signal-deep)}
+  .draft .t-big{font-size:11px;fill:var(--ink);font-weight:600}
+  .draft .dim{stroke:var(--line);stroke-width:.75}
+  .legend{display:flex;gap:24px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
+  .legend span{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;color:var(--slate);display:flex;align-items:center;gap:8px}
+  .swatch{width:18px;height:0;border-top:2px solid var(--line)}
+  .swatch.live{border-top:2px solid var(--signal)}
+
+  /* metric def */
+  .formula{background:var(--ink);color:var(--surface-2);padding:26px 28px;font-family:var(--mono);margin:6px 0 22px}
+  .formula .big{font-size:clamp(1.05rem,2.4vw,1.5rem);font-weight:600;letter-spacing:.01em;line-height:1.4}
+  .formula .big em{color:var(--signal);font-style:normal}
+  .formula .note{color:#A9A69D;font-size:.8rem;margin-top:14px;line-height:1.6;letter-spacing:.01em}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .card{background:var(--surface);border:1px solid var(--line);padding:22px 22px}
+  .card .label{display:block;margin-bottom:10px}
+  .card h3{margin-bottom:6px}
+  .card p{font-size:.94rem}
+
+  /* KPI table */
+  .kpi{border:1px solid var(--line);background:var(--surface-2)}
+  .kpi-row{display:grid;grid-template-columns:1fr auto;gap:18px;padding:15px 22px;border-bottom:1px solid var(--line-soft);align-items:center}
+  .kpi-row:last-child{border-bottom:none}
+  .kpi-row .m{font-size:.97rem;color:var(--ink)}
+  .kpi-row .m small{display:block;color:var(--slate);font-size:.82rem;margin-top:2px;font-family:var(--sans)}
+  .kpi-row .stage{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);white-space:nowrap}
+  .kpi-row.hot{background:var(--paper)}
+  .kpi-row.hot .stage{color:var(--signal-deep)}
+  .kpi-row.hot .m strong{color:var(--signal-deep)}
+
+  /* callout */
+  .callout{border-left:3px solid var(--signal);background:var(--surface-2);border:1px solid var(--line);border-left:3px solid var(--signal);padding:22px 24px}
+  .callout .label{display:block;margin-bottom:10px;color:var(--signal-deep)}
+  .callout p{color:var(--ink);font-size:.99rem}
+
+  .constraints{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line)}
+  .con{padding:20px 20px;border-right:1px solid var(--line)}
+  .con:last-child{border-right:none}
+  .con .cn{font-family:var(--mono);color:var(--signal);font-weight:600;font-size:.9rem;margin-bottom:8px;display:block}
+  .con h3{font-size:.98rem;margin-bottom:5px}
+  .con p{font-size:.88rem;line-height:1.5}
+
+  /* calculator */
+  .calc{border:1.5px solid var(--ink);background:var(--surface-2)}
+  .calc-head{padding:16px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+  .calc-head .label{color:var(--slate)}
+  .calc-body{display:grid;grid-template-columns:1fr 1fr;gap:0}
+  .inputs{padding:24px;border-right:1px solid var(--line)}
+  .ctrl{margin-bottom:22px}
+  .ctrl:last-child{margin-bottom:0}
+  .ctrl .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px}
+  .ctrl label{font-size:.9rem;color:var(--ink);font-weight:500;max-width:74%}
+  .ctrl .val{font-family:var(--mono);font-weight:600;color:var(--signal-deep);font-size:.95rem}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:var(--line);outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:var(--paper);border:2px solid var(--signal);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--paper);border:2px solid var(--signal);cursor:pointer}
+  input[type=range]:focus-visible{outline:2px solid var(--signal);outline-offset:4px}
+  .ctrl .hint{font-family:var(--mono);font-size:.66rem;color:var(--faint);letter-spacing:.04em;margin-top:7px}
+
+  .outputs{padding:24px;background:var(--paper)}
+  .kbox{border:1px solid var(--ink);background:var(--surface-2);padding:18px 20px;margin-bottom:16px;text-align:center}
+  .kbox .kl{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+  .kbox .kv{font-family:var(--mono);font-weight:600;font-size:2.4rem;line-height:1.1;color:var(--ink);margin:6px 0 4px}
+  .kbox .kbadge{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;display:inline-block}
+  .kbadge.viral{background:var(--signal);color:#fff}
+  .kbadge.amp{background:var(--line);color:var(--ink)}
+  .ministats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+  .mini{border:1px solid var(--line);padding:12px 14px;background:var(--surface-2)}
+  .mini .ml{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+  .mini .mv{font-family:var(--mono);font-weight:600;font-size:1.15rem;color:var(--ink);margin-top:3px}
+  .proj .pl{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:10px;display:block}
+  .bars{display:flex;align-items:flex-end;gap:5px;height:74px}
+  .bar{flex:1;background:var(--signal);min-height:3px;opacity:.85;transition:height .35s ease}
+  .bars .bar:last-child{background:var(--signal-deep);opacity:1}
+  .baraxis{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.6rem;color:var(--faint);margin-top:6px;letter-spacing:.06em}
+  .calc-foot{padding:14px 24px;border-top:1px solid var(--line);font-family:var(--mono);font-size:.7rem;color:var(--faint);letter-spacing:.02em;line-height:1.6}
+
+  footer{padding:40px 0 60px}
+  footer .frow{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+  footer .label{color:var(--faint)}
+
+  .rv{opacity:0;transform:translateY(14px);transition:opacity .7s ease,transform .7s ease}
+  .rv.in{opacity:1;transform:none}
+
+  @media (max-width:760px){
+    body{font-size:16px}
+    .twocol,.calc-body{grid-template-columns:1fr}
+    .inputs{border-right:none;border-bottom:1px solid var(--line)}
+    .constraints{grid-template-columns:1fr}
+    .con{border-right:none;border-bottom:1px solid var(--line)}
+    .con:last-child{border-bottom:none}
+  }
+  @media (prefers-reduced-motion:reduce){.rv{transition:none;opacity:1;transform:none}.bar{transition:none}}
+  a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-top">
+      <span class="eyebrow">Perch · Virality Model</span>
+      <span class="label">Internal · v2 draft</span>
+    </div>
+    <h1>The Bid-Surface Loop.</h1>
+    <p class="lead">The growth engine, defined precisely enough to instrument. What spreads, what we measure, and the one product bet the whole thing rests on.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="rv">
+    <div class="sec-head"><span class="num">01</span><h2>The loop</h2></div>
+    <div class="loopwrap">
+      <svg class="draft" viewBox="0 0 920 300" width="100%" height="auto" role="img" aria-label="The bid-surface loop. A general contractor seeds many subs by sending bids. Subs refer other subs, and crucially, subs carry Perch to new general contractors.">
+        <!-- GC source -->
+        <rect class="node" x="40" y="128" width="40" height="40"/>
+        <text class="t-big" x="34" y="190">GC</text>
+        <text x="34" y="205">seed</text>
+
+        <!-- Loop A: GC -> subs -->
+        <line class="edge-live" x1="80" y1="148" x2="360" y2="60"/>
+        <line class="edge-live" x1="80" y1="148" x2="360" y2="110"/>
+        <line class="edge-live" x1="80" y1="148" x2="360" y2="160"/>
+        <line class="edge-live" x1="80" y1="148" x2="360" y2="210"/>
+        <line class="edge-live" x1="80" y1="148" x2="360" y2="258"/>
+        <text class="t-live" x="150" y="100">LOOP A · the bid blast</text>
+
+        <!-- subs -->
+        <circle class="node" cx="368" cy="60" r="8"/>
+        <circle class="node" cx="368" cy="110" r="8"/>
+        <circle class="node-new" cx="368" cy="160" r="9"/>
+        <circle class="node" cx="368" cy="210" r="8"/>
+        <circle class="node" cx="368" cy="258" r="8"/>
+        <text x="388" y="64">sub</text>
+        <text x="388" y="114">sub</text>
+        <text class="t-live" x="388" y="164">sub · happy</text>
+        <text x="388" y="214">sub</text>
+        <text x="388" y="262">sub</text>
+
+        <!-- Loop C: sub -> sub -->
+        <path class="edge" d="M368 218 C 340 240, 340 240, 368 250"/>
+        <text x="300" y="285">LOOP C · sub → sub</text>
+
+        <!-- Loop B: sub -> new GC (the prize) -->
+        <path class="edge-live" d="M377 160 C 560 160, 600 80, 770 80"/>
+        <rect class="node-new" x="772" y="60" width="38" height="38"/>
+        <text class="t-big t-live" x="760" y="120">NEW GC</text>
+        <text class="t-live" x="540" y="120">LOOP B · the prize →</text>
+
+        <!-- dimension -->
+        <line class="dim" x1="40" y1="282" x2="280" y2="282"/>
+        <text x="40" y="276" style="font-size:8px">EVERY BID = AN IMPRESSION</text>
+      </svg>
+      <div class="legend">
+        <span><i class="swatch live"></i> Live / value-creating path</span>
+        <span><i class="swatch"></i> Secondary path</span>
+        <span style="color:var(--signal-deep)">Loop B is the one to obsess over: it makes net-new GCs.</span>
+      </div>
+    </div>
+    <p style="margin-top:18px;max-width:66ch"><strong>Three loops, not one.</strong> Loop A (GC → subs) is high volume but cold. Loop C (sub → sub) is word-of-mouth inside trade networks. <strong>Loop B, a happy sub carrying Perch to a GC who isn't on it yet, is the prize</strong>, because it manufactures net-new accounts on the valuable side.</p>
+  </section>
+
+  <section class="rv">
+    <div class="sec-head"><span class="num">02</span><h2>The metric, defined</h2></div>
+    <div class="formula">
+      <div class="big"><em>K</em> = invitations per customer × conversion per invitation</div>
+      <div class="note">K ≥ 1 means each customer more than replaces itself. Textbook viral. Be honest: in B2B with slow, considered purchases, a standalone K above 1 is rare. A solidly positive K that compounds <em>alongside</em> sales is already a category-defining, CAC-crushing advantage. And growth = f(K, <strong style="color:#fff">cycle time</strong>): a modest K that turns fast beats a high K that takes a full bid season.</div>
+    </div>
+    <div class="twocol">
+      <div class="card"><span class="label">North star</span><h3>Net-new activated accounts from existing customers' bids</h3><p>One number that means "the loop is working." Everything below is a dial that moves it.</p></div>
+      <div class="card"><span class="label">Two clocks, not one</span><h3>The loop turns in weeks</h3><p>Loop A resolves in the bid window (~2&ndash;4 weeks). Loop B is paced by how often a sub bids a <em>new</em> GC &mdash; bid frequency, not project length. So our real constraint isn't the calendar, it's conversion.</p></div>
+    </div>
+  </section>
+
+  <section class="rv">
+    <div class="sec-head"><span class="num">03</span><h2>What to instrument</h2></div>
+    <p style="max-width:64ch;margin-bottom:24px">Leading indicators, because we can't wait a full bid cycle to learn whether the loop fires. Watch the flagged one hardest. It's the early signal that Loop B is real.</p>
+    <div class="kpi">
+      <div class="kpi-row"><div class="m">Bid invitations sent per GC / month <small>The raw fuel: every invite is an impression.</small></div><span class="stage">Leading</span></div>
+      <div class="kpi-row"><div class="m">Invitation → view rate <small>Did the sub even look?</small></div><span class="stage">Leading</span></div>
+      <div class="kpi-row"><div class="m">View → signup rate <small>Cold product-led conversion.</small></div><span class="stage">Leading</span></div>
+      <div class="kpi-row"><div class="m">New-sub activation rate <small>Did they actually respond to a bid in Perch, not just create a dead account?</small></div><span class="stage">Leading</span></div>
+      <div class="kpi-row hot"><div class="m"><strong>Subs who then used Perch with a NEW GC</strong> <small>The leading indicator of Loop B: the one that proves virality is real.</small></div><span class="stage">Watch</span></div>
+      <div class="kpi-row"><div class="m">Viral cycle time <small>Invitation → new activated account.</small></div><span class="stage">Lagging</span></div>
+      <div class="kpi-row"><div class="m">Self-serve vs. sales-sourced split <small>Two engines, very different CAC. Never blend them into one number.</small></div><span class="stage">Diagnostic</span></div>
+    </div>
+  </section>
+
+  <section class="rv">
+    <div class="sec-head"><span class="num">04</span><h2>The bet it all rests on</h2></div>
+    <div class="callout">
+      <span class="label">Make-or-break</span>
+      <p>Does a sub <strong>have</strong> to use Perch to respond to a bid, or can they reply by email and route around us? If they can route around us, the loop leaks at the worst possible point and K collapses no matter how many invitations go out. The single biggest lever on growth is how much of the bid <em>response</em> lives inside Perch.</p>
+    </div>
+  </section>
+
+  <section class="rv">
+    <div class="sec-head"><span class="num">05</span><h2>Reputation &mdash; the conversion lever</h2></div>
+    <p style="max-width:64ch;margin-bottom:22px">Worst-case 1% on each loop won't grow fast enough. Verified, portable reputation is how we juice both conversion rates &mdash; and the model is Carfax: the point isn't "this sub is reputable," it's that the <strong>absence</strong> of a track record becomes the red flag. A GC can't <em>not</em> check.</p>
+    <div class="twocol" style="margin-bottom:18px">
+      <div class="card"><span class="label">Lifts Loop A</span><h3>Claim, don't build</h3><p>Pre-populate a sub's profile from activity we already see, so activating = claiming something valuable they own. And train GCs to expect a Perch record &mdash; so a sub without one looks risky.</p></div>
+      <div class="card"><span class="label">Lifts Loop B</span><h3>Flaunt the record</h3><p>A sub with verified wins wants to show them off &mdash; so they bid through Perch and pull the new GC in to see the score. Reputation only pays off where it's visible.</p></div>
+    </div>
+    <div class="callout"><span class="label">Why it holds up</span><p><strong>Required-to-transact makes the data true.</strong> A 10&times; badge means something only because those ten wins happened inside Perch &mdash; un-gameable, like Carfax's authoritative-source data. The leak-proofing bet and the reputation moat are the same bet. One caution: be fair (Carfax has been sued over errors it was slow to fix) &mdash; lean positive, keep it correctable, and expect it to compound as the network grows, not on day one.</p></div>
+  </section>
+
+  <section class="rv">
+    <div class="sec-head"><span class="num">06</span><h2>Design constraints</h2></div>
+    <div class="constraints">
+      <div class="con"><span class="cn">i</span><h3>Subs free in the land-grab</h3><p>Subsidize the side that fuels the loop. Charge the GC: they have budget and get the value.</p></div>
+      <div class="con"><span class="cn">ii</span><h3>Make sub value portable</h3><p>Bid history, reusable templates, reputation they own, value that travels to every GC. That's what fires Loop B.</p></div>
+      <div class="con"><span class="cn">iii</span><h3>Never spring a tax</h3><p>The spreader must feel served, never surprised.</p></div>
+    </div>
+  </section>
+
+  <section class="rv" style="border-bottom:none">
+    <div class="sec-head"><span class="num">07</span><h2>Pressure-test it</h2></div>
+    <p style="max-width:60ch;margin-bottom:22px">Rough inputs, honest defaults. Move the sliders and watch the GC-to-GC coefficient: that's whether the network feeds itself.</p>
+    <div class="calc">
+      <div class="calc-head">
+        <span class="label">Loop calculator</span>
+        <span class="label" id="seedline">Seed: 5 GCs</span>
+      </div>
+      <div class="calc-body">
+        <div class="inputs">
+          <div class="ctrl">
+            <div class="top"><label for="inv">Bid invitations a GC sends / month</label><span class="val" id="invV">150</span></div>
+            <input type="range" id="inv" min="20" max="400" step="10" value="150">
+            <div class="hint">subs invited per GC, per month</div>
+          </div>
+          <div class="ctrl">
+            <div class="top"><label for="conv">Invitation → activated sub</label><span class="val" id="convV">8%</span></div>
+            <input type="range" id="conv" min="1" max="40" step="1" value="8">
+            <div class="hint">cold conversion, kept low on purpose</div>
+          </div>
+          <div class="ctrl">
+            <div class="top"><label for="loopb">Activated subs who bring a new GC / cycle</label><span class="val" id="loopbV">5%</span></div>
+            <input type="range" id="loopb" min="0" max="30" step="1" value="5">
+            <div class="hint">Loop B, the prize</div>
+          </div>
+          <div class="ctrl">
+            <div class="top"><label for="cycle">Loop B cycle · sub bids a new GC &rarr; it activates</label><span class="val" id="cycleV">3 mo</span></div>
+            <input type="range" id="cycle" min="1" max="12" step="1" value="3">
+            <div class="hint">driven by bid frequency, not project length</div>
+          </div>
+          <div class="ctrl">
+            <div class="top"><label for="rep">Reputation lift · game mechanics</label><span class="val" id="repV">&times;1.0</span></div>
+            <input type="range" id="rep" min="1" max="3" step="0.1" value="1">
+            <div class="hint">multiplies conversion + Loop-B rate · illustrative</div>
+          </div>
+        </div>
+        <div class="outputs">
+          <div class="kbox">
+            <div class="kl">K · GC → GC, per cycle</div>
+            <div class="kv" id="kval">0.60</div>
+            <span class="kbadge amp" id="kbadge">Amplifying</span>
+          </div>
+          <div class="ministats">
+            <div class="mini"><div class="ml">Subs seeded / GC</div><div class="mv" id="subsPer">12</div></div>
+            <div class="mini"><div class="ml">Active GCs · 12 mo</div><div class="mv" id="gc12">~20</div></div>
+          </div>
+          <div class="proj">
+            <span class="pl">Projected active GCs over 12 months</span>
+            <div class="bars" id="bars"></div>
+            <div class="baraxis"><span>now</span><span>+12 mo</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="calc-foot">Invitations counted per cycle; retained GCs keep bidding. K = invitations × conversion × Loop-B rate, with conversion and Loop-B rate scaled by the reputation lift. Directional, not a forecast. Its job is to show which lever moves growth most. Note how a ~1.3× reputation lift is enough to push K past 1.</div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap frow">
+    <span class="label">Perch · Bid-Surface Loop · companion to the Growth Thesis</span>
+    <span class="label">v2 draft</span>
+  </div>
+</footer>
+
+<script>
+  const $=id=>document.getElementById(id);
+  const inv=$('inv'),conv=$('conv'),loopb=$('loopb'),cycle=$('cycle'),rep=$('rep');
+  function fmt(n){return n>=100?Math.round(n):(n>=10?n.toFixed(0):n.toFixed(1));}
+  function calc(){
+    const I=+inv.value, R=+rep.value;
+    const C=Math.min(+conv.value/100*R,1), B=Math.min(+loopb.value/100*R,1), T=+cycle.value;
+    $('invV').textContent=I;
+    $('convV').textContent=conv.value+'%';
+    $('loopbV').textContent=loopb.value+'%';
+    $('cycleV').textContent=T+' mo';
+    $('repV').textContent='×'+R.toFixed(1);
+
+    const subsPerGC=I*C;                 // subs activated per GC per cycle (incl. reputation lift)
+    const K=subsPerGC*B;                 // GC -> GC coefficient per cycle
+    $('kval').textContent=K.toFixed(2);
+    $('subsPer').textContent=fmt(subsPerGC);
+
+    const badge=$('kbadge');
+    if(K>=1){badge.textContent='Viral · self-sustaining';badge.className='kbadge viral';}
+    else{badge.textContent='Amplifying · sales-seeded';badge.className='kbadge amp';}
+
+    // 12-month projection, compounding per cycle on a retained base
+    const seed=5;
+    const cyclesYr=12/T;
+    const series=[];
+    for(let c=0;c<=Math.round(cyclesYr);c++){series.push(seed*Math.pow(1+K,c));}
+    const gc12=seed*Math.pow(1+K,cyclesYr);
+    $('gc12').textContent='~'+Math.round(gc12);
+
+    const bars=$('bars');bars.innerHTML='';
+    const max=Math.max(...series);
+    series.forEach(v=>{
+      const b=document.createElement('div');
+      b.className='bar';
+      b.style.height=(8+(v/max)*66)+'px';
+      b.title=Math.round(v)+' GCs';
+      bars.appendChild(b);
+    });
+  }
+  [inv,conv,loopb,cycle,rep].forEach(el=>el.addEventListener('input',calc));
+  calc();
+
+  const rv=document.querySelectorAll('.rv');
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+    rv.forEach(el=>io.observe(el));
+  }else{rv.forEach(el=>el.classList.add('in'));}
+</script>
+<script src="/nav.js" defer></script>
+</body>
+</html>

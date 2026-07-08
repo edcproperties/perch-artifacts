@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perch · Role Models</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E8E6DF;--surface:#F5F3EE;--surface-2:#FBFAF6;
+    --ink:#181917;--slate:#5D5F5A;--faint:#8A8B84;
+    --line:#CECBC1;--line-soft:#DEDBD2;
+    --signal:#D2531D;--signal-deep:#A23C12;
+    --sans:'Archivo','Helvetica Neue',Arial,sans-serif;
+    --mono:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+    --maxw:980px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+  .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--signal-deep);font-weight:500}
+  .label{font-family:var(--mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);font-weight:500}
+  h1{font-weight:800;letter-spacing:-.02em;line-height:1.04;font-size:clamp(2.3rem,5.6vw,4rem)}
+  h2{font-weight:700;letter-spacing:-.01em;line-height:1.12;font-size:clamp(1.5rem,3.2vw,2.1rem)}
+  h3{font-weight:700;font-size:1.06rem;letter-spacing:-.005em}
+  p{color:var(--slate)}
+  strong{color:var(--ink);font-weight:600}
+  em{font-style:normal;color:var(--ink);font-weight:600}
+  .lead{font-size:clamp(1.05rem,1.8vw,1.22rem);color:var(--ink);font-weight:400;line-height:1.5}
+  .src{font-family:var(--mono);font-size:.64rem;letter-spacing:.04em;color:var(--faint);text-transform:uppercase}
+  .est{font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;color:var(--signal-deep);border:1px solid var(--line);border-radius:3px;padding:1px 5px;vertical-align:middle}
+
+  header.hero{padding:74px 0 46px;border-bottom:1.5px solid var(--ink)}
+  .hero-top{display:flex;justify-content:space-between;align-items:baseline;gap:18px;flex-wrap:wrap;margin-bottom:44px}
+  .hero h1{max-width:17ch;margin:26px 0 22px}
+  .hero .lead{max-width:64ch}
+
+  section{padding:54px 0;border-bottom:1px solid var(--line-soft)}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:30px}
+  .sec-head .num{font-family:var(--mono);font-size:.78rem;color:var(--signal-deep);font-weight:600;padding-top:.25em}
+
+  .fieldnote{background:var(--surface-2);border:1px solid var(--line);border-left:3px solid var(--signal);padding:22px 24px;margin-top:34px}
+  .fieldnote .label{display:block;margin-bottom:10px}
+  .fieldnote p{color:var(--ink);font-size:.99rem}
+
+  /* premise / metric block */
+  .metric{background:var(--ink);color:var(--surface);padding:34px 30px}
+  .metric .label{color:#B9B6AC}
+  .metric h2{color:var(--surface-2);margin:14px 0 6px;max-width:26ch}
+  .metric .sub{color:#C8C6BC;font-size:.96rem;max-width:62ch;margin-bottom:22px}
+  .metric .rows{display:grid;gap:1px;background:#3a3b37;border:1px solid #3a3b37}
+  .metric .mr{background:var(--ink);display:grid;grid-template-columns:150px 1fr 150px;gap:16px;padding:15px 18px;align-items:baseline}
+  .metric .mr .co{font-weight:700;color:var(--surface-2);font-size:1rem}
+  .metric .mr .pa{color:#C8C6BC;font-size:.9rem}
+  .metric .mr .ti{font-family:var(--mono);font-size:.8rem;color:var(--signal);text-align:right;letter-spacing:.02em}
+  .metric .mr.live .ti{color:#fff}
+  .metric .ptr{margin-top:22px;font-family:var(--mono);font-size:.78rem;color:#9b9890;letter-spacing:.02em}
+
+  /* case files */
+  .casefile{border:1.5px solid var(--ink);background:var(--surface-2);margin-bottom:22px}
+  .casefile .cf-head{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid var(--line);gap:12px;flex-wrap:wrap}
+  .casefile .cf-head h3{font-size:1.18rem}
+  .casefile .cf-head .tag{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--slate);border:1px solid var(--line);padding:4px 9px;white-space:nowrap}
+  .cf-row{display:grid;grid-template-columns:128px 1fr;gap:20px;padding:16px 24px;border-bottom:1px solid var(--line-soft)}
+  .cf-row:last-child{border-bottom:none}
+  .cf-row .k{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);padding-top:2px}
+  .cf-row p{font-size:.96rem;color:var(--ink)}
+  .cf-row.invert{background:var(--paper)}
+  .cf-row.invert .k{color:var(--signal-deep)}
+  .cf-row.invert p strong{color:var(--signal-deep)}
+
+  /* principles */
+  .principles{display:grid;gap:1px;background:var(--line-soft);border:1px solid var(--line-soft)}
+  .principle{background:var(--paper);padding:20px 24px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start}
+  .principle .tick{font-family:var(--mono);font-weight:600;font-size:.95rem;line-height:1.5}
+  .principle.do .tick{color:var(--signal)} .principle.dont .tick{color:var(--slate)}
+  .principle h3{margin-bottom:4px;font-size:1rem}
+  .principle p{font-size:.94rem}
+
+  /* callout */
+  .callout{border:1px solid var(--line);border-left:3px solid var(--signal);background:var(--surface-2);padding:22px 24px;margin-bottom:16px}
+  .callout .label{display:block;margin-bottom:10px;color:var(--signal-deep)}
+  .callout p{color:var(--ink);font-size:.99rem}
+  .callout p + p{margin-top:10px}
+
+  /* sources */
+  .sources{display:grid;gap:9px}
+  .sources a{font-family:var(--mono);font-size:.74rem;color:var(--slate);text-decoration:none;letter-spacing:.01em;border-bottom:1px solid transparent}
+  .sources a:hover{color:var(--signal-deep);border-bottom-color:var(--line)}
+  .sources .s-k{color:var(--faint)}
+
+  footer{padding:40px 0 60px}
+  footer .frow{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center}
+  footer .label{color:var(--faint)}
+
+  .rv{opacity:0;transform:translateY(14px);transition:opacity .7s ease,transform .7s ease}
+  .rv.in{opacity:1;transform:none}
+  @media (max-width:720px){
+    body{font-size:16px}
+    .metric .mr{grid-template-columns:1fr;gap:4px}
+    .metric .mr .ti{text-align:left}
+    .cf-row{grid-template-columns:1fr;gap:6px}
+    .principle{grid-template-columns:auto 1fr;gap:12px}
+  }
+  @media (prefers-reduced-motion:reduce){.rv{transition:none;opacity:1;transform:none}html{scroll-behavior:auto}}
+  a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-top">
+      <span class="eyebrow">Perch · Role Models</span>
+      <span class="label">Internal · evidence layer · source-checked</span>
+    </div>
+    <h1>How the others got their first hundred.</h1>
+    <p class="lead">The companies whose playbook we're running, checked against the record instead of the press. What the design-partner motion actually looked like, and the two decisions it forces on us.</p>
+    <div class="fieldnote">
+      <span class="label">Start here</span>
+      <p>This is the proof behind the Perch Partner Program. Every claim below survived a three-vote fact-check; numbers that are reported-but-unconfirmed are marked <span class="est">est</span>, and four widely-repeated claims we couldn't verify were thrown out. It's the evidence under the <a href="growth-thesis.html" style="color:var(--signal-deep)">Growth Thesis</a>, not a replacement for it.</p>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="rv">
+    <div class="sec-head"><span class="num">A</span><h2>The premise, corrected</h2></div>
+    <p style="max-width:64ch;margin-bottom:24px">Yes, $100M in ~24 months is real. The companies that hit it that fast were pure PLG. We run <strong>both engines</strong>. The partner program ignites the first hundred, which is Harvey-paced. Then our own PLG engine, the workbench where plans and specs flow plus the bid-surface loop, is what compounds. We get the trust of partner-led and the scale of product-led.</p>
+    <div class="metric">
+      <span class="label">0 → $100M ARR: the two engines</span>
+      <h2>Pure PLG is the fast road. We run partner-led to start, then PLG to scale.</h2>
+      <p class="sub">The first hundred comes partner by partner, Harvey-paced. The workbench and the bid-loop are what bend the curve after.</p>
+      <div class="rows">
+        <div class="mr"><span class="co">Cursor</span><span class="pa">Pure PLG · zero marketing spend</span><span class="ti">~20 mo</span></div>
+        <div class="mr"><span class="co">Clay</span><span class="pa">Community + templates · no design partners</span><span class="ti">~2 yr <span class="est">est</span></span></div>
+        <div class="mr live"><span class="co">Harvey</span><span class="pa">Design partner + land-and-expand · our ignition</span><span class="ti">~3 yr</span></div>
+      </div>
+      <p class="ptr">→ Harvey: ~$10M ARR end '23 · ~$50M '24 · ~$100M by '25. The partner start gets there in three years. Our PLG engine is the accelerant after.</p>
+    </div>
+  </section>
+
+  <section class="rv">
+    <div class="sec-head"><span class="num">B</span><h2>The design-partner exemplars</h2></div>
+    <p style="max-width:64ch;margin-bottom:26px">Four companies that ran our exact motion. Read them as one composite: <strong>land one prestige logo, embed an engineer, time-box it, end in paid, expand inside.</strong></p>
+
+    <div class="casefile">
+      <div class="cf-head"><h3>Harvey</h3><span class="tag">Legal AI · founded 2022</span></div>
+      <div class="cf-row"><span class="k">Proves</span><p>A <strong>single marquee design partner</strong> can become instant scale: Allen &amp; Overy rolled Harvey out to <strong>3,500 attorneys</strong> in early 2023. One logo, immediate land-and-expand.</p></div>
+      <div class="cf-row"><span class="k">The move</span><p>Land the most prestigious name in the category first, then grow seats and usage <em>inside</em> it. Usage-driven, not seat-by-seat selling.</p></div>
+      <div class="cf-row"><span class="k">Numbers</span><p>235 → <strong>337 legal clients</strong> by Apr 2025. ARR ~$10M end '23 <span class="est">est</span> → ~$50M '24 <span class="est">est</span> → <strong>~$100M by 2025.</strong> <span class="src">CNBC Aug '25 · Contrary</span></p></div>
+      <div class="cf-row invert"><span class="k">For Perch</span><p>Our ladder is the same shape: Built Exteriors → Zwick → <strong>a marquee GC</strong>. Land the prestige logo, expand inside it.</p></div>
+    </div>
+
+    <div class="casefile">
+      <div class="cf-head"><h3>Sierra</h3><span class="tag">Customer-service AI · 2023</span></div>
+      <div class="cf-row"><span class="k">Proves</span><p>The program <em>structure</em> works as a sales motion. Sierra targeted 4 design partners, <strong>secured 6</strong>, picked from a shortlist of <strong>40 candidates</strong>.</p></div>
+      <div class="cf-row"><span class="k">The terms</span><p><strong>Paid pilots</strong> (not free), <strong>time-boxed</strong>, and <strong>100% converted</strong> to paying customers. The commitment filtered out tourists.</p></div>
+      <div class="cf-row invert"><span class="k">For Perch</span><p>This <em>is</em> the PPP: a small hand-picked cohort, real commitment, ends in a paid contract. And it's direct evidence that <strong>paid pilots work</strong> when the value is real. <span class="src">First Round Review</span></p></div>
+    </div>
+
+    <div class="casefile">
+      <div class="cf-head"><h3>Legora <span style="color:var(--faint);font-weight:400">(formerly Leya)</span></h3><span class="tag">Legal AI · Europe · 2023</span></div>
+      <div class="cf-row"><span class="k">Proves</span><p>Deliberately partnered with <strong>elite firms</strong>, and ran a <strong>tight, founder-led co-build loop</strong> with them. Founders in the room, not a sales team.</p></div>
+      <div class="cf-row invert"><span class="k">For Perch</span><p>Prestige partners + founders embedded in the build cadence. The same loop the Growth Thesis describes: Brock in the room, not a rep. <span class="src">Rintala</span></p></div>
+    </div>
+
+    <div class="casefile">
+      <div class="cf-head"><h3>Palantir</h3><span class="tag">The forward-deployed-engineer origin</span></div>
+      <div class="cf-row"><span class="k">Proves</span><p>Embedding engineers <em>inside</em> the customer to build in their environment is a proven, 20-year-old model. Palantir had <strong>more forward-deployed engineers than regular engineers</strong> until ~2016.</p></div>
+      <div class="cf-row invert"><span class="k">For Perch</span><p>"One FDE per partner" isn't novel or risky. It's the proven co-build mechanic. The thing that makes co-development actually work. <span class="src">fde.academy</span></p></div>
+    </div>
+  </section>
+
+  <section class="rv">
+    <div class="sec-head"><span class="num">C</span><h2>The loop, already run in our industry</h2></div>
+    <p style="max-width:64ch;margin-bottom:26px">We don't have to imagine the bid-surface loop. It was built once before, in construction, and it sold for nine figures.</p>
+    <div class="casefile">
+      <div class="cf-head"><h3>BuildingConnected</h3><span class="tag">GC↔sub bid network · 2012 → Autodesk $275M</span></div>
+      <div class="cf-row"><span class="k">Proves</span><p>A GC-to-sub bid network compounds. Started <strong>completely free</strong>, spent <strong>two years getting 1,000 active GCs</strong> before charging a cent, then grew to <strong>1M+ subcontractors and 700k+ users.</strong></p></div>
+      <div class="cf-row"><span class="k">How it grew</span><p>GCs seeded the network with bids; the sub side stayed free and crowd-sourced. The product was the channel.</p></div>
+      <div class="cf-row"><span class="k">Exit</span><p>Acquired by <strong>Autodesk for $275M</strong>, Jan 2019. <span class="src">Autodesk PR · Bricks &amp; Bytes</span></p></div>
+      <div class="cf-row invert"><span class="k">For Perch</span><p>This is our bid-surface loop, proven in our exact industry: <strong>GC-seeded, sub-side free, monetize the GC, let the network pull in the next account.</strong></p></div>
+    </div>
+  </section>
+
+  <section class="rv">
+    <div class="sec-head"><span class="num">D</span><h2>The two decisions this forces</h2></div>
+    <div class="callout">
+      <span class="label">Decision 1 · Free vs. at-cost pilots</span>
+      <p>The advice splits. <strong>Amplify Partners</strong> says start a 3–5 partner program (✓ our number) but make pilots <strong>free</strong> by default. <strong>a16z</strong> says sell the services/implementation <strong>at cost, not for margin</strong> (✓ our ~80%-off, FDE-at-cost plan). <strong>Sierra</strong> ran <strong>paid</strong> pilots and converted 100%.</p>
+      <p><em>Paid-but-at-cost is the defensible middle</em>: it filters tourists like Sierra's paid pilots, while covering only our costs like a16z prescribes. The one thing all three agree on: don't run it for profit. <span style="color:var(--faint)">Decided: at-cost. Partners pay our hard costs only (FDE + tokens), no margin.</span></p>
+    </div>
+    <div class="callout">
+      <span class="label">Decision 2 · The honest timeline</span>
+      <p>The design-partner road is <strong>~3 years to $100M</strong> (Harvey), not the ~24 months the PLG rockets hit. If the goal is a 24-month number, the partner motion is the foundation, not the whole engine. The <a href="bid-loop.html" style="color:var(--signal-deep)">bid-surface loop</a> is what has to bend the curve after the first hundred.</p>
+    </div>
+  </section>
+
+  <section class="rv">
+    <div class="sec-head"><span class="num">E</span><h2>What we copy / what we avoid</h2></div>
+    <div class="principles">
+      <div class="principle do"><span class="tick">+</span><div><h3>Land one prestige logo first.</h3><p>Harvey rode a single marquee name to credibility. Pick the partner whose logo opens the next ten doors.</p></div></div>
+      <div class="principle do"><span class="tick">+</span><div><h3>Small cohort, real commitment, ends paid.</h3><p>Sierra: 6 partners, time-boxed, paid, 100% converted. The ask is the filter.</p></div></div>
+      <div class="principle do"><span class="tick">+</span><div><h3>Founder in the room; engineer in the building.</h3><p>Legora's founder-led loop + Palantir's embedded FDE. That's what makes co-build real, not a survey.</p></div></div>
+      <div class="principle do"><span class="tick">+</span><div><h3>Free the side that spreads you; charge the side with budget.</h3><p>BuildingConnected seeded free, monetized the GC, hit a million subs. The product is the channel.</p></div></div>
+      <div class="principle do"><span class="tick">+</span><div><h3>Run both engines, in order.</h3><p>The partner program earns the first hundred. The workbench and the bid-loop, our PLG, compound from there.</p></div></div>
+      <div class="principle do"><span class="tick">+</span><div><h3>Be honest about the clock.</h3><p>Pure PLG hit $100M in ~24 months. Our partner-led start is slower; the PLG engine is the accelerant, not the opening move.</p></div></div>
+    </div>
+  </section>
+
+  <section class="rv" style="border-bottom:none;padding:30px 0 10px"><p style="font-family:var(--mono);font-size:.66rem;line-height:1.7;color:var(--faint);letter-spacing:.02em">Sources: CNBC, Contrary, First Round Review, a16z, Amplify, Autodesk, Construction Dive, SaaStr, fde.academy, Rintala, Bricks &amp; Bytes, nrich. Cut on review as unverifiable: Harvey "70-80% daily usage", Sierra "$165M ARR".</p></section>
+
+</main>
+
+<footer>
+  <div class="wrap frow">
+    <span class="label">Perch · Role Models · evidence behind the Perch Partner Program</span>
+    <span class="label">For: Brock · Mackenzie · Braden</span>
+  </div>
+</footer>
+
+<script>
+  const rv=document.querySelectorAll('.rv');
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+    rv.forEach(el=>io.observe(el));
+  } else { rv.forEach(el=>el.classList.add('in')); }
+</script>
+<script src="/nav.js" defer></script>
+</body>
+</html>

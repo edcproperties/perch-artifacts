@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Perch · Walkthrough: Cache Valley Electric · white-glove</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E8E6DF; --panel:#FBFAF6; --panel2:#F5F3EE; --line:#CECBC1; --line2:#BDB8AC;
+    --ink:#181917; --ink2:#5D5F5A; --ink3:#8A8B84;
+    --blue:#3E6E8E; --green:#5E7E52; --amber:#9A7B1F; --violet:#6F5499; --red:#B23A2E;
+    --agent:#6F5499; --human:#5E7E52;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 'Archivo',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:36px 26px 90px}
+  a{color:var(--blue)}
+  h1{font-size:26px;margin:0 0 6px;letter-spacing:-.01em}
+  .sub{color:var(--ink2);margin:0 0 16px;max-width:850px}
+  .sub b{color:var(--ink)}
+  .meta{color:var(--ink3);font-size:13px;margin:0 0 18px}
+
+  .cust{display:flex;gap:16px;flex-wrap:wrap;align-items:center;background:linear-gradient(180deg,rgba(94,126,82,.07),rgba(94,126,82,.02));border:1px solid rgba(94,126,82,.24);border-radius:14px;padding:14px 20px;margin-bottom:12px}
+  .cust .nm{font-weight:700;font-size:18px}
+  .cust .tag{font-size:11px;font-weight:700;letter-spacing:.04em;padding:3px 9px;border-radius:999px;background:rgba(94,126,82,.16);color:var(--green);text-transform:uppercase}
+  .cust dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-size:12.5px}
+  .cust dt{color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;font-size:10.5px;padding-top:2px}
+  .cust dd{margin:0;color:var(--ink2)}
+
+  .frame{background:linear-gradient(180deg,rgba(111,84,153,.08),rgba(62,110,142,.03));border:1px solid rgba(111,84,153,.26);border-radius:14px;padding:14px 18px;margin-bottom:12px;font-size:13.5px;color:var(--ink2)}
+  .frame b{color:var(--ink)} .frame .ag{color:var(--agent);font-weight:700} .frame .hu{color:var(--human);font-weight:700}
+
+  .legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:12px;color:var(--ink2);margin:10px 0 4px}
+  .pill{font-size:10px;font-weight:800;letter-spacing:.04em;padding:2px 7px;border-radius:6px;text-transform:uppercase;vertical-align:middle}
+  .p-surface{background:rgba(62,110,142,.14);color:var(--blue);border:1px solid rgba(62,110,142,.3)}
+  .p-built{background:rgba(94,126,82,.14);color:var(--green);border:1px solid rgba(94,126,82,.3)}
+  .p-build{background:rgba(111,84,153,.14);color:var(--violet);border:1px solid rgba(111,84,153,.3)}
+  .p-cust{background:rgba(154,123,31,.14);color:var(--amber);border:1px solid rgba(154,123,31,.3)}
+  .p-agent{background:rgba(111,84,153,.14);color:var(--agent);border:1px solid rgba(111,84,153,.35)}
+  .p-human{background:rgba(94,126,82,.14);color:var(--human);border:1px solid rgba(94,126,82,.35)}
+
+  .flow{counter-reset:step}
+  .step{display:grid;grid-template-columns:44px 1fr;gap:0;counter-increment:step}
+  .rail{display:flex;flex-direction:column;align-items:center}
+  .num{width:30px;height:30px;border-radius:50%;background:var(--panel2);border:1px solid var(--line2);color:var(--ink);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;margin-top:14px}
+  .num::before{content:counter(step)}
+  .step.ag .num{border-color:rgba(111,84,153,.5);background:rgba(111,84,153,.09)}
+  .step.hu .num{border-color:rgba(94,126,82,.5);background:rgba(94,126,82,.09)}
+  .wire{flex:1;width:2px;background:linear-gradient(180deg,var(--line2),var(--line));margin:6px 0 0}
+  .body{padding:12px 0 18px}
+  .shead{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:8px}
+  .shead .st{font-weight:700;font-size:16px}
+  .row{display:grid;grid-template-columns:430px 1fr;gap:18px;align-items:start}
+  @media(max-width:840px){.row{grid-template-columns:1fr}}
+  .txt .narr{font-size:13.5px;color:var(--ink2);margin:0 0 10px}
+  .txt .narr b{color:var(--ink)}
+  .cubox{border-left:3px solid rgba(154,123,31,.5);background:rgba(154,123,31,.05);border-radius:0 10px 10px 0;padding:10px 13px;font-size:12.5px;color:var(--ink2)}
+  .cubox .cl{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--amber);display:block;margin-bottom:3px}
+  .cubox b{color:var(--ink)} .cubox .greenfield{color:var(--violet);font-weight:700}
+
+  .phase{display:flex;align-items:center;gap:12px;margin:18px 0 4px;padding-left:6px}
+  .phase .line{flex:1;height:1px;background:linear-gradient(90deg,var(--line2),transparent)}
+  .phase .lbl{font-size:11.5px;font-weight:700;letter-spacing:.03em;border-radius:999px;padding:5px 14px}
+  .phase.a .lbl{background:rgba(111,84,153,.1);border:1px solid rgba(111,84,153,.35);color:var(--agent)}
+  .phase.h .lbl{background:rgba(94,126,82,.1);border:1px solid rgba(94,126,82,.35);color:var(--human)}
+  .phase.c .lbl{background:var(--panel2);border:1px solid var(--line2);color:var(--ink2)}
+  .phase.c .lbl b{color:var(--ink)}
+
+  /* mock */
+  .mock{background:var(--panel);border:1px solid var(--line2);border-radius:12px;overflow:hidden;font-size:12px}
+  .mbar{display:flex;align-items:center;gap:6px;padding:8px 11px;background:#EDEAE1;border-bottom:1px solid var(--line)}
+  .mbar i{width:9px;height:9px;border-radius:50%;background:#C5BFB2;display:inline-block}
+  .mbar .url{margin-left:8px;font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace;font-size:10.5px;color:var(--ink3);background:#F7F5F0;border:1px solid var(--line);border-radius:6px;padding:2px 9px}
+  .mb{padding:14px 15px}
+  .ph{height:9px;border-radius:5px;background:var(--line2)} .ph.s{height:7px;background:var(--line)}
+  .ok{color:var(--green)} .muted{color:var(--ink3)}
+  .btn{display:inline-block;background:linear-gradient(135deg,var(--green),#5E7E52);color:#EAF0E6;font-weight:700;font-size:12px;padding:7px 14px;border-radius:8px;margin-top:4px}
+  .lbl2{font-size:10.5px;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em}
+  .chip{display:inline-block;font-size:11px;color:var(--ink);background:var(--panel2);border:1px solid var(--line2);border-radius:7px;padding:3px 9px;margin:3px 4px 0 0}
+  .chip.g{border-color:rgba(94,126,82,.45);background:rgba(94,126,82,.1);color:var(--green)}
+
+  .engine{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .ag2{background:var(--panel2);border:1px solid rgba(111,84,153,.28);border-radius:8px;padding:7px 9px}
+  .ag2 .an{font-size:10.5px;font-weight:700;color:var(--agent)}
+  .ag2 .ao{font-size:10.5px;color:var(--ink3);margin-top:2px} .ag2 .ao b{color:var(--green)}
+
+  /* dossier */
+  .doss .dr{padding:7px 0;border-bottom:1px solid var(--line)}
+  .doss .dr:last-child{border-bottom:0}
+  .doss .dk{font-size:9.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--agent);font-weight:700}
+  .doss .dv{font-size:11.5px;color:var(--ink2);margin-top:2px} .doss .dv b{color:var(--ink)}
+
+  /* email */
+  .email .eh{font-size:11px;color:var(--ink3);border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:8px}
+  .email .eh b{color:var(--ink)} .email .es{font-size:12.5px;color:var(--ink);font-weight:600;margin-bottom:6px}
+  .email .eb{font-size:11.5px;color:var(--ink2);line-height:1.55} .email .eb b{color:var(--ink)}
+
+  /* meddpicc */
+  .medd{display:grid;grid-template-columns:1fr;gap:0}
+  .mrow{display:grid;grid-template-columns:18px 1fr auto;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid var(--line);font-size:11px}
+  .mrow:last-child{border-bottom:0}
+  .mrow .ml{width:18px;height:18px;border-radius:5px;background:var(--panel2);border:1px solid var(--line2);color:var(--ink2);font-weight:800;font-size:10px;display:flex;align-items:center;justify-content:center}
+  .mrow .mv{color:var(--ink2)} .mrow .mv b{color:var(--ink)}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+  .d-ok{background:var(--green)} .d-tbd{background:var(--amber)}
+
+  .chat .bub{max-width:92%;border-radius:12px;padding:8px 11px;font-size:12px;margin:6px 0}
+  .chat .them{background:var(--panel2);border:1px solid var(--line2);color:var(--ink);border-bottom-left-radius:3px}
+  .chat .us{background:rgba(94,126,82,.1);border:1px solid rgba(94,126,82,.3);color:var(--ink);margin-left:auto;border-bottom-right-radius:3px;max-width:80%}
+  .chat .who{font-size:9.5px;color:var(--ink3);margin:6px 0 1px}
+
+  .li{display:flex;justify-content:space-between;font-size:11px;padding:5px 0;border-bottom:1px solid var(--line)}
+  .li .q{color:var(--blue);font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace}
+  .flagrow{display:flex;align-items:center;gap:7px;background:rgba(178,58,46,.08);border:1px solid rgba(178,58,46,.28);border-radius:7px;padding:6px 9px;margin-top:8px;font-size:10.5px;color:var(--red)}
+  .invrow{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--line);font-size:11px}
+  .av{width:22px;height:22px;border-radius:50%;background:var(--line2)}
+  .dd{margin-left:auto;font-size:10.5px;color:var(--ink2);background:#F7F5F0;border:1px solid var(--line2);border-radius:6px;padding:3px 8px}
+
+  .cmp{width:100%;border-collapse:collapse;font-size:12.5px;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:8px}
+  .cmp th{background:var(--panel2);color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;font-size:10px;text-align:left;padding:9px 12px;border-bottom:1px solid var(--line)}
+  .cmp td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink2)}
+  .cmp tr:last-child td{border-bottom:0}
+  .cmp td.k{color:var(--ink);font-weight:600;white-space:nowrap}
+  .cmp .ss{color:var(--blue)} .cmp .wg{color:var(--green)}
+  h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin:42px 0 14px;border-bottom:1px solid var(--line);padding-bottom:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Walkthrough: <span style="color:var(--green)">Cache Valley Electric</span> · <span style="color:var(--green)">white-glove</span></h1>
+  <p class="sub">A large sub run end-to-end through the human-guided funnel. <b>Same engine as self-serve.</b> The difference is the last mile: the agents do all the prep off-stage, and a person carries the value. The point of this page: show how much work the <b>agents</b> do, and how <b>armed</b> the AE/SDR is the moment they reach out.</p>
+  <p class="meta">Perch · CRO cockpit · Jun 25 2026 · mock-ups schematic · siblings: <a href="walkthrough-squires">Squires (self-serve)</a> · <a href="journey-map">journey-map</a></p>
+
+  <div class="cust">
+    <div>
+      <div style="display:flex;align-items:center;gap:9px;margin-bottom:6px"><span class="nm">Cache Valley Electric (CVE)</span><span class="tag">Large sub · enterprise</span></div>
+      <dl>
+        <dt>Type</dt><dd>Electrical subcontractor · Logan, UT · ~2,300 emp · $700M–$1.5B (est)</dd>
+        <dt>Does</dt><dd>Design-build electrical, mission-critical / data centers, network integration, low-voltage</dd>
+        <dt>Buying map</dt><dd>Champion: VP Preconstruction/Estimating · EB: COO/President · sophisticated in-house estimating + VDC</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="frame">
+    <b>Two actors, one engine.</b> <span class="ag">🤖 The agents</span> work the whole account off-stage: dossier, a pre-run takeoff on CVE's <i>real</i> pursuit, drafted outreach, a pre-filled MEDDPICC. <span class="hu">👤 The AE/SDR</span> is the only human CVE meets, and thanks to the agents they show up knowing the company cold. White-glove is just <b>self-serve where a person carries the value instead of the agent closing in-flow.</b>
+  </div>
+
+  <div class="legend">
+    <span><span class="pill p-agent">🤖 agent</span> off-stage prep</span>
+    <span><span class="pill p-human">👤 human</span> AE/SDR on-stage</span>
+    <span><span class="pill p-surface">surface</span> real app surface</span>
+    <span><span class="pill p-built">built</span></span>
+    <span><span class="pill p-build">to build</span></span>
+    <span><span class="pill p-cust">customize</span></span>
+  </div>
+
+  <!-- PHASE A -->
+  <div class="phase a"><div class="lbl">🤖 PHASE A · Agents: back office, before any human contact</div><div class="line"></div></div>
+  <div class="flow">
+
+    <div class="step ag">
+      <div class="rail"><div class="num"></div><div class="wire"></div></div>
+      <div class="body">
+        <div class="shead"><span class="st">Signal → swarm fires, deep</span><span class="pill p-agent">🤖 agent</span><span class="pill p-build">to build</span></div>
+        <div class="row">
+          <div class="mock">
+            <div class="mbar"><i></i><i></i><i></i><span class="url">⚙ working account: cve.com</span></div>
+            <div class="mb"><div class="engine">
+              <div class="ag2"><div class="an">⌖ Account dossier</div><div class="ao">→ <b>2,300 emp · design-build</b></div></div>
+              <div class="ag2"><div class="an">⌖ Buying committee</div><div class="ao">→ <b>champion · EB · blockers</b></div></div>
+              <div class="ag2"><div class="an">⌖ Active pursuits</div><div class="ao">→ <b>hyperscale DC pkg</b></div></div>
+              <div class="ag2"><div class="an">⌖ Current stack</div><div class="ao">→ <b>Accubid + in-house VDC</b></div></div>
+              <div class="ag2"><div class="an">⌖ Displacement angle</div><div class="ao">→ <b>read-the-set wedge</b></div></div>
+              <div class="ag2"><div class="an">⌖ Sarah · pre-takeoff</div><div class="ao">→ <b>queued on real pkg</b></div></div>
+            </div></div>
+          </div>
+          <div class="txt">
+            <p class="narr">Same swarm as the self-serve flow, but it runs <b>deeper</b> for an enterprise account, not just "who are they," but the buying committee, their live pursuits, what they use now, and the angle to displace it.</p>
+            <div class="cubox"><span class="cl">Customization here</span> <span class="greenfield">The enterprise swarm is greenfield.</span> Off the critical path (no one's waiting), so it can go as deep as the deal warrants. Output isn't a workspace. It's an <b>AE battle pack</b>.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step ag">
+      <div class="rail"><div class="num"></div><div class="wire"></div></div>
+      <div class="body">
+        <div class="shead"><span class="st">The battle pack: the AE's brief</span><span class="pill p-agent">🤖 agent</span><span class="pill p-build">to build</span></div>
+        <div class="row">
+          <div class="mock">
+            <div class="mbar"><i></i><i></i><i></i><span class="url">perch.internal/accounts/cve/brief</span></div>
+            <div class="mb doss">
+              <div class="dr"><div class="dk">Who</div><div class="dv"><b>CVE.</b> UT's oldest/largest electrical; design-build; mission-critical heavy.</div></div>
+              <div class="dr"><div class="dk">Buying committee</div><div class="dv"><b>Champion:</b> VP Precon · <b>EB:</b> COO · <b>Blocker:</b> IT/Security, in-house VDC lead.</div></div>
+              <div class="dr"><div class="dk">Live pursuit</div><div class="dv"><b>Mountain West hyperscale data center.</b> Electrical pkg bidding now.</div></div>
+              <div class="dr"><div class="dk">Pain / wedge</div><div class="dv">Switchgear 40+ wk lead times; spec-buried gear; estimator hours on page-flipping.</div></div>
+              <div class="dr"><div class="dk">Objection to expect</div><div class="dv">"We have a strong team + Accubid." → wedge is <b>read-the-set</b>, not replace.</div></div>
+            </div>
+          </div>
+          <div class="txt">
+            <p class="narr">The agents hand the AE a one-screen brief: who CVE is, the people who decide, their live job, the pain, and the objection they'll hit, <b>before the AE has spent a minute of research.</b></p>
+            <div class="cubox"><span class="cl">Customization here</span> This is the whole "how much work the agents do" story. Everything a rep used to spend days assembling, <span class="greenfield">assembled automatically per account.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step ag">
+      <div class="rail"><div class="num"></div><div class="wire"></div></div>
+      <div class="body">
+        <div class="shead"><span class="st">Pre-run the value: Sarah on the real pursuit</span><span class="pill p-surface">Jobs · Sarah</span><span class="pill p-built">built</span></div>
+        <div class="row">
+          <div class="mock">
+            <div class="mbar"><i></i><i></i><i></i><span class="url">perch.internal/cve/dc-package · pre-run</span></div>
+            <div class="mb">
+              <div class="lbl2" style="margin-bottom:6px">Pre-takeoff · MW data-center electrical <span class="ok">· 812 pages read</span></div>
+              <div class="li"><span>Switchgear / distribution</span><span class="q">flagged</span></div>
+              <div class="li"><span>Feeders + branch (devices)</span><span class="q">14,200 ea</span></div>
+              <div class="li"><span>Lighting fixtures</span><span class="q">3,180 ea</span></div>
+              <div class="flagrow">⚠ Spec section 26 calls for an arc-flash-rated gear option not shown on E-sheets. 40-wk lead, missed on base bid.</div>
+            </div>
+          </div>
+          <div class="txt">
+            <p class="narr">Before the AE ever calls, Sarah has already run CVE's <b>actual</b> live package and found something real: a gear item buried in the spec with a 40-week lead. The demo won't be hypothetical; it's their own job.</p>
+            <div class="cubox"><span class="cl">Customization here</span> <span class="p-built" style="padding:1px 5px;border-radius:4px">Sarah exists.</span> What's new: running her <b>pre-emptively on a prospect's real pursuit</b> to manufacture a concrete, undeniable hook.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step ag">
+      <div class="rail"><div class="num"></div><div class="wire"></div></div>
+      <div class="body">
+        <div class="shead"><span class="st">Draft the outreach + pre-fill MEDDPICC</span><span class="pill p-agent">🤖 agent</span><span class="pill p-cust">customize</span></div>
+        <div class="row">
+          <div class="mock">
+            <div class="mbar"><i></i><i></i><i></i><span class="url">perch.internal/cve/meddpicc</span></div>
+            <div class="mb medd">
+              <div class="mrow"><span class="ml">M</span><span class="mv"><b>Metrics:</b> bid capacity, gear-risk avoided</span><span class="dot d-ok"></span></div>
+              <div class="mrow"><span class="ml">E</span><span class="mv"><b>Econ buyer:</b> COO</span><span class="dot d-tbd"></span></div>
+              <div class="mrow"><span class="ml">D</span><span class="mv"><b>Decision criteria:</b> fits VDC/Accubid</span><span class="dot d-ok"></span></div>
+              <div class="mrow"><span class="ml">I</span><span class="mv"><b>Identify pain:</b> gear lead-time misses</span><span class="dot d-ok"></span></div>
+              <div class="mrow"><span class="ml">C</span><span class="mv"><b>Champion:</b> VP Precon</span><span class="dot d-tbd"></span></div>
+              <div class="mrow"><span class="ml">C</span><span class="mv"><b>Competition:</b> Accubid + status quo</span><span class="dot d-ok"></span></div>
+            </div>
+          </div>
+          <div class="txt">
+            <p class="narr">The agents draft the personalized outbound (next step) <b>and</b> pre-fill the MEDDPICC scorecard from the research: <span class="ok">green</span> = known, <span style="color:var(--amber)">amber</span> = the AE confirms live. The rep starts the deal already half-qualified.</p>
+            <div class="cubox"><span class="cl">Customization here</span> Reuses the <b style="color:var(--ink)">MEDDPICC scorecard</b> we already built for the Zwick deal, now <b>seeded by research</b> instead of filled by hand.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PHASE B -->
+  <div class="phase h"><div class="lbl">👤 PHASE B · Human: the AE/SDR, armed</div><div class="line"></div></div>
+  <div class="flow" style="counter-reset:step 4">
+
+    <div class="step hu">
+      <div class="rail"><div class="num"></div><div class="wire"></div></div>
+      <div class="body">
+        <div class="shead"><span class="st">SDR reaches out, and it lands</span><span class="pill p-human">👤 human</span><span class="pill p-cust">customize</span></div>
+        <div class="row">
+          <div class="mock email">
+            <div class="mbar"><i></i><i></i><i></i><span class="url">SDR → VP Precon, CVE</span></div>
+            <div class="mb">
+              <div class="eh">From <b>Taylor · Perch</b> · To <b>VP Preconstruction, CVE</b></div>
+              <div class="es">Your Mountain West DC bid: a switchgear risk</div>
+              <div class="eb">Hi, saw Cache Valley's chasing the <b>MW hyperscale</b> electrical package. On jobs that size, switchgear's running 40+ weeks and the spec usually buries a gear item the E-sheets miss. We built Perch to read the full set and surface those before bid day. <b>I already ran your package. It flagged 3 worth a look.</b> Worth 15 min?</div>
+              <div class="chat" style="margin-top:9px"><div class="who">CVE replies</div><div class="bub them">…how do you know what we're bidding? Send a couple times.</div></div>
+            </div>
+          </div>
+          <div class="txt">
+            <p class="narr">The SDR sends a message that could only be written about <b>this</b> company: their real pursuit, their real pain, a real finding. That's why it gets a reply instead of the trash. The agents wrote the first draft; the SDR adds the human touch.</p>
+            <div class="cubox"><span class="cl">Customization here</span> The outbound is <b>generated from the battle pack</b>. The SDR's job shifts from "research + write" to <b>"review + send + book."</b> 100× more personalized than a sequence.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step hu">
+      <div class="rail"><div class="num"></div><div class="wire"></div></div>
+      <div class="body">
+        <div class="shead"><span class="st">AE call: insight, not discovery</span><span class="pill p-human">👤 human</span><span class="pill p-cust">customize</span></div>
+        <div class="row">
+          <div class="mock">
+            <div class="mbar"><i></i><i></i><i></i><span class="url">discovery call · CVE</span></div>
+            <div class="mb chat">
+              <div class="who">AE (Perch)</div>
+              <div class="bub them">"I'll skip discovery. I know Cache Valley: ~2,300 people, design-build, big on mission-critical, mature team on Accubid. So here's the only thing worth your 15 minutes…" <b>[shares the 3 flags on their real package]</b></div>
+              <div class="who">VP Precon</div>
+              <div class="bub us">"We've got a strong estimating team and we run Accubid. What's this replace?"</div>
+              <div class="who">AE</div>
+              <div class="bub them">"Nothing. Your team's why you win. Perch just reads the 800-page set <i>first</i> so they spend hours on judgment, not page-flipping. It caught that 40-wk gear item in 90 seconds. That's the wedge."</div>
+            </div>
+          </div>
+          <div class="txt">
+            <p class="narr">The AE walks in already knowing CVE cold, so the first call is <b>insight, not discovery.</b> And because the battle pack flagged the objection, the AE has the rebuttal ready: Perch <i>arms</i> the estimators, doesn't replace them.</p>
+            <div class="cubox"><span class="cl">Customization here</span> Talk track + objection handling <b>pre-loaded per account</b>. The AE confirms the amber MEDDPICC cells (EB, champion) live on this call.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step hu">
+      <div class="rail"><div class="num"></div><div class="wire"></div></div>
+      <div class="body">
+        <div class="shead"><span class="st">The demo: pre-loaded with their data</span><span class="pill p-surface">Jobs · Analytics</span><span class="pill p-build">to build</span></div>
+        <div class="row">
+          <div class="mock">
+            <div class="mbar"><i></i><i></i><i></i><span class="url">app.perch.pro/demo/cve</span></div>
+            <div class="mb">
+              <div style="font-size:11.5px;color:var(--ink2);margin-bottom:8px">AE shares screen, already CVE's world:</div>
+              <span class="chip g">MW data-center pkg · scoped</span><span class="chip g">3 gear flags</span><span class="chip g">device counts</span>
+              <div class="lbl2" style="margin:10px 0 4px">Estimating-at-scale view</div>
+              <span class="chip">6 estimators</span><span class="chip">standardized bids</span><span class="chip">Company Brain · senior knowledge</span>
+            </div>
+          </div>
+          <div class="txt">
+            <p class="narr">The AE doesn't demo a generic sandbox. They open Perch <b>already populated with CVE's real pursuit</b> (the step-3 pre-takeoff) plus the enterprise frame: how a 6-estimator team standardizes, and how Company Brain keeps senior knowledge.</p>
+            <div class="cubox"><span class="cl">Customization here</span> The demo env is <b>seeded from the pre-run</b>, not built live. Same surfaces a self-serve user sees, just driven by a human on a screen-share.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PHASE C -->
+  <div class="phase c"><div class="lbl">▼ PHASE C · Converge: <b>same product surfaces</b>, seated by the FDE</div><div class="line"></div></div>
+  <div class="flow" style="counter-reset:step 7">
+
+    <div class="step">
+      <div class="rail"><div class="num"></div><div class="wire"></div></div>
+      <div class="body">
+        <div class="shead"><span class="st">Seat the team + migrate</span><span class="pill p-surface">Team · Import</span><span class="pill p-cust">customize</span></div>
+        <div class="row">
+          <div class="mock">
+            <div class="mbar"><i></i><i></i><i></i><span class="url">app.perch.pro/team · CVE</span></div>
+            <div class="mb">
+              <div class="lbl2" style="margin-bottom:6px">FDE seats the estimating dept</div>
+              <div class="invrow"><span class="av"></span><span>VP Precon (champion)</span><span class="dd">Admin</span></div>
+              <div class="invrow"><span class="av"></span><span>6 estimators</span><span class="dd">Estimator</span></div>
+              <div class="invrow"><span class="av"></span><span>VDC lead</span><span class="dd">Member</span></div>
+              <div class="btn" style="margin-top:9px">Import historical jobs</div>
+            </div>
+          </div>
+          <div class="txt">
+            <p class="narr">Instead of one self-serve user, an <b>FDE seats the whole estimating dept</b>, assigns roles, and Perch imports CVE's historical jobs so the team lands in a populated, familiar system.</p>
+            <div class="cubox"><span class="cl">Customization here</span> Role-aware seating at enterprise scale + <span class="greenfield">historical-job migration</span>. Same Team surface as self-serve, operated by a human, for many seats.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="rail"><div class="num"></div></div>
+      <div class="body">
+        <div class="shead"><span class="st">Close: AE + MEDDPICC</span><span class="pill p-surface">Plan · Contract</span><span class="pill p-built">built</span></div>
+        <div class="row">
+          <div class="mock">
+            <div class="mbar"><i></i><i></i><i></i><span class="url">perch.internal/cve/meddpicc · closing</span></div>
+            <div class="mb medd">
+              <div class="mrow"><span class="ml">M</span><span class="mv"><b>Metrics</b> agreed: bids/mo + gear-risk avoided</span><span class="dot d-ok"></span></div>
+              <div class="mrow"><span class="ml">E</span><span class="mv"><b>Econ buyer</b> confirmed: COO, in the room</span><span class="dot d-ok"></span></div>
+              <div class="mrow"><span class="ml">P</span><span class="mv"><b>Paper process:</b> annual enterprise, security review</span><span class="dot d-ok"></span></div>
+              <div class="mrow"><span class="ml">C</span><span class="mv"><b>Champion</b> confirmed: VP Precon</span><span class="dot d-ok"></span></div>
+            </div>
+            <div class="chip g" style="margin-top:9px">Enterprise annual · signed</div>
+          </div>
+          <div class="txt">
+            <p class="narr">A pre-qualified, multi-threaded close: the AE works the (now-green) MEDDPICC to an annual enterprise contract. Not a card-on-file. A signed deal, with Perch migrating their data.</p>
+            <div class="cubox"><span class="cl">Customization here</span> The close is <b>human + MEDDPICC</b> vs self-serve's in-flow card. <span class="p-built" style="padding:1px 5px;border-radius:4px">Billing exists</span>; enterprise contracting + security review is the added path.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CONTRAST -->
+  <h2>Self-serve vs white-glove: same engine, different last mile</h2>
+  <table class="cmp">
+    <thead><tr><th>&nbsp;</th><th class="ss">⚡ Self-serve (Squires)</th><th class="wg">🤝 White-glove (CVE)</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Research swarm</td><td>Arms the <b>agent</b></td><td>Arms the <b>human</b> (deeper, full dossier)</td></tr>
+      <tr><td class="k">First human touch</td><td>None, agent only</td><td>SDR, fully briefed by the battle pack</td></tr>
+      <tr><td class="k">The "wow"</td><td>Agent runs it live, in-flow</td><td>AE shows it: pre-run on their real pursuit</td></tr>
+      <tr><td class="k">Qualification</td><td>Implicit (they self-select)</td><td>MEDDPICC, pre-filled by research</td></tr>
+      <tr><td class="k">Close</td><td>Trial → card, one session</td><td>AE + annual enterprise contract</td></tr>
+      <tr><td class="k">Speed</td><td>Minutes</td><td>Days, but first touch is insight, not discovery</td></tr>
+      <tr><td class="k">Product surfaces</td><td colspan="2" style="color:var(--ink2)">Identical: Jobs · Chat · Sarah · Company Brain · Team · Plan. White-glove just seats more of them, via a human.</td></tr>
+    </tbody>
+  </table>
+  <p class="meta" style="margin-top:12px"><b style="color:var(--ink)">The matrix is forming:</b> <span style="color:var(--cold,#3E6E8E)">cold/warm</span> (how much we know) × <span style="color:var(--green)">self-serve/white-glove</span> (who carries it) = the four routes the <b>decision tree</b> has to handle. Next: turn the three walkthroughs into that tree.</p>
+
+</div>
+<script src="/nav.js" defer></script>
+</body>
+</html>

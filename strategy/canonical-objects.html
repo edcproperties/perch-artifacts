@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Perch Canon · Canonical Objects, Grounded in the Code</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E8E6DF; --surface:#F5F3EE; --surface-2:#FBFAF6;
+    --ink:#181917; --slate:#5D5F5A; --faint:#8A8B84;
+    --line:#CECBC1; --line-soft:#DEDBD2;
+    --signal:#D2531D; --signal-deep:#A23C12;
+    --green:#5E7E52; --gold:#9A7B1F; --blue:#3E6E8E; --red:#B23A2E;
+    --sans:'Archivo','Helvetica Neue',Arial,sans-serif;
+    --mono:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+    --maxw:1020px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+  header{padding:68px 0 38px;border-bottom:2px solid var(--ink)}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--signal);font-weight:600}
+  h1{font-size:clamp(34px,5.4vw,54px);font-weight:800;letter-spacing:-.02em;line-height:1.06;margin:14px 0 16px}
+  .dek{font-size:20px;color:var(--slate);max-width:820px;line-height:1.5}
+  .byline{font-family:var(--mono);font-size:12.5px;color:var(--faint);margin-top:20px}
+  section{padding:48px 0 6px}
+  .sec-label{display:flex;align-items:baseline;gap:14px;border-bottom:1px solid var(--ink);padding-bottom:10px;margin-bottom:26px}
+  .sec-letter{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--signal)}
+  .sec-label h2{font-size:25px;font-weight:700;letter-spacing:-.01em}
+  .sec-label .aud{margin-left:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+  h3{font-size:18px;font-weight:700;margin:26px 0 10px}
+  p{margin:0 0 15px;max-width:800px}
+  p.note{font-size:13.5px;color:var(--faint);font-family:var(--mono);max-width:820px}
+  strong{font-weight:700} em{font-style:italic}
+  code{font-family:var(--mono);font-size:12.5px;background:var(--surface);border:1px solid var(--line-soft);padding:1px 5px;border-radius:2px;color:var(--signal-deep);white-space:nowrap}
+  .headline{border:2px solid var(--ink);background:var(--surface-2);padding:26px 30px;margin:6px 0 8px}
+  .headline p{font-size:19px;line-height:1.55;margin:0;max-width:none}
+  .headline b{color:var(--signal-deep)}
+  .statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:13px;margin:18px 0 8px}
+  .stat{background:var(--surface-2);border:1px solid var(--line);padding:16px 15px 13px}
+  .stat b{display:block;font-size:29px;font-weight:800;letter-spacing:-.02em;line-height:1}
+  .stat span{display:block;font-family:var(--mono);font-size:11px;color:var(--slate);margin-top:7px;line-height:1.45}
+  .stat.hot b{color:var(--signal)}
+  table{border-collapse:collapse;width:100%;margin:14px 0 24px;font-size:14px}
+  th{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;text-align:left;color:var(--slate);border-bottom:2px solid var(--ink);padding:8px 10px 8px 0;font-weight:600;vertical-align:bottom}
+  td{border-bottom:1px solid var(--line-soft);padding:10px 10px 10px 0;vertical-align:top}
+  td.mono,span.mono{font-family:var(--mono);font-size:12px}
+  .v{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.05em;padding:2px 8px;border-radius:10px;color:#fff;white-space:nowrap}
+  .v.harden{background:var(--green)} .v.promote{background:var(--blue)} .v.create{background:var(--signal)} .v.keep{background:var(--slate)} .v.fix{background:var(--red)}
+  .receipt{background:var(--surface-2);border-left:3px solid var(--signal);padding:14px 20px;margin:12px 0 20px;max-width:820px}
+  .receipt q{display:block;font-size:15.5px;font-style:italic;line-height:1.5;quotes:'\201C' '\201D'}
+  .receipt .who{font-family:var(--mono);font-size:11.5px;color:var(--slate);margin-top:8px;display:block}
+  .mine{border:1px solid var(--line);border-top:3px solid var(--red);background:var(--surface-2);padding:20px 22px;margin:0 0 16px}
+  .mine h4{font-size:16.5px;font-weight:700;margin-bottom:6px}
+  .mine p{font-size:15px;margin-bottom:8px;max-width:none}
+  .mine .meta{font-family:var(--mono);font-size:11.5px;color:var(--faint);border-top:1px dashed var(--line);padding-top:9px;margin-top:8px}
+  .mine .meta b{color:var(--slate)}
+  .rule-card{border:2px solid var(--ink);padding:20px 26px;margin:22px 0;background:var(--surface-2);max-width:820px}
+  .rule-card .rk{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--signal);font-weight:600}
+  .rule-card p{font-size:17.5px;font-weight:600;margin:7px 0 0;line-height:1.5;max-width:none}
+  ul.tight{margin:0 0 16px 22px;max-width:790px}
+  ul.tight li{margin-bottom:8px;font-size:15.5px}
+  .diagram-box{background:var(--surface-2);border:1px solid var(--line);padding:18px 14px 8px;margin:6px 0 10px;overflow-x:auto}
+  .lane-tag{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;padding:3px 9px;border:1px solid var(--line);background:var(--surface);margin-right:8px}
+  footer{margin-top:64px;border-top:2px solid var(--ink);padding:24px 0 56px}
+  footer p{font-family:var(--mono);font-size:11.5px;color:var(--faint);max-width:100%}
+  @media(max-width:780px){table{font-size:12.5px} .headline p{font-size:17px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Perch · Data Model · The Canonical Objects</div>
+  <h1>The Perch Canon</h1>
+  <p class="dek">Which objects deserve one record per real-world thing — answered from the code, not from theory. We read all 193 tables across Perch's three services, traced every dedup and merge mechanism already built, and pressure-tested the rules against 13,239 real Utah contractor records.</p>
+</header>
+
+<!-- ═══════ A · CEO LANE ═══════ -->
+<section>
+  <div class="sec-label"><span class="sec-letter">A</span><h2>The answer in one paragraph</h2><span class="aud">CEO + CTO</span></div>
+  <div class="headline">
+    <p>Perch has <b>eleven objects that should be canonical</b> — one record per real-world thing, shared across every customer. The surprise from reading the code: <b>Perch already builds toward this</b> — three separate canonicalization systems exist today (a SQL resolution engine, a global knowledge graph, and a project matcher), complete with a merge log and alias table. What's missing isn't machinery. It's <b>one unified canon with one doctrine</b> — plus the industry's real identity key (the contractor license), and fixes to <b>three verified landmines</b> that will silently fuse different companies together as the data grows.</p>
+  </div>
+  <div class="statgrid">
+    <div class="stat"><b>193</b><span>tables read across the platform (131 tenant-scoped · 48 global · 14 dual)</span></div>
+    <div class="stat hot"><b>11</b><span>objects that should be canonical</span></div>
+    <div class="stat"><b>3</b><span>parallel canon systems already in the code — not yet unified</span></div>
+    <div class="stat hot"><b>3</b><span>landmines verified in source + proven against real Utah data</span></div>
+    <div class="stat"><b>1</b><span>missing gold key: the state contractor license</span></div>
+  </div>
+  <p><strong>Why a CEO should care:</strong> every agent answer, every Workbench card, every network effect Perch will ever sell rests on one question — <em>when two customers talk about "IMS Masonry," is that one record or two?</em> Get it right and Perch compounds into a defensible industry graph. Get it wrong and agents put the wrong fact on the wrong card, pipeline counts inflate, and the reputation network can never be trusted.</p>
+</section>
+
+<!-- ═══════ B · THE MAP ═══════ -->
+<section>
+  <div class="sec-label"><span class="sec-letter">B</span><h2>The map — one canon, everything else points at it</h2><span class="aud">Both</span></div>
+  <div class="diagram-box">
+  <svg viewBox="0 0 1000 620" xmlns="http://www.w3.org/2000/svg" style="width:100%;min-width:760px;font-family:Archivo,Arial,sans-serif">
+    <defs>
+      <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="#8A8B84"/>
+      </marker>
+      <marker id="arrS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="#D2531D"/>
+      </marker>
+    </defs>
+
+    <!-- lane headers -->
+    <text x="120" y="30" font-size="12" letter-spacing="2" fill="#A23C12" font-weight="700" font-family="IBM Plex Mono,monospace">WHAT FEEDS IT</text>
+    <text x="425" y="30" font-size="12" letter-spacing="2" fill="#A23C12" font-weight="700" font-family="IBM Plex Mono,monospace">THE CANON · one per real thing</text>
+    <text x="775" y="30" font-size="12" letter-spacing="2" fill="#A23C12" font-weight="700" font-family="IBM Plex Mono,monospace">WHO USES IT</text>
+
+    <!-- ─ left: observation sources ─ -->
+    <g font-size="13">
+      <rect x="40" y="52"  width="200" height="40" fill="#FBFAF6" stroke="#CECBC1"/><text x="140" y="77" text-anchor="middle">Scanned email · calls · SMS</text>
+      <rect x="40" y="102" width="200" height="40" fill="#FBFAF6" stroke="#CECBC1"/><text x="140" y="127" text-anchor="middle">Documents · plan sets</text>
+      <rect x="40" y="152" width="200" height="40" fill="#FBFAF6" stroke="#CECBC1"/><text x="140" y="177" text-anchor="middle">Lead gen · cross-match</text>
+      <rect x="40" y="202" width="200" height="40" fill="#FBFAF6" stroke="#CECBC1"/><text x="140" y="227" text-anchor="middle">Imports · manual · CRM</text>
+      <rect x="40" y="252" width="200" height="40" fill="#FBFAF6" stroke="#CECBC1"/><text x="140" y="277" text-anchor="middle">Harvest: DOPL · Procore · AGC</text>
+
+      <!-- encounters funnel -->
+      <rect x="60" y="330" width="160" height="52" fill="#F5F3EE" stroke="#181917" stroke-width="1.5"/>
+      <text x="140" y="352" text-anchor="middle" font-weight="700">Encounters</text>
+      <text x="140" y="369" text-anchor="middle" font-size="11" fill="#5D5F5A">evidence + provenance</text>
+      <line x1="140" y1="92"  x2="140" y2="330" stroke="#DEDBD2"/>
+      <line x1="140" y1="292" x2="140" y2="330" stroke="#8A8B84" marker-end="url(#arr)"/>
+
+      <!-- resolution -->
+      <rect x="60" y="408" width="160" height="66" fill="#F5F3EE" stroke="#D2531D" stroke-width="1.5"/>
+      <text x="140" y="430" text-anchor="middle" font-weight="700" fill="#A23C12">Resolution</text>
+      <text x="140" y="446" text-anchor="middle" font-size="11" fill="#5D5F5A">key match → review queue</text>
+      <text x="140" y="461" text-anchor="middle" font-size="11" fill="#5D5F5A">merge log · reversible</text>
+      <line x1="140" y1="382" x2="140" y2="408" stroke="#8A8B84" marker-end="url(#arr)"/>
+      <line x1="220" y1="441" x2="320" y2="441" stroke="#D2531D" stroke-width="1.5" marker-end="url(#arrS)"/>
+    </g>
+
+    <!-- ─ center: the canon ─ -->
+    <g font-size="13.5">
+      <rect x="330" y="46" width="290" height="470" fill="#FBFAF6" stroke="#181917" stroke-width="2"/>
+      <!-- canonical objects -->
+      <rect x="350" y="66"  width="250" height="42" fill="#E8E6DF" stroke="#181917" stroke-width="1.5"/><text x="475" y="87" text-anchor="middle" font-weight="700">Company</text><text x="475" y="101" text-anchor="middle" font-size="10.5" fill="#5D5F5A" font-family="IBM Plex Mono,monospace">key: license # › domain+name</text>
+      <rect x="350" y="118" width="250" height="42" fill="#E8E6DF" stroke="#181917" stroke-width="1.5"/><text x="475" y="139" text-anchor="middle" font-weight="700">Person</text><text x="475" y="153" text-anchor="middle" font-size="10.5" fill="#5D5F5A" font-family="IBM Plex Mono,monospace">key: email › name+company</text>
+      <rect x="350" y="170" width="250" height="42" fill="#E8E6DF" stroke="#181917" stroke-width="1.5"/><text x="475" y="191" text-anchor="middle" font-weight="700">Project (the build)</text><text x="475" y="205" text-anchor="middle" font-size="10.5" fill="#5D5F5A" font-family="IBM Plex Mono,monospace">key: sourceHash · geo+name</text>
+      <rect x="350" y="222" width="250" height="42" fill="#E8E6DF" stroke="#181917" stroke-width="1.5"/><text x="475" y="243" text-anchor="middle" font-weight="700">Document content</text><text x="475" y="257" text-anchor="middle" font-size="10.5" fill="#5D5F5A" font-family="IBM Plex Mono,monospace">key: contentHash (sha)</text>
+      <rect x="350" y="274" width="250" height="42" fill="#E8E6DF" stroke="#181917" stroke-width="1.5"/><text x="475" y="295" text-anchor="middle" font-weight="700">Message identity</text><text x="475" y="309" text-anchor="middle" font-size="10.5" fill="#5D5F5A" font-family="IBM Plex Mono,monospace">key: internetMessageId</text>
+      <!-- license: to create -->
+      <rect x="350" y="326" width="250" height="42" fill="none" stroke="#D2531D" stroke-width="1.5" stroke-dasharray="6 4"/><text x="475" y="347" text-anchor="middle" font-weight="700" fill="#A23C12">License ▸ create</text><text x="475" y="361" text-anchor="middle" font-size="10.5" fill="#A23C12" font-family="IBM Plex Mono,monospace">key: state + license #</text>
+      <!-- taxonomies -->
+      <rect x="350" y="378" width="120" height="38" fill="#F5F3EE" stroke="#181917"/><text x="410" y="401" text-anchor="middle" font-size="12.5">Trades</text>
+      <rect x="480" y="378" width="120" height="38" fill="#F5F3EE" stroke="#181917"/><text x="540" y="401" text-anchor="middle" font-size="12.5">Sectors</text>
+      <rect x="350" y="424" width="120" height="38" fill="none" stroke="#D2531D" stroke-dasharray="6 4"/><text x="410" y="447" text-anchor="middle" font-size="12.5" fill="#A23C12">Project type ▸</text>
+      <rect x="480" y="424" width="120" height="38" fill="#F5F3EE" stroke="#181917"/><text x="540" y="447" text-anchor="middle" font-size="12.5">Geography</text>
+      <text x="475" y="492" text-anchor="middle" font-size="11" fill="#5D5F5A" font-family="IBM Plex Mono,monospace">+ alias table · merge log · review queue</text>
+    </g>
+
+    <!-- ─ right: tenancy / edges / work ─ -->
+    <g font-size="13">
+      <!-- tenancy -->
+      <rect x="700" y="52" width="260" height="96" fill="#FBFAF6" stroke="#CECBC1"/>
+      <text x="716" y="74" font-weight="700">Logo <tspan font-size="10.5" fill="#8A8B84">(tenant org)</tspan></text>
+      <text x="716" y="93" font-size="11.5" fill="#5D5F5A">subscription · members → logins</text>
+      <text x="716" y="112" font-size="11.5" fill="#5D5F5A">selfCompanyId → its own</text>
+      <text x="716" y="127" font-size="11.5" fill="#5D5F5A">canonical Company ●</text>
+      <line x1="700" y1="90" x2="620" y2="88" stroke="#D2531D" stroke-width="1.5" marker-end="url(#arrS)"/>
+
+      <!-- edges -->
+      <rect x="700" y="170" width="260" height="128" fill="#FBFAF6" stroke="#CECBC1"/>
+      <text x="716" y="192" font-weight="700">Edges <tspan font-size="10.5" fill="#8A8B84">(relationships — sticky facts live HERE)</tspan></text>
+      <text x="716" y="213" font-size="12">accounts → Company <tspan fill="#8A8B84" font-size="10.5">(pipeline/CRM)</tspan></text>
+      <text x="716" y="233" font-size="12">contacts → Person</text>
+      <text x="716" y="253" font-size="12">project_participants · bid_invitations</text>
+      <text x="716" y="273" font-size="12">org_relationships <tspan fill="#8A8B84" font-size="10.5">(GC ↔ sub graph)</tspan></text>
+      <text x="716" y="291" font-size="12">notes · calls · MEDDPICC · scores</text>
+      <line x1="700" y1="215" x2="620" y2="140" stroke="#8A8B84" marker-end="url(#arr)"/>
+      <line x1="700" y1="235" x2="620" y2="152" stroke="#8A8B84" marker-end="url(#arr)"/>
+
+      <!-- work -->
+      <rect x="700" y="322" width="260" height="104" fill="#FBFAF6" stroke="#CECBC1"/>
+      <text x="716" y="344" font-weight="700">Work <tspan font-size="10.5" fill="#8A8B84">(what a Logo does in Perch)</tspan></text>
+      <text x="716" y="365" font-size="12">jobs → Project ● <tspan fill="#8A8B84" font-size="10.5">(already canonical!)</tspan></text>
+      <text x="716" y="385" font-size="12">scopes · takeoffs · estimates · bids</text>
+      <text x="716" y="405" font-size="12">contracts · RFIs · field ops</text>
+      <line x1="700" y1="362" x2="620" y2="192" stroke="#D2531D" stroke-width="1.5" marker-end="url(#arrS)"/>
+
+      <!-- events -->
+      <rect x="700" y="450" width="260" height="66" fill="#FBFAF6" stroke="#CECBC1"/>
+      <text x="716" y="472" font-weight="700">Events <tspan font-size="10.5" fill="#8A8B84">(happened once / recomputable)</tspan></text>
+      <text x="716" y="492" font-size="12">workbench items · messages · alerts</text>
+      <text x="716" y="508" font-size="12">lead scores · usage · audit</text>
+    </g>
+
+    <!-- bottom rule -->
+    <rect x="40" y="548" width="920" height="52" fill="#F5F3EE" stroke="#181917" stroke-width="1.5"/>
+    <text x="500" y="570" text-anchor="middle" font-size="13.5" font-weight="700">The one rule that keeps every lego on the right card:</text>
+    <text x="500" y="589" text-anchor="middle" font-size="13">canonical objects hold only <tspan font-weight="700">universal facts</tspan> — everything sticky (notes, calls, deals, scores) attaches to a tenant's <tspan font-weight="700" fill="#A23C12">edge</tspan>, never the canon.</text>
+  </svg>
+  </div>
+  <p class="note">● = the link already exists in the schema. organizations.selfCompanyId (a Logo knows its canonical Company) and accounts.landedOrganizationId (a won account becomes a Logo) close the loop between the canon and tenancy — Brock's Company/Logo model is already wired at both ends.</p>
+</section>
+
+<!-- ═══════ C · THE ELEVEN ═══════ -->
+<section>
+  <div class="sec-label"><span class="sec-letter">C</span><h2>The eleven canonical objects</h2><span class="aud">CTO detail · CEO skim col 1 + verdict</span></div>
+  <p>Verdicts: <span class="v harden">HARDEN</span> already canonical in code — fix keys/rules · <span class="v promote">PROMOTE</span> machinery exists — elevate to true canon · <span class="v create">CREATE</span> doesn't exist yet · <span class="v keep">GLOBAL ALREADY</span> fine as-is.</p>
+  <table>
+    <thead><tr><th>Object</th><th>What it is</th><th>In the code today (receipt)</th><th>Canonical key</th><th>Verdict</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Company</strong></td><td>A real construction firm</td><td class="mono">companies: nullable-org "global graph" rows, canonical-name SQL fn + GLOBAL unique idx, resolution engine, merge log, aliases, encounters</td><td class="mono">license # (add) › domain+name › review</td><td><span class="v harden">HARDEN</span> <span class="v fix">FIX KEYS</span></td></tr>
+      <tr><td><strong>Person</strong></td><td>A human (≠ a login)</td><td class="mono">contacts: canonical lower(email) unique; name+company fallback; bi-graph matches cross-org by email/name</td><td class="mono">email › name+company</td><td><span class="v harden">HARDEN</span></td></tr>
+      <tr><td><strong>Project</strong></td><td>The physical build/site</td><td class="mono">projects: GLOBAL table, sourceHash unique, lat/lng + locationEvidence; LLM project-resolve; cross-match runs org×project</td><td class="mono">sourceHash · geo+name</td><td><span class="v keep">GLOBAL ALREADY</span></td></tr>
+      <tr><td><strong>Document content</strong></td><td>A plan set / spec (the bytes)</td><td class="mono">documents.contentHash indexed 3 ways — same PDF in two orgs = same hash, still two blobs</td><td class="mono">contentHash</td><td><span class="v promote">PROMOTE</span></td></tr>
+      <tr><td><strong>Message identity</strong></td><td>An email that exists once in the world</td><td class="mono">scanned_emails.internetMessageId (RFC-2822) + references threading — global by design</td><td class="mono">internetMessageId</td><td><span class="v keep">GLOBAL ALREADY</span></td></tr>
+      <tr><td><strong>License</strong></td><td>A state contractor credential</td><td class="mono">absent — zero license fields in 193 tables; DOPL feed exists outside Perch</td><td class="mono">state + license #</td><td><span class="v create">CREATE</span></td></tr>
+      <tr><td><strong>Trade</strong></td><td>What work a firm does</td><td class="mono">trades table (slug unique, global) — but projects.trades is loose JSONB, not FK'd</td><td class="mono">slug</td><td><span class="v harden">HARDEN</span></td></tr>
+      <tr><td><strong>Market sector</strong></td><td>What market a build serves</td><td class="mono">market_sectors global table; same loose-JSONB gap on projects</td><td class="mono">slug</td><td><span class="v harden">HARDEN</span></td></tr>
+      <tr><td><strong>Project type</strong></td><td>Office / retail / tilt-up…</td><td class="mono">free-text varchar(64) — no enum, no table; spelling drift guaranteed</td><td class="mono">slug (new)</td><td><span class="v create">CREATE</span></td></tr>
+      <tr><td><strong>Geography</strong></td><td>Place: city/county/state</td><td class="mono">location-utils normalizes city/state; lat/lng on projects; no place entity — fine for now</td><td class="mono">state+county+city (later: place id)</td><td><span class="v promote">PROMOTE · LATER</span></td></tr>
+      <tr><td><strong>Organization (Logo)</strong></td><td>A tenant — a Company granted access</td><td class="mono">organizations global (139 inbound FKs); selfCompanyId→Company; subscriptions = active/paused/churned states</td><td class="mono">id + selfCompanyId link</td><td><span class="v keep">GLOBAL ALREADY</span></td></tr>
+    </tbody>
+  </table>
+  <p class="note">Deliberately NOT canonical — and that's correct: accounts (edge), jobs (work, already edged to Project), scopes/bids/estimates/contracts (work), knowledge units + company brain (a Logo's private IP — sharing is a product decision, not a default), workbench items/messages/scores (events). User (login) is global via email+supabaseId and stays distinct from Person.</p>
+</section>
+
+<!-- ═══════ D · LANDMINES ═══════ -->
+<section>
+  <div class="sec-label"><span class="sec-letter">D</span><h2>Three landmines — verified in source, proven on real data</h2><span class="aud">Both — this is the urgent part</span></div>
+  <p>We didn't just read the rules — we ran 13,239 real Utah contractor records (DOPL + Procore + AGC) through a conservative resolution pass and checked Perch's current rules against what the field data actually does.</p>
+
+  <div class="mine">
+    <h4>① The global company-name uniqueness constraint forces false merges</h4>
+    <p><code>companies_canonical_name_unique</code> is enforced on the normalized name <strong>across the entire platform</strong> — no org in the index. But company names legitimately collide: our Utah pass found <strong>98 same-name, different-firm collisions</strong> (two unrelated "Naycor Construction"s; Cache Valley Electric's separate entities). Under this constraint the second real company either can't exist or silently becomes the first.</p>
+    <div class="meta"><b>Where:</b> schema/companies.ts:101 · <b>Fix:</b> uniqueness belongs to the resolution engine + review queue, not a name constraint. Names are match <em>signals</em>, never identity.</div>
+  </div>
+
+  <div class="mine">
+    <h4>② Auto-merge on exact domain match fuses corporate families</h4>
+    <p><code>match-signals.ts</code> auto-merges two companies the moment their domains match exactly. Field data says shared domain ≠ same company: <strong>stakerparson.com spans 5 distinct firms</strong> (Western Rock, Jack B. Parson, Hales Sand &amp; Gravel…), burbachexteriors.com spans 4, one Nevada phone line spans 6. Our pass held <strong>321 shared-domain/phone cases for review</strong> — every one a would-be false merge under the current rule.</p>
+    <div class="meta"><b>Where:</b> resolution/match-signals.ts:68,158 · <b>Fix:</b> demote domain to a strong signal that requires name agreement; shared-infrastructure hits route to a corporate-family review queue (link as parent/child — never fuse). Contact email auto-merge is fine and should stay.</div>
+  </div>
+
+  <div class="mine">
+    <h4>③ One login can only ever belong to one organization</h4>
+    <p><code>organization_members.userId</code> is globally unique — a person can be a member of exactly one Logo, forever. The field contradicts this: owner-operators run multiple entities (one Las Vegas family operates six sibling LLCs on one phone line), estimators change firms, and consultants span several. Today each case means duplicate human identities.</p>
+    <div class="meta"><b>Where:</b> schema/organization-members.ts:18 · <b>Fix:</b> a deliberate decision, not an accident of a unique index — either embrace single-org logins as policy or lift the constraint to (organizationId, userId). Flag for the tenancy roadmap.</div>
+  </div>
+
+  <div class="rule-card">
+    <div class="rk">The doctrine, in one line</div>
+    <p>A false merge is a cross-tenant incident; a false split is a cheap later fix. Deterministic keys auto-resolve, everything ambiguous goes to a review queue, every merge is logged and reversible — and the merge log Perch already built (<code>entity_merge_log</code>) needs only an UNMERGE to complete it.</p>
+  </div>
+</section>
+
+<!-- ═══════ E · UNIFY ═══════ -->
+<section>
+  <div class="sec-label"><span class="sec-letter">E</span><h2>Three canons today → one canon</h2><span class="aud">CTO</span></div>
+  <p>The real architectural finding: canonicalization exists <strong>three times</strong>, with three different match rules and no shared doctrine.</p>
+  <table>
+    <thead><tr><th>System</th><th>Lives in</th><th>Matches on</th><th>Gap</th></tr></thead>
+    <tbody>
+      <tr><td><strong>SQL resolution engine</strong></td><td class="mono">web_server · business-intelligence/resolution/</td><td class="mono">weighted signals (name .30, domain .25 auto, phone/geo/trade .15)</td><td>domain auto-merge landmine; no review queue</td></tr>
+      <tr><td><strong>BI knowledge graph</strong></td><td class="mono">agents · knowledge/bi-graph.service.ts (Neo4j)</td><td class="mono">"globally canonical — matched by NAME regardless of org"</td><td>name-only matching; separate store, can drift from SQL</td></tr>
+      <tr><td><strong>Project matcher</strong></td><td class="mono">agents · project-resolve + projects.sourceHash</td><td class="mono">hash + LLM (name, city, state, contractor)</td><td>the healthiest of the three — the pattern to standardize on</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Recommendation:</strong> one resolution service, one key hierarchy per object, one review queue, one merge log — the SQL engine and the Neo4j graph become <em>views of the same canon</em> instead of independent opinions. The Project pattern (global table + deterministic hash + assisted matching + org-scoped work edging into it) is the house pattern; Company and Document should be shaped exactly like it.</p>
+
+  <h3>Sequence (architecture now, algorithms later)</h3>
+  <table>
+    <thead><tr><th></th><th>Move</th><th>Why now / why wait</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">NOW</td><td>Defuse ①② (drop name-unique constraint in favor of the engine; demote domain auto-merge) · add the review queue · add UNMERGE</td><td>Cheap, prevents silent data corruption that grows with every ingested email</td></tr>
+      <tr><td class="mono">NOW</td><td>Create <strong>License</strong> (state+number, class, status, expiry, qualifier → Company) and ingest the DOPL corpus against it</td><td>The one deterministic industry key; 6,822 Utah records ready to load — other states are a data-acquisition roadmap, not a schema change</td></tr>
+      <tr><td class="mono">NOW</td><td>FK the loose taxonomies (projects.trades / marketSectors → tables; projectType → new enum)</td><td>Free-text taxonomy is quiet entropy; tables already exist</td></tr>
+      <tr><td class="mono">NEXT</td><td>Unify the three canons behind one service; encounters become the universal provenance feed</td><td>Structural, medium effort, huge agent-correctness payoff</td></tr>
+      <tr><td class="mono">NEXT</td><td>Promote Document content (canonical content row; per-org document references it)</td><td>Same plan set uploaded by GC + 3 subs = one analysis, four views — direct compute savings</td></tr>
+      <tr><td class="mono">LATER</td><td>Corporate-family hierarchy (versioned parent_of edges) · probabilistic matching · place entities · the shared reputation tier</td><td>Wait for data volume to force them — the D&amp;B playbook, not day-one machinery</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══════ F · RECEIPTS ═══════ -->
+<section>
+  <div class="sec-label"><span class="sec-letter">F</span><h2>How we know — the homework</h2><span class="aud">Credibility</span></div>
+  <ul class="tight">
+    <li><strong>Census:</strong> all 193 tables enumerated and classified (131 org-scoped, 14 nullable, 48 global; 580+ FKs). Gravity centers: organizations (139 inbound FKs), users (89), jobs (59).</li>
+    <li><strong>Mechanism trace:</strong> every dedup/merge/alias artifact read in source — resolution engine, bi-graph, project-resolve, entity_merge_log, entity_aliases, company/contact encounters, plan-request vector dedup, email threading.</li>
+    <li><strong>Landmine verification:</strong> each of the three claims re-read directly in source — companies.ts:101 · match-signals.ts:68,158 · organization-members.ts:18.</li>
+    <li><strong>Field backtest:</strong> rules pressure-tested against 13,239 real Utah contractor records → 12,283 canonical companies, 98 name collisions, 321 shared-infrastructure families — the numbers behind landmines ① and ②.</li>
+  </ul>
+  <div class="receipt">
+    <q>Nodes are globally canonical — matched by name regardless of which org originally discovered them.</q>
+    <span class="who">precon_agents · knowledge/bi-graph.service.ts — Perch's own code, already declaring the ambition. This document is the plan for finishing it safely.</span>
+  </div>
+</section>
+
+</div>
+</body>
+</html>

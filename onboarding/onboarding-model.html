@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Perch · Journey → Onboarding → Initialization</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E8E6DF; --panel:#FBFAF6; --panel2:#F5F3EE; --line:#CECBC1;
+    --ink:#181917; --ink2:#5D5F5A; --ink3:#8A8B84;
+    --blue:#3E6E8E; --green:#5E7E52; --amber:#9A7B1F; --grey:#8A8B84; --red:#B23A2E; --violet:#6F5499;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 'Archivo',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1140px;margin:0 auto;padding:40px 28px 90px}
+  h1{font-size:26px;margin:0 0 6px;letter-spacing:-.01em}
+  .sub{color:var(--ink2);margin:0 0 18px}
+  .meta{color:var(--ink3);font-size:13px;margin:0 0 24px}
+  h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin:38px 0 14px;border-bottom:1px solid var(--line);padding-bottom:8px}
+  .confirm{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.04em;color:var(--amber);background:rgba(154,123,31,.14);border:1px solid rgba(154,123,31,.3);border-radius:6px;padding:1px 6px;vertical-align:middle;margin-left:6px}
+  .thesis{background:linear-gradient(180deg,rgba(62,110,142,.10),rgba(62,110,142,.03));border:1px solid rgba(62,110,142,.28);border-radius:14px;padding:16px 20px;margin:0 0 10px;font-size:14.5px;color:var(--ink2)}
+  .thesis b{color:var(--blue)} .thesis i{color:var(--ink)}
+  /* layers */
+  .layers{display:grid;grid-template-columns:1fr 1.7fr;gap:14px}
+  @media(max-width:820px){.layers{grid-template-columns:1fr}}
+  .layer{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+  .layer .tag{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:999px;display:inline-block;margin-bottom:8px}
+  .t-journey{background:rgba(111,84,153,.16);color:var(--violet)}
+  .t-onb{background:rgba(62,110,142,.16);color:var(--blue)}
+  .t-init{background:rgba(94,126,82,.16);color:var(--green)}
+  .layer h3{margin:0 0 3px;font-size:16px}
+  .layer .ql{color:var(--ink3);font-size:12.5px;margin-bottom:10px}
+  .layer .goal{font-size:13px;color:var(--ink2);margin-top:8px}
+  .layer .goal b{color:var(--ink)}
+  .steps{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0 2px}
+  .stp{font-size:12px;border:1px solid var(--line);border-radius:9px;padding:5px 10px;background:var(--panel2);display:flex;gap:7px;align-items:center}
+  .stp .n{font-weight:800;font-size:11px}
+  .stp.j .n{color:var(--violet)} .stp.s .n{color:var(--blue)} .stp.i .n{color:var(--green)}
+  .stp.i{border-color:rgba(94,126,82,.3);background:rgba(94,126,82,.06)}
+  .half{font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);margin:12px 0 4px}
+  .onbwrap{border:1px dashed rgba(62,110,142,.35);border-radius:12px;padding:12px 14px}
+  /* init zoom */
+  .initbox{background:rgba(94,126,82,.05);border:1px solid rgba(94,126,82,.28);border-radius:14px;padding:18px 20px;margin-top:14px}
+  .initbox h3{margin:0 0 6px;font-size:16px;color:var(--green)}
+  .initbox p{color:var(--ink2);font-size:13.5px;margin:0 0 12px}
+  .levers{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+  .lever{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:11px 13px}
+  .lever b{font-size:13px} .lever small{display:block;color:var(--ink3);font-size:11.5px;margin-top:2px}
+  /* roles table */
+  table{width:100%;border-collapse:collapse;margin-top:4px;font-size:13.5px}
+  th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+  th{color:var(--ink3);font-size:11px;text-transform:uppercase;letter-spacing:.05em;font-weight:700;background:var(--panel2)}
+  .sidep{color:var(--blue);font-weight:700;font-size:11px} .sidec{color:var(--amber);font-weight:700;font-size:11px}
+  .tbd{color:var(--ink3);font-style:italic}
+  .use-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px}
+  .ub-prime{background:rgba(62,110,142,.16);color:var(--blue)} .ub-sec{background:rgba(140,150,160,.16);color:var(--grey)}
+  /* pipeline */
+  .pipe{display:flex;flex-wrap:wrap;align-items:stretch;gap:0}
+  .pstep{flex:1;min-width:150px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px 14px;position:relative}
+  .pstep+.pstep{margin-left:10px}
+  .pstep .pn{font-size:10.5px;font-weight:800;color:var(--violet);letter-spacing:.05em}
+  .pstep b{display:block;font-size:13.5px;margin:3px 0}
+  .pstep small{color:var(--ink3);font-size:11.5px}
+  .parrow{align-self:center;color:var(--ink3);font-size:18px;padding:0 2px}
+  .pbar{margin-top:12px;font-size:12.5px;color:var(--ink2);background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 13px}
+  .pbar .pct{font-size:10.5px;font-weight:800;color:var(--red);background:rgba(178,58,46,.14);border:1px solid rgba(178,58,46,.32);border-radius:6px;padding:1px 7px;margin:0 4px}
+  /* locked/deferred */
+  .ld{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px}
+  @media(max-width:760px){.ld{grid-template-columns:1fr}}
+  .ldc{border-radius:14px;padding:16px 18px;border:1px solid var(--line)}
+  .ldc.lock{background:rgba(94,126,82,.06);border-color:rgba(94,126,82,.28)}
+  .ldc.def{background:rgba(154,123,31,.05);border-color:rgba(154,123,31,.26)}
+  .ldc h4{margin:0 0 9px;font-size:12px;letter-spacing:.05em;text-transform:uppercase}
+  .ldc.lock h4{color:var(--green)} .ldc.def h4{color:var(--amber)}
+  .ldc ul{margin:0;padding-left:17px} .ldc li{font-size:13px;color:var(--ink2);margin:6px 0}
+  .ldc li b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Journey → Onboarding → <span style="color:var(--green)">Initialization</span></h1>
+  <p class="sub">How a GC or sub goes from finding us to hooked.</p>
+  <p class="meta">Perch · CRO cockpit · v0 · Jun 24 2026 · ~/perch-cro/onboarding</p>
+
+  <div class="thesis">
+    <b>The thesis.</b> Customer journey, onboarding, and initialization are <i>related but distinct</i>. The journey gets them <i>to the door</i>. Onboarding's job is <i>not to collect data</i>. It's to get them <i>using the tool</i>. And per Brock, the last 4–5 onboarding steps <i>are</i> initialization: first real activity, the moment stickiness is created. So sub-agents should pre-fill the boring setup the instant we have an email, to push the customer into <i>use</i> as fast as possible.
+  </div>
+
+  <!-- 1. CATEGORIES -->
+  <h2>1 · Who: the customer categories (unchanged)</h2>
+  <p class="meta" style="margin:-4px 0 10px">Two types only for this exercise: <b style="color:var(--ink)">GC</b> (1 category) and <b style="color:var(--ink)">Subcontractor</b> (34 trades). Each banded <b>S / M / L</b> by revenue → size decides the journey: <span style="color:var(--blue)">S = self-serve</span>, <span style="color:var(--green)">M/L = white-glove</span>. (HO = homeowner is just the 3rd account-type option at verify, not a track we build.) Full bands in the funnel map.</p>
+
+  <!-- 2. THREE LAYERS -->
+  <h2>2 · The three layers: related but not the same thing</h2>
+  <div class="layers">
+    <div class="layer">
+      <span class="tag t-journey">Customer Journey</span>
+      <h3>Find us → at the door</h3>
+      <div class="ql">"How do they get to Perch?"</div>
+      <div class="steps">
+        <span class="stp j"><span class="n">ch</span>6 acquisition channels</span>
+        <span class="stp j"><span class="n">·</span>LP / HP</span>
+        <span class="stp j"><span class="n">0</span>Book a demo?</span>
+      </div>
+      <div class="goal">Goal: <b>arrival</b>. Owned by marketing + PLG/SLG. Ends at signup intent.</div>
+    </div>
+
+    <div class="layer">
+      <span class="tag t-onb">Onboarding</span>
+      <h3>Through the door → using the tool</h3>
+      <div class="ql">The 8-step flow, two halves.</div>
+      <div class="onbwrap">
+        <div class="half" style="color:var(--blue)">Setup half (1–4): account exists & configured</div>
+        <div class="steps">
+          <span class="stp s"><span class="n">1</span>Create org</span>
+          <span class="stp s"><span class="n">2</span>Verify · GC/Sub/HO</span>
+          <span class="stp s"><span class="n">3</span>Industry / trade</span>
+          <span class="stp s"><span class="n">4</span>Plan</span>
+        </div>
+        <div class="half" style="color:var(--green)">Initialization half (5–8): first activity & stickiness</div>
+        <div class="steps">
+          <span class="stp i"><span class="n">5</span>Invites</span>
+          <span class="stp i"><span class="n">6</span>Onboard · freeform</span>
+          <span class="stp i"><span class="n">7</span>Dumped into chat</span>
+          <span class="stp i"><span class="n">8</span>Init !!!</span>
+        </div>
+      </div>
+      <div class="goal">Goal: <b>get them using it</b> (not data collection). The setup half should be near-invisible (pre-filled by agents) so they reach the init half fast.</div>
+    </div>
+  </div>
+
+  <!-- 3. INIT -->
+  <h2>3 · Initialization = the stickiness engine</h2>
+  <div class="initbox">
+    <h3>Steps 5–8 · "using it → sticky"</h3>
+    <p>Brock's point: the back half of onboarding is really initialization, the customer's <b>first real activities</b> in the tool. This is where the habit forms and retention is won or lost. Every choice here answers one question: <b style="color:var(--green)">how do we make them use it from the get-go?</b></p>
+    <div class="levers">
+      <div class="lever"><b>Invite the team (5)</b><small>Multiplayer = switching cost. Pull in the right roles early.</small></div>
+      <div class="lever"><b>Load a real project (6)</b><small>Freeform onboard with their actual bid/job: value on day one, not a sandbox.</small></div>
+      <div class="lever"><b>Tom in chat (7)</b><small>The agent does something useful immediately, first "wow."</small></div>
+      <div class="lever"><b>Init (8)</b><small>Workspace stood up and live. They've crossed into real use.</small></div>
+      <div class="lever"><b>Integrate email</b><small>Wire Perch into where work already happens.</small></div>
+      <div class="lever"><b>Personalized + relevant</b><small>Name personalized, smarter questions, earned by the research pipeline below.</small></div>
+    </div>
+  </div>
+
+  <!-- 4. ROLES -->
+  <h2>4 · The role overlay: each role uses Perch differently <span class="confirm">locked: detail later</span></h2>
+  <p class="meta" style="margin:-4px 0 10px"><b style="color:var(--ink)">Locked in:</b> a company isn't one user: it's a set of roles, and each has a distinct day-to-day inside Perch. Onboarding &amp; initialization must <b>personalize per role</b> (what they see first, what they do first). Pre-con roles are the primary daily users (Perch is a precon product); con roles are secondary / field. The day-to-day per role is the next thing to define, placeholder below.</p>
+  <table>
+    <thead><tr><th style="width:140px">Role</th><th style="width:90px">Side</th><th style="width:110px">In app</th><th>Day-to-day in Perch: what they actually do</th></tr></thead>
+    <tbody>
+      <tr><td>Business owner</td><td><span class="sidep">PRE-CON</span></td><td><span class="use-badge ub-prime">PRIMARY</span></td><td class="tbd">TBD: champion/signer view</td></tr>
+      <tr><td>C-suite</td><td><span class="sidep">PRE-CON</span></td><td><span class="use-badge ub-prime">PRIMARY</span></td><td class="tbd">TBD: economic-buyer / portfolio view</td></tr>
+      <tr><td>Estimator</td><td><span class="sidep">PRE-CON</span></td><td><span class="use-badge ub-prime">PRIMARY</span></td><td class="tbd">TBD (core daily user: takeoff / bids)</td></tr>
+      <tr><td>PM / PE (exec)</td><td><span class="sidep">PRE-CON</span></td><td><span class="use-badge ub-prime">PRIMARY</span></td><td class="tbd">TBD: project setup, buyout</td></tr>
+      <tr><td>Director (PM mgr)</td><td><span class="sidec">CON</span></td><td><span class="use-badge ub-sec">SECONDARY</span></td><td class="tbd">TBD: oversight across projects</td></tr>
+      <tr><td>Foreman</td><td><span class="sidec">CON</span></td><td><span class="use-badge ub-sec">SECONDARY</span></td><td class="tbd">TBD: field lead</td></tr>
+      <tr><td>Laborers</td><td><span class="sidec">CON</span></td><td><span class="use-badge ub-sec">SECONDARY</span></td><td class="tbd">TBD: field roles / functions</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 5. SUB-AGENTS -->
+  <h2>5 · Sub-agent research: fire on first contact</h2>
+  <p class="meta" style="margin:-4px 0 12px">Trigger: <b style="color:var(--ink)">the moment we capture an email or website</b> (as early as step 0–1). Agents research in the background so the setup half is pre-filled and the onboarding can <b>steer itself</b> by company + role.</p>
+  <div class="pipe">
+    <div class="pstep"><span class="pn">TRIGGER</span><b>Email / website captured</b><small>The earliest signal we have.</small></div>
+    <span class="parrow">→</span>
+    <div class="pstep"><span class="pn">AGENT 1</span><b>Scan email → find site</b><small>Domain → company web presence.</small></div>
+    <span class="parrow">→</span>
+    <div class="pstep"><span class="pn">AGENT 2</span><b>Crawl & understand</b><small>What they build, who they serve, size, trade.</small></div>
+    <span class="parrow">→</span>
+    <div class="pstep"><span class="pn">ENRICH</span><b>Pre-fill onboarding</b><small>Type (GC/Sub), trade, size→band→journey, customers served.</small></div>
+    <span class="parrow">→</span>
+    <div class="pstep"><span class="pn">STEER</span><b>Detect role → personalize</b><small>Title/signature → tailor the flow per role.</small></div>
+  </div>
+  <div class="pbar">Reliability bar: the research must be near <span class="pct">100%</span> : in white-glove the human never re-keys it, and a wrong pre-fill is worse than a blank field. Payoff: less typing → reach real <b>use</b> (initialization) faster → stickier.</div>
+
+  <!-- 6. LOCKED / DEFERRED -->
+  <h2>6 · Locked vs deferred</h2>
+  <div class="ld">
+    <div class="ldc lock">
+      <h4>✓ Locked in now</h4>
+      <ul>
+        <li><b>Three layers</b>: journey ≠ onboarding ≠ initialization, but they chain.</li>
+        <li><b>Init = the last 4–5 steps</b> = first activity = where stickiness is made.</li>
+        <li><b>Onboarding's job is use, not data</b>: minimize setup friction.</li>
+        <li><b>Roles each use Perch differently</b> → personalize onboarding/init per role.</li>
+        <li><b>Sub-agents fire on email/website capture</b> to pre-fill & steer.</li>
+        <li><b>HO = homeowner</b>, 3rd account-type option only; exercise stays GC + Sub.</li>
+      </ul>
+    </div>
+    <div class="ldc def">
+      <h4>↦ Deferred: "we'll talk later"</h4>
+      <ul>
+        <li><b>Day-to-day per role</b>: fill the table in §4 (needs the real precon_web service/surface list).</li>
+        <li><b>Personalized onboarding flows</b>: the specific steered paths per company + role.</li>
+        <li><b>Stickiness mechanics</b>: which init levers we actually build first.</li>
+        <li><b>Sub-agent design</b>: how the agents run, what they write back, the 100% bar.</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+<script src="/nav.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Perch · Sales Playbook</title>
+<style>
+  :root{
+    --bg:#0c0e12; --panel:#14171d; --panel-2:#1a1e26; --border:#262b35; --border-soft:#20242d;
+    --ink:#e7eaf0; --ink-body:#aab2c0; --ink-sub:#6f7785;
+    --blue:#78bce6; --blue-dim:rgba(120,188,230,.14);
+    --green:#4ade80; --green-dim:rgba(74,222,128,.12);
+    --amber:#fbbf24; --amber-dim:rgba(251,191,36,.10);
+    --red:#f87171; --red-dim:rgba(248,113,113,.12);
+    --ember:#ff5a1f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:radial-gradient(1200px 600px at 50% -10%,rgba(120,188,230,.06),transparent 60%),var(--bg);
+    color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100vh}
+
+  /* ── top bar ── */
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(12,14,18,.82);backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border-soft)}
+  .topbar-inner{max-width:1000px;margin:0 auto;padding:11px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand .mark{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--blue),#4a90c4);
+    display:flex;align-items:center;justify-content:center;font-weight:800;color:#0c0e12;font-size:16px}
+  .brand .name{font-weight:700;font-size:14px;white-space:nowrap}.brand .name span{color:var(--ink-sub);font-weight:500}
+  .prog{margin-left:auto;display:flex;align-items:center;gap:9px;font-size:11.5px;color:var(--ink-sub)}
+  .prog-track{width:120px;height:6px;border-radius:99px;background:var(--panel-2);border:1px solid var(--border);overflow:hidden}
+  .prog-fill{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .35s}
+  .nav-pills{max-width:1000px;margin:0 auto;padding:0 16px 10px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+  .nav-pills::-webkit-scrollbar{display:none}
+  .pill{flex:0 0 auto;font-size:11.5px;font-weight:600;color:var(--ink-body);background:var(--panel);border:1px solid var(--border-soft);
+    border-radius:99px;padding:5px 11px;text-decoration:none;white-space:nowrap;transition:all .15s}
+  .pill:hover{border-color:var(--blue);color:var(--ink)}
+  .pill .pn{color:var(--ink-sub);margin-right:5px;font-weight:700}
+
+  .wrap{max-width:1000px;margin:0 auto;padding:32px 22px 110px}
+  h1{font-size:30px;font-weight:700;letter-spacing:-.02em;margin-bottom:8px}
+  .sub{color:var(--ink-body);font-size:14px;max-width:720px}
+  .sub b{color:var(--ink)}
+
+  .hero-card{margin:22px 0 8px;background:linear-gradient(135deg,var(--blue-dim),transparent 70%),var(--panel);
+    border:1px solid var(--border);border-radius:16px;padding:20px 22px}
+  .hero-card .tag{font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
+  .hero-card .big{font-size:20px;font-weight:700;letter-spacing:-.01em;margin:8px 0 6px;line-height:1.35}
+  .hero-card .big em{color:var(--blue);font-style:normal}
+  .hero-card p{font-size:13.5px;color:var(--ink-body)}
+
+  section.mod{margin-top:40px;scroll-margin-top:96px}
+  h2{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--blue);
+    margin-bottom:6px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  h2 .n{color:var(--ink-sub);font-weight:700}
+  h2 .badge{font-size:9.5px;font-weight:800;letter-spacing:.08em;padding:3px 8px;border-radius:99px;text-transform:uppercase}
+  .badge.grounded{color:var(--green);background:var(--green-dim);border:1px solid rgba(74,222,128,.3)}
+  .badge.draft{color:var(--blue);background:var(--blue-dim);border:1px solid rgba(120,188,230,.3)}
+  .badge.input{color:var(--amber);background:var(--amber-dim);border:1px solid rgba(251,191,36,.3)}
+  .mod-lead{font-size:13.5px;color:var(--ink-body);margin:4px 0 14px;max-width:760px}
+  .mod-lead b{color:var(--ink)}
+
+  .card{background:var(--panel);border:1px solid var(--border-soft);border-radius:14px;padding:16px 18px;margin-bottom:10px}
+  .card h3{font-size:15px;font-weight:650;margin-bottom:7px;display:flex;align-items:center;gap:8px}
+  .card h3 .ico{color:var(--blue)}
+  p{font-size:13.5px;color:var(--ink-body)}p+p{margin-top:8px}
+  b,strong{color:var(--ink)}
+  ul.clean{list-style:none;margin:6px 0 0}
+  ul.clean li{padding:4px 0 4px 18px;position:relative;font-size:13.5px;color:var(--ink-body)}
+  ul.clean li:before{content:"›";position:absolute;left:2px;color:var(--ink-sub)}
+  ul.clean li b{color:var(--ink)}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
+
+  table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:2px}
+  th{text-align:left;color:var(--ink-sub);font-weight:600;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;padding:8px 10px;border-bottom:1px solid var(--border)}
+  td{padding:9px 10px;border-bottom:1px solid var(--border-soft);color:var(--ink-body);vertical-align:top}
+  td b{color:var(--ink)} tr:last-child td{border-bottom:none}
+
+  /* deep-dive accordions (MEDDPICC) */
+  details{background:var(--panel);border:1px solid var(--border-soft);border-radius:12px;margin-bottom:8px;overflow:hidden}
+  summary{padding:13px 16px;cursor:pointer;font-weight:650;font-size:14px;display:flex;align-items:center;gap:9px;list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary:before{content:"+";color:var(--blue);font-weight:800;font-size:16px;width:14px}
+  details[open] summary:before{content:"–"}
+  .det-body{padding:0 16px 15px 16px;font-size:13px;color:var(--ink-body)}
+  .det-body .lbl{color:var(--blue);font-weight:700;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;display:block;margin:11px 0 4px}
+  .det-body ul{margin:4px 0 0;list-style:none}
+  .det-body li{padding:3px 0 3px 16px;position:relative}
+  .det-body li:before{content:"›";position:absolute;left:2px;color:var(--ink-sub)}
+
+  /* do / don't */
+  .dd{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:720px){.dd{grid-template-columns:1fr}}
+  .dd-col{border-radius:12px;padding:13px 15px;border:1px solid var(--border-soft)}
+  .dd-col.do{background:var(--green-dim);border-color:rgba(74,222,128,.25)}
+  .dd-col.dont{background:var(--red-dim);border-color:rgba(248,113,113,.25)}
+  .dd-col h4{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+  .dd-col.do h4{color:var(--green)} .dd-col.dont h4{color:var(--red)}
+  .dd-col li{font-size:12.5px;color:var(--ink-body);padding:3px 0 3px 16px;position:relative;list-style:none}
+  .dd-col.do li:before{content:"✓";position:absolute;left:0;color:var(--green)}
+  .dd-col.dont li:before{content:"✕";position:absolute;left:0;color:var(--red)}
+
+  /* copyable line */
+  .copyline{display:flex;align-items:flex-start;gap:10px;background:var(--panel-2);border:1px solid var(--border-soft);
+    border-radius:10px;padding:10px 12px;margin-bottom:7px}
+  .copyline .txt{flex:1;font-size:13px;color:var(--ink)}
+  .copyline .txt.q{color:var(--ink-body)}
+  .cbtn{flex:0 0 auto;font-size:10.5px;font-weight:700;color:var(--ink-sub);background:transparent;border:1px solid var(--border);
+    border-radius:7px;padding:4px 8px;cursor:pointer;transition:all .15s}
+  .cbtn:hover{border-color:var(--blue);color:var(--blue)}
+  .cbtn.ok{border-color:var(--green);color:var(--green)}
+
+  /* build-together callout */
+  .build{background:var(--amber-dim);border:1px solid rgba(251,191,36,.32);border-radius:12px;padding:14px 16px;margin:10px 0}
+  .build .bh{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--amber);margin-bottom:7px;display:flex;align-items:center;gap:7px}
+  .build ol{margin:0;padding-left:18px}
+  .build li{font-size:13px;color:var(--ink-body);padding:3px 0}
+  .build li b{color:var(--ink)}
+
+  .stat-row{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 2px}
+  .stat{flex:1 1 130px;background:var(--panel-2);border:1px solid var(--border-soft);border-radius:11px;padding:11px 13px}
+  .stat .v{font-size:19px;font-weight:750;color:var(--blue);letter-spacing:-.01em}
+  .stat .l{font-size:11px;color:var(--ink-sub);margin-top:2px}
+
+  /* notes */
+  .notes-wrap{margin-top:12px}
+  .notes-wrap label{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-sub);display:block;margin-bottom:5px}
+  textarea.notes{width:100%;min-height:62px;resize:vertical;background:var(--panel-2);border:1px solid var(--border-soft);
+    border-radius:10px;padding:10px 12px;color:var(--ink);font-family:inherit;font-size:13px;line-height:1.5}
+  textarea.notes:focus{outline:none;border-color:var(--blue)}
+  .saved{font-size:10.5px;color:var(--green);margin-left:8px;opacity:0;transition:opacity .2s}
+  .saved.show{opacity:1}
+
+  .foot{margin-top:50px;padding-top:18px;border-top:1px solid var(--border-soft);font-size:12px;color:var(--ink-sub);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  .foot button{font-size:11.5px;font-weight:650;color:var(--ink-body);background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:6px 13px;cursor:pointer}
+  .foot button:hover{border-color:var(--blue);color:var(--ink)}
+
+  @media print{
+    body{background:#fff;color:#000} .topbar,.nav-pills,.foot button,.cbtn{display:none}
+    details[open] .det-body,details .det-body{display:block!important} details{break-inside:avoid}
+    .card,.build,.hero-card{break-inside:avoid} textarea.notes{border:1px solid #ccc}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><div class="mark">P</div><div class="name">Perch <span>· Sales Playbook</span></div></div>
+    <div class="prog"><span id="progLabel">0 / 11 modules touched</span>
+      <div class="prog-track"><div class="prog-fill" id="progFill"></div></div></div>
+  </div>
+  <div class="nav-pills" id="navPills"></div>
+</div>
+
+<div class="wrap">
+  <h1>The Perch Sales Playbook</h1>
+  <p class="sub">The living enablement bible <b>and</b> the org-build blueprint. Disciples of MEDDPICC. We don't sell a faster horse — we sell the day the work does itself. <b>v0.1 · scaffold · Jun 2026</b> · pre-launch.</p>
+
+  <div class="hero-card">
+    <div class="tag">North Star</div>
+    <div class="big">We are not competing with Procore. <em>We're selling the future they can't build.</em></div>
+    <p>Perch isn't software a crew operates — it's a team of AI agents that does the precon and construction busywork and pulls a human in only for judgment, context, or a signature. Every conversation sells <b>that day</b>: the estimator shows up, reviews five things, approves three, provides context on two, and goes to the jobsite. The legacy stack is the faster horse. We're the car.</p>
+  </div>
+
+  <!-- ================= MODULE 1 ================= -->
+  <section class="mod" id="m1">
+    <h2><span class="n">01</span> The Thesis — the future we sell <span class="badge grounded">Grounded</span></h2>
+    <p class="mod-lead">Before a rep says a word about features, they sell the <b>category shift</b>. This module is the worldview every other module hangs off.</p>
+
+    <div class="card">
+      <h3><span class="ico">◆</span> The fundamental inversion</h3>
+      <p>Most "construction tech" is a <b>tool humans operate</b> — a faster way to do the same clicking. Perch inverts it: <b>agents are the primary workers; humans are the specialized resource the agents call on</b> when judgment, context, or physical action is needed. You don't manage Perch. Perch hands you a short, prioritized list and you approve, correct, or provide.</p>
+    </div>
+    <div class="card">
+      <h3><span class="ico">◆</span> The Company Brain</h3>
+      <p>Every customer gets a living <b>Company Brain</b> that starts learning at onboarding (their trades, sectors, the way they work) and gets smarter with every job, doc, email, and approval. Agents ground every decision in <i>that specific company's</i> knowledge — not generic AI. This is the moat: the longer they use it, the more it knows, the harder it is to leave.</p>
+    </div>
+    <div class="card">
+      <h3><span class="ico">◆</span> The Henry Ford reframe (your #4)</h3>
+      <p>"If I'd asked people what they wanted, they'd have said a faster horse." Procore, Bluebeam, BuildingConnected are <b>faster horses</b> — better versions of work the human still does. If we let the prospect compare us feature-for-feature against their stack, <b>we've already lost the frame.</b> We don't win the "better PM tool" argument; we make it irrelevant. The pitch is the destination, not the dashboard.</p>
+    </div>
+
+    <div class="build">
+      <div class="bh">🔨 Build together</div>
+      <ol>
+        <li><b>Category name.</b> What do we call this so it's ownable and not "AI for construction"? Candidates: <i>Agentic Preconstruction</i> · <i>The Construction Company Brain</i> · <i>Autonomous Precon</i>. Pick / coin one.</li>
+        <li><b>The one-sentence pitch</b> a superintendent repeats to his buddy at lunch. Needs your voice.</li>
+        <li><b>Three "from → to" shifts</b> (e.g. "from chasing emails → to approving five things"). Let's draft together.</li>
+      </ol>
+    </div>
+    <div class="notes-wrap"><label>Your notes — Module 1 <span class="saved" data-for="n1">saved</span></label><textarea class="notes" data-key="n1" placeholder="Category name ideas, the one-liner, reactions…"></textarea></div>
+  </section>
+
+  <!-- ================= MODULE 2 ================= -->
+  <section class="mod" id="m2">
+    <h2><span class="n">02</span> Personas — GCs & subs, by role <span class="badge draft">Draft</span></h2>
+    <p class="mod-lead">Persona-first: before any play, name <b>whose driver's seat</b> we're in. Two segments (GC, sub), and within each the roles think very differently.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>General Contractor (GC)</h3>
+        <ul class="clean">
+          <li><b>Owner / Principal</b> — economic buyer at SMB; cares about margin, risk, winning more work without more headcount.</li>
+          <li><b>VP Preconstruction / Chief Estimator</b> — #1 champion target; lives in takeoff, scope, leveling. Proud of precon as a strength.</li>
+          <li><b>Estimator</b> — daily user; buried in plans/specs, addenda, sub bids. Time-starved.</li>
+          <li><b>Project Manager</b> — RFIs, submittals, change orders, the GC↔sub comms hell.</li>
+          <li><b>Superintendent</b> — field; daily reports, schedule, manpower. Most allergic to "tech."</li>
+          <li><b>BD / Business Development</b> — relationships, "win more work."</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Subcontractor (Sub)</h3>
+        <ul class="clean">
+          <li><b>Owner / Principal</b> — wears many hats; economic buyer; estimates <i>and</i> runs the business.</li>
+          <li><b>Estimator</b> — drowning in invitations to bid (ITBs) from many GCs; tracks bids in spreadsheets.</li>
+          <li><b>PM / Foreman</b> — field execution, payroll, daily reports, certs, safety.</li>
+          <li><b>Office manager</b> — the human glue; chasing paper, payroll, compliance.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>What they all distrust (your #5)</h3>
+      <p>Blue-collar operators have been burned by software that promised the world, took months to set up, and made their day <i>harder</i>. They distrust "tech bros," jargon, and anything that smells like it was built by someone who's never been on a jobsite. <b>Respect the trade. Speak plainly. Prove it on their real job.</b></p>
+    </div>
+
+    <div class="build">
+      <div class="bh">🔨 Build together</div>
+      <ol>
+        <li><b>Rank the personas</b> for day-one targeting per segment. (Hypothesis: Sub Owner/Estimator and GC VP-Precon are the wedges.)</li>
+        <li>For each top persona: their <b>one daily moment of pain</b> we lead with, in their words.</li>
+        <li>Map <b>champion vs economic buyer</b> per segment (Built taught us the sub story; Zwick is teaching the GC story).</li>
+        <li>Anything from real Built / Zwick conversations that should overwrite my assumptions?</li>
+      </ol>
+    </div>
+    <div class="notes-wrap"><label>Your notes — Module 2 <span class="saved" data-for="n2">saved</span></label><textarea class="notes" data-key="n2" placeholder="Persona rankings, real pains, champion/EB mapping…"></textarea></div>
+  </section>
+
+  <!-- ================= MODULE 3 ================= -->
+  <section class="mod" id="m3">
+    <h2><span class="n">03</span> The status-quo stack <span class="badge grounded">Grounded</span></h2>
+    <p class="mod-lead">Your #7: understand what they run <b>today</b> — the layers, how they're stitched, what they cost — so we can show them the leap. We don't pitch feature-vs-feature; we map the seams that bleed money.</p>
+
+    <div class="card">
+      <h3>The layers of a typical GC/sub stack</h3>
+      <table>
+        <tr><th>Layer</th><th>Common tools</th><th>The job it does</th></tr>
+        <tr><td><b>Takeoff & estimating</b></td><td>PlanSwift, Bluebeam Revu, STACK, On-Screen Takeoff</td><td>Measure quantities off plans, build the estimate</td></tr>
+        <tr><td><b>Bid / opportunity mgmt</b></td><td>BuildingConnected, iSqFt / ConstructConnect, SmartBid</td><td>Find ITBs, send/track bids, manage sub coverage</td></tr>
+        <tr><td><b>Project management</b></td><td>Procore, Autodesk Build / PlanGrid</td><td>RFIs, submittals, daily logs, drawings, change orders</td></tr>
+        <tr><td><b>Accounting / ERP</b></td><td>Sage 300 CRE, Foundation, Viewpoint, QuickBooks</td><td>Job cost, payroll, AP/AR</td></tr>
+        <tr><td><b>The glue</b></td><td>Excel, email, text, phone</td><td>Everything the tools above <i>don't</i> talk about</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>The Software Kill Chart — what it costs (from our pricing page)</h3>
+      <div class="stat-row">
+        <div class="stat"><div class="v">$15k</div><div class="l">Procore /yr</div></div>
+        <div class="stat"><div class="v">$6.0k</div><div class="l">BuildingConnected</div></div>
+        <div class="stat"><div class="v">$5.4k</div><div class="l">iSqFt / ConstructConnect</div></div>
+        <div class="stat"><div class="v">$4.2k</div><div class="l">Bluebeam</div></div>
+        <div class="stat"><div class="v">$3.6k</div><div class="l">PlanSwift</div></div>
+        <div class="stat"><div class="v">~$34k</div><div class="l">Total /yr — that don't talk</div></div>
+      </div>
+      <p style="margin-top:10px">The killer insight isn't price — it's that <b>six tools that don't talk to each other</b> force humans to be the integration layer. Perch is <i>one</i> brain, <b>value-priced against the whole stack it replaces</b> (see Module 6). The cost we attack is the <b>human glue + labor</b>, not the license fees.</p>
+    </div>
+
+    <div class="build">
+      <div class="bh">🔨 Build together</div>
+      <ol>
+        <li>Validate the <b>named tools per segment</b> — what do Built and Zwick actually run? (Real stacks &gt; my generic list.)</li>
+        <li>Where are the <b>worst seams</b> — the handoffs where work falls through (estimate→PM, GC→sub, field→office)? Those are our entry wounds.</li>
+        <li>Should we keep a living <b>"stack teardown" worksheet</b> per prospect (feeds the <code>research/</code> folder)?</li>
+      </ol>
+    </div>
+    <div class="notes-wrap"><label>Your notes — Module 3 <span class="saved" data-for="n3">saved</span></label><textarea class="notes" data-key="n3" placeholder="Real customer stacks, worst seams, costs to verify…"></textarea></div>
+  </section>
+
+  <!-- ================= MODULE 4 ================= -->
+  <section class="mod" id="m4">
+    <h2><span class="n">04</span> The product — what Perch does <span class="badge grounded">Grounded</span></h2>
+    <p class="mod-lead">Your #2. The rep must know the surface cold — but always translate to outcome (Module 5), never recite features.</p>
+
+    <div class="grid2">
+      <div class="card"><h3>Precon engine</h3><ul class="clean">
+        <li>Upload plans/specs → AI reads them → <b>scope of work generated</b></li>
+        <li>Sheet identification, entity & quantity extraction</li>
+        <li><b>Scope-gap analyst</b> — finds commonly-missed items (blocking, fire caulking, sleeves, tie-ins) before they become change orders</li>
+        <li>Bid pipeline + bid comparison / leveling</li>
+      </ul></div>
+      <div class="card"><h3>The agent team</h3><ul class="clean">
+        <li><b>BD rep</b> — outreach drafts, pipeline health, email history</li>
+        <li><b>Estimator</b> — docs, quantities, specs, cost data</li>
+        <li><b>Legal analyst</b> — contract clauses, risk, compliance</li>
+        <li><b>Relationship researcher, scope-gap analyst, meeting briefer</b></li>
+        <li>Orchestrated — they consult each other, propose, never act without approval</li>
+      </ul></div>
+      <div class="card"><h3>The Company Brain & Workbench</h3><ul class="clean">
+        <li>Living knowledge of the org; brain-grounded citations on every output</li>
+        <li><b>Workbench</b> — five prioritized actions, not a dashboard</li>
+        <li><b>Agent guardrails</b> — per-org trust dial: start conservative, widen autonomy</li>
+        <li>Tribal knowledge capture, legal playbooks</li>
+      </ul></div>
+      <div class="card"><h3>Field ops (the back half)</h3><ul class="clean">
+        <li>Scheduling, daily reports, time approvals, payroll, labor cost</li>
+        <li>Fleet & equipment, safety, punch lists, certifications, PTO</li>
+        <li>Built-in MEDDPICC sales pipeline — <b>we run the playbook our customers run</b></li>
+      </ul></div>
+    </div>
+
+    <div class="card">
+      <h3>Why it's structurally different (not just "better")</h3>
+      <p><b>1) It does the work</b> (agents, not buttons). <b>2) It learns the company</b> (brain, not config). <b>3) It collapses cross-org communication</b> (GC↔sub on one fabric, not email tag). No incumbent can bolt this on — it's a different architecture, not a feature.</p>
+    </div>
+
+    <div class="build">
+      <div class="bh">🔨 Build together</div>
+      <ol>
+        <li>Which capabilities are <b>demo-ready today</b> vs roadmap? (Critical: Zwick GC use case readiness is an open risk.)</li>
+        <li>What's the single <b>"holy sh*t" moment</b> in a live demo — the thing that makes a skeptic lean in?</li>
+        <li>Confirm the <b>field-ops</b> story for the whole-brain pitch — is it in-scope for launch messaging or "coming"?</li>
+      </ol>
+    </div>
+    <div class="notes-wrap"><label>Your notes — Module 4 <span class="saved" data-for="n4">saved</span></label><textarea class="notes" data-key="n4" placeholder="Demo-ready vs roadmap, the wow moment…"></textarea></div>
+  </section>
+
+  <!-- ================= MODULE 5 ================= -->
+  <section class="mod" id="m5">
+    <h2><span class="n">05</span> Value translation — capability → outcome <span class="badge draft">Draft</span></h2>
+    <p class="mod-lead">Your #3. Reps never sell a feature; they sell the outcome in the customer's numbers. This is the bridge from Module 4 to MEDDPICC Metrics.</p>
+
+    <div class="card"><table>
+      <tr><th>What Perch does</th><th>What the customer gets</th><th>The number it moves</th></tr>
+      <tr><td>Agents read plans → scope</td><td>Estimators bid more, faster, without hiring</td><td>Pursuits/mo · win rate</td></tr>
+      <tr><td>Scope-gap analyst</td><td>Fewer margin-killing change orders missed at bid</td><td>Margin protected /job</td></tr>
+      <tr><td>Company Brain</td><td>The best estimator's judgment, scaled & retained</td><td>Throughput · key-person risk</td></tr>
+      <tr><td>Collapsed GC↔sub comms</td><td>Less email tag, faster RFIs/submittals</td><td>Hours/week · cycle time</td></tr>
+      <tr><td>One platform replaces stack</td><td>Kill ~$34k/yr of tools that don't talk</td><td>Software spend · IT glue</td></tr>
+    </table></div>
+
+    <div class="card">
+      <h3>The built-in ROI model (from the product)</h3>
+      <div class="stat-row">
+        <div class="stat"><div class="v">35%</div><div class="l">Estimator productivity gain</div></div>
+        <div class="stat"><div class="v">60%</div><div class="l">Software cost savings</div></div>
+        <div class="stat"><div class="v">+8%</div><div class="l">Win-rate improvement</div></div>
+        <div class="stat"><div class="v">6%</div><div class="l">Avg project margin (lever)</div></div>
+        <div class="stat"><div class="v">$85k</div><div class="l">Avg estimator salary base</div></div>
+      </div>
+      <p style="margin-top:10px">These are the <b>defaults in the live ROI calculator</b> — reps should pressure-test them against each prospect's real numbers and let the deal's own math sell.</p>
+    </div>
+
+    <div class="build">
+      <div class="bh">🔨 Build together</div>
+      <ol>
+        <li>Which <b>one outcome leads</b> per segment? (Subs: "win more of the right work"? GCs: "scale precon without hiring"?)</li>
+        <li>Are the ROI defaults <b>credible/defensible</b> — can we source them? Blue-collar buyers smell inflated claims instantly.</li>
+        <li>Do we want a <b>shareable one-page ROI leave-behind</b> generated per deal?</li>
+      </ol>
+    </div>
+    <div class="notes-wrap"><label>Your notes — Module 5 <span class="saved" data-for="n5">saved</span></label><textarea class="notes" data-key="n5" placeholder="Lead outcomes, ROI sourcing, leave-behind…"></textarea></div>
+  </section>
+
+  <!-- ================= MODULE 6 — PRICING ================= -->
+  <section class="mod" id="m6">
+    <h2><span class="n">06</span> Pricing & packaging <span class="badge draft">Working model · pre-launch</span></h2>
+    <p class="mod-lead">Our working model: <b>six tiers, segmented by company size, value-priced against the stack + labor each tier replaces</b> — not commodity per-seat pricing. Deliberately <b>premium</b>: we're selling the future, not a cheaper tool, and the price has to signal it. <b>GCs sit above subs at every tier</b> — they're the head of the beast (Module 11). The sticker is still a fraction of what it kills.</p>
+
+    <div class="card">
+      <h3>General Contractors <span style="font-weight:500;color:var(--ink-sub);font-size:12px">— the head of the beast, priced accordingly</span></h3>
+      <table>
+        <tr><th>Tier</th><th>Price</th><th>Target</th><th>Capacity</th><th>Replaces (~ cost)</th></tr>
+        <tr><td><b>Perch Core</b></td><td><b>~$3,500/mo</b><br><span style="color:var(--ink-sub);font-size:11px">~$42K/yr</span></td><td>Small GCs · 1–15 emp · &lt;$25M rev</td><td>10 seats · 5 concurrent workflows</td><td>Procore, Bluebeam, CRM, doc tools (~$30–50K)</td></tr>
+        <tr><td><b>Perch Pro</b></td><td><b>~$10,000/mo</b><br><span style="color:var(--ink-sub);font-size:11px">~$120K/yr</span></td><td>Mid GCs · 10–50 emp · $25M–$200M rev</td><td>50 seats · 15 concurrent agents</td><td>Procore, ConstructConnect, Bluebeam + integrations</td></tr>
+        <tr><td><b>Perch Enterprise</b></td><td><b>$25K–$50K/mo</b><br><span style="color:var(--ink-sub);font-size:11px">$300–600K/yr · annual contracts</span></td><td>Large GCs · 50+ emp · $200M+ rev</td><td>Unlimited seats &amp; volume</td><td>Entire precon stack (~$300–500K) + labor</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Subcontractors</h3>
+      <table>
+        <tr><th>Tier</th><th>Price</th><th>Target</th><th>Capacity</th><th>Replaces (~ cost)</th></tr>
+        <tr><td><b>Perch Essentials</b></td><td><b>~$2,500/mo</b><br><span style="color:var(--ink-sub);font-size:11px">~$30K/yr</span></td><td>Small subs · 1–10 emp</td><td>5 seats · 5 concurrent workflows</td><td>ConstructConnect, iSqFt + doc tools (~$20–40K)</td></tr>
+        <tr><td><b>Perch Growth</b></td><td><b>~$7,000/mo</b><br><span style="color:var(--ink-sub);font-size:11px">~$84K/yr</span></td><td>Mid subs · 10–50 emp</td><td>15 seats · 15 concurrent</td><td>Full bid/precon stack (~$60–80K)</td></tr>
+        <tr><td><b>Perch Enterprise</b></td><td><b>~$12,500/mo</b><br><span style="color:var(--ink-sub);font-size:11px">~$150K/yr</span></td><td>Large / specialty · 50+ emp</td><td>Unlimited seats &amp; workflows</td><td>Everything in Growth + integrations</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>How we sell the price (value-pricing logic)</h3>
+      <ul class="clean">
+        <li><b>Premium is the message.</b> A cheap price says "tool." This price says "this changes your business." Don't apologize for it — anchor it.</li>
+        <li><b>Anchor on what it replaces, never the sticker.</b> Lead with their stacked software + labor cost, then Perch as a fraction of it.</li>
+        <li><b>Tiers unlock Brain + autonomy, not just seats.</b> Core/Essentials = doc-level brain + manual approval · Pro/Growth = full Company Brain + config autonomy · Enterprise = full autonomy, SSO, multi-division, dedicated CSM, SLAs.</li>
+        <li><b>Size-segmented = self-qualifying.</b> Employee count + revenue route the prospect to a tier — which feeds MEDDPICC Metrics + Economic Buyer instantly.</li>
+        <li><b>This is the SLG ceiling.</b> Enterprise ($12.5K–$50K/mo, annual) is where sales-led + MEDDPICC discipline earns its keep; lower tiers ride PLG.</li>
+      </ul>
+    </div>
+
+    <div class="build">
+      <div class="bh">🔨 Build together / validate</div>
+      <ol>
+        <li><b>Willingness-to-pay.</b> These are premium, judgment-set numbers — pressure-test the ROI story against Built &amp; Zwick before locking external pricing.</li>
+        <li><b>Reconcile the marketing site.</b> Live pricing (Sub $299–$999, GC $499–$1,499) is an order of magnitude below this — a real code change when you're ready.</li>
+        <li><b>Entry-tier PLG friction.</b> At $30K+/yr, is the motion truly self-serve, or "free trial → sales-assist converts"? Decide it on purpose (pairs with Module 9).</li>
+      </ol>
+    </div>
+    <div class="notes-wrap"><label>Your notes — Module 6 (Pricing) <span class="saved" data-for="npr">saved</span></label><textarea class="notes" data-key="npr" placeholder="Confirmed figures, canonical pricing decision, replaces anchors…"></textarea></div>
+  </section>
+
+  <!-- ================= MODULE 7 ================= -->
+  <section class="mod" id="m7">
+    <h2><span class="n">07</span> Messaging & language — the blue-collar voice <span class="badge input">Needs your input</span></h2>
+    <p class="mod-lead">Your #5, and the highest-leverage module for trust. This needs <b>your</b> voice heavily — I can scaffold the rules, you make it ring true.</p>
+
+    <div class="dd">
+      <div class="dd-col do"><h4>Do</h4><ul>
+        <li>Talk like the jobsite — plain, direct, confident</li>
+        <li>Lead with their problem, in their words</li>
+        <li>Prove it on <b>their</b> real plan set</li>
+        <li>Respect that they're the expert; Perch is the apprentice that does grunt work</li>
+        <li>Show, don't explain the tech</li>
+      </ul></div>
+      <div class="dd-col dont"><h4>Don't</h4><ul>
+        <li>Say "AI/ML/LLM/agentic architecture" to a superintendent</li>
+        <li>Lead with features or the dashboard</li>
+        <li>Over-promise or use startup hype words</li>
+        <li>Talk down to them or imply they're behind</li>
+        <li>Compare feature-vs-feature with Procore</li>
+      </ul></div>
+    </div>
+
+    <div class="card">
+      <h3>Draft lines to react to <span style="font-weight:500;color:var(--ink-sub);font-size:12px">— tap copy, then tell me what's wrong</span></h3>
+      <div class="copyline"><div class="txt">It reads the plans so your estimator doesn't have to. You just check its work.</div><button class="cbtn">Copy</button></div>
+      <div class="copyline"><div class="txt">Bid more jobs without hiring more people.</div><button class="cbtn">Copy</button></div>
+      <div class="copyline"><div class="txt">It catches the scope you'd miss — before it eats your margin.</div><button class="cbtn">Copy</button></div>
+      <div class="copyline"><div class="txt">One system that actually talks to itself. No more six tools and a spreadsheet.</div><button class="cbtn">Copy</button></div>
+    </div>
+
+    <div class="card">
+      <h3>The trust-building moves</h3>
+      <p>Trust isn't claimed, it's structured. <b>Start conservative</b> (agents propose, human approves), <b>show citations</b> ("it flagged this because of that note"), and <b>widen autonomy</b> as they gain confidence. The guardrail dial <i>is</i> the trust message: "You stay in control until you decide you don't need to be."</p>
+    </div>
+
+    <div class="build">
+      <div class="bh">🔨 Build together</div>
+      <ol>
+        <li><b>The tagline</b> and the 30-second elevator pitch — in your voice.</li>
+        <li>Your <b>banned-words list</b> (what makes you cringe when a vendor says it).</li>
+        <li>A short story / proof anecdote (Built Exteriors?) we can tell instead of claims.</li>
+        <li>How hard do we lean on "American-made / for builders, by builders" type framing?</li>
+      </ol>
+    </div>
+    <div class="notes-wrap"><label>Your notes — Module 7 <span class="saved" data-for="n6">saved</span></label><textarea class="notes" data-key="n6" placeholder="Tagline, banned words, the story, voice corrections…"></textarea></div>
+  </section>
+
+  <!-- ================= MODULE 8 ================= -->
+  <section class="mod" id="m8">
+    <h2><span class="n">08</span> MEDDPICC applied to a Perch deal <span class="badge grounded">Grounded</span></h2>
+    <p class="mod-lead">The spine. Same living-scorecard discipline as the Zwick game plan — generalized into the reusable trainer. 🔴 unknown · 🟡 hypothesis · 🟢 confirmed by customer.</p>
+
+    <details><summary>M — Metrics</summary><div class="det-body">
+      <span class="lbl">What it is</span>The economic value of solving the pain, in <i>their</i> numbers — never "saves time."
+      <span class="lbl">Perch ammo</span>Pursuits/mo × precon hrs × loaded estimator cost; bids passed on for lack of capacity; $/job lost to scope misses; ~$34k/yr stacked software. Tie to the live ROI model (35% productivity, +8% win rate, 6% margin).
+      <span class="lbl">Discovery</span><ul><li>How many bids/pursuits a month? How many estimators?</li><li>Win rate — and when you lose, is it price or scope?</li><li>What does a missed scope item cost you?</li><li>How many jobs do you pass on for lack of precon capacity?</li></ul>
+    </div></details>
+    <details><summary>E — Economic Buyer</summary><div class="det-body">
+      <span class="lbl">What it is</span>The one who can release the money over objections.
+      <span class="lbl">Perch read</span>SMB sub/GC → usually the <b>Owner/Principal</b>. Larger GC → exec (VP Precon sponsor + CFO gate). PLG twist: a user may start a trial, but the EB signs the expansion. Get to them <i>before</i> late stage, via the champion.
+      <span class="lbl">Discovery</span><ul><li>Who signs off on software like this?</li><li>What dollar threshold needs the owner?</li><li>Bought tools like this before — how'd it go?</li></ul>
+    </div></details>
+    <details><summary>D — Decision Criteria</summary><div class="det-body">
+      <span class="lbl">What it is</span>The formal + informal yardsticks. <b>Shape them toward our edge</b> (agentic scope from their real specs, the Brain) before anyone anchors on "takeoff clicks."
+      <span class="lbl">Discovery</span><ul><li>What would you need to see to trust this on a live job?</li><li>What's in your estimating/VDC stack today?</li><li>Whose buy-in matters — estimators, field, IT?</li></ul>
+    </div></details>
+    <details><summary>D — Decision Process</summary><div class="det-body">
+      <span class="lbl">What it is</span>The actual steps/people/timeline from interested → signed. PLG: trial → activation → expansion → procurement.
+      <span class="lbl">Discovery</span><ul><li>Walk me through how you'd evaluate and roll this out.</li><li>Who else gets a say?</li><li>Pilot on one live pursuit first? Timeline?</li></ul>
+    </div></details>
+    <details><summary>P — Paper Process</summary><div class="det-body">
+      <span class="lbl">What it is</span>Procurement/legal/security mechanics after the yes.
+      <span class="lbl">Perch angle</span>Light SaaS contract at SMB; but we handle owner plans/specs (sometimes NDA'd) → expect data-handling/security questions. SOC 2 Type II, encryption, RBAC are in the deck.
+    </div></details>
+    <details><summary>I — Identify Pain</summary><div class="det-body">
+      <span class="lbl">What it is</span>The compelling, owned, quantified pain. Identify <b>and implicate</b> — make the cost of doing nothing vivid.
+      <span class="lbl">Perch nuance</span>If they're proud of precon (like Zwick), frame as <b>leverage, not remediation</b>: scale the edge without hiring, protect margin, chase more, de-risk the single-estimator point of failure.
+      <span class="lbl">Discovery</span><ul><li>Where does precon stop you chasing more work?</li><li>Tell me about a scope miss that bit you.</li><li>What happens to throughput if your best estimator leaves?</li></ul>
+    </div></details>
+    <details><summary>C — Champion</summary><div class="det-body">
+      <span class="lbl">What it is</span>Insider with power + influence + a personal win + access to the EB, who sells when you're not in the room.
+      <span class="lbl">Test, don't assume</span>A friendly "coach" gives info; a champion spends political capital. Test: "Can you get us 30 min with [owner]?"
+    </div></details>
+    <details><summary>C — Competition</summary><div class="det-body">
+      <span class="lbl">What it is</span>Every alternative — named tools, status quo, <b>"do nothing,"</b> and internal hire-vs-buy.
+      <span class="lbl">Perch read</span>Biggest rival = inertia + "just hire another estimator." Named: Bluebeam/PlanSwift/STACK; maybe Procore/BuildingConnected. <b>Never</b> get dragged into feature-vs-feature (Module 1).
+    </div></details>
+
+    <div class="build">
+      <div class="bh">🔨 Build together</div>
+      <ol>
+        <li>Do we want a <b>blank reusable scorecard artifact</b> (like Zwick's) reps clone per deal into <code>deals/</code>?</li>
+        <li>Per-segment <b>qualification thresholds</b> — what "green enough to advance" means for PLG vs enterprise.</li>
+        <li>Any house MEDDPICC conventions/scoring from Brock we should standardize on?</li>
+      </ol>
+    </div>
+    <div class="notes-wrap"><label>Your notes — Module 8 <span class="saved" data-for="n7">saved</span></label><textarea class="notes" data-key="n7" placeholder="Scorecard template, thresholds, Brock's conventions…"></textarea></div>
+  </section>
+
+  <!-- ================= MODULE 9 ================= -->
+  <section class="mod" id="m9">
+    <h2><span class="n">09</span> The sales motion — PLG → SLG <span class="badge draft">Draft</span></h2>
+    <p class="mod-lead">Your call: <b>PLG first, sales-led second.</b> The product already encodes it — 21-day free trial (no card), self-serve tiers, "Talk to Sales" only at Enterprise.</p>
+
+    <div class="card"><table class="stage">
+      <tr><th>Stage</th><th>Motion</th><th>Goal → exit</th></tr>
+      <tr><td><b>0 · Acquire</b></td><td>PLG — content, referrals, free trial signup</td><td>Trial started</td></tr>
+      <tr><td><b>1 · Activate</b></td><td>Product-led onboarding feeds the Brain</td><td>First "wow" — real plan set → scope generated</td></tr>
+      <tr><td><b>2 · Convert</b></td><td>Self-serve to paid (Core/Essentials/Pro/Growth)</td><td>Paying org</td></tr>
+      <tr><td><b>3 · Expand</b></td><td>Sales-assist: more seats, more offices, field-ops</td><td>Land-and-expand within org</td></tr>
+      <tr><td><b>4 · Enterprise (SLG)</b></td><td>Field/inside sales — MEDDPICC, multi-office, custom</td><td>Enterprise contract + reference</td></tr>
+    </table>
+    <p style="margin-top:10px"><b>Today's reality:</b> pre-launch, GC product + pricing still being built → first deals (Zwick) run as <b>design-partner / pilot</b>, founder-led, to earn the proof PLG will later scale on.</p></div>
+
+    <div class="card">
+      <h3>The demo arc (cardinal rule: discovery, not demo)</h3>
+      <ul class="clean">
+        <li>Open with <b>pain + buying map</b>, not the product</li>
+        <li>Run <b>their real bid package</b> through Perch — tailored proof beats a canned tour</li>
+        <li>Land one "holy sh*t" moment, then shut up and let it breathe</li>
+        <li>Close on a next step that fills a MEDDPICC cell, not a feature recap</li>
+      </ul>
+    </div>
+
+    <div class="build">
+      <div class="bh">🔨 Build together</div>
+      <ol>
+        <li>Define the <b>activation metric</b> (the "aha" event) and the <b>PQL</b> (when does PLG hand to sales?).</li>
+        <li>What triggers a <b>sales-assist touch</b> — usage threshold, team size, Enterprise interest?</li>
+        <li>Self-serve vs sales-led <b>price/segment cutlines</b> — where exactly does PLG stop?</li>
+      </ol>
+    </div>
+    <div class="notes-wrap"><label>Your notes — Module 9 <span class="saved" data-for="n8">saved</span></label><textarea class="notes" data-key="n8" placeholder="Activation metric, PQL, sales-assist triggers…"></textarea></div>
+  </section>
+
+  <!-- ================= MODULE 10 ================= -->
+  <section class="mod" id="m10">
+    <h2><span class="n">10</span> Objections & battle cards <span class="badge draft">Draft</span></h2>
+    <p class="mod-lead">Every objection below is really the <b>same</b> objection: <i>"I'm measuring this against the world I already know."</i> We're showing them something they've never seen — so the job isn't to win a feature fight, it's to <b>expand the imagination</b>. Move them from comparing tools to picturing their business in an <b>agent-first world</b>: the mechanical work runs itself, and the humans are there to observe, guide, and decide.</p>
+
+    <div class="card">
+      <h3><span class="ico">◆</span> The reframe move (use it on every objection)</h3>
+      <ul class="clean">
+        <li><b>1. Honor the frame.</b> "Totally fair — based on every tool you've ever been sold, that's the right question."</li>
+        <li><b>2. Break the frame.</b> "But those were all built for a world where <i>people</i> do the work and software just remembers it. We're built for the world where the work does itself."</li>
+        <li><b>3. Paint their business in it.</b> "Picture your shop where the plans are read, the scope is built, the bids are leveled, the RFIs are drafted — overnight — and your people just review the calls that matter. What would you do with that?"</li>
+      </ul>
+      <p style="margin-top:8px">You're not selling a tool against their tools. You're selling the <b>day their job gets easier</b> — and letting them talk themselves into it.</p>
+    </div>
+
+    <details><summary>"We already have Procore / Bluebeam / our stack."</summary><div class="det-body">
+      <span class="lbl">The real objection</span>"I already pay for software that does this."
+      <span class="lbl">Reframe to the future</span>"Keep it — that's the filing cabinet for the work. The question I'd ask isn't 'is Perch a better cabinet.' It's: who's doing the <i>work</i> that fills it? Today that's your people, by hand. In an agent-first shop, the work shows up done and your stack just stores the result. We're not replacing the cabinet — we're replacing the late nights." Different layer entirely (Module 1).
+    </div></details>
+    <details><summary>"This is too different — I can't picture it."</summary><div class="det-body">
+      <span class="lbl">The real objection</span>The honest one — you're showing them something with no reference point. <b>Don't over-explain. Demonstrate one slice.</b>
+      <span class="lbl">Reframe to the future</span>"Nobody could picture email until they had it either. So let's not picture the whole thing — let's do one piece. Hand me your next real bid package. Tomorrow morning it's scoped, gap-checked, and on your desk for review. Start there. The future shows up one autonomous task at a time."
+    </div></details>
+    <details><summary>"I don't trust AI to run my jobs."</summary><div class="det-body">
+      <span class="lbl">The real objection</span>"I'll lose control / it'll make an expensive mistake."
+      <span class="lbl">Reframe to the future</span>"You shouldn't hand it the keys on day one — and it doesn't ask you to. Treat it like a sharp new hire: it does the grunt work, shows you <i>why</i> it did what it did, and waits for your yes. You hand it more rope as it earns it. The real question isn't 'do you trust AI' — it's 'how much of the mechanical work do you want to stop doing yourself?'" Control is the trust mechanism (Module 7).
+    </div></details>
+    <details><summary>"My guys won't use it — they're not techy."</summary><div class="det-body">
+      <span class="lbl">The real objection</span>"Change is hard and my field people hate software."
+      <span class="lbl">Reframe to the future</span>"Good — because in an agent-first shop nobody <i>operates</i> software. There's nothing to learn. The work arrives done and your foreman taps approve, the same way he reads a text. The guys who hate clunky tools are exactly the ones who'll love a world with <i>less</i> screen time, not more."
+    </div></details>
+    <details><summary>"We're too small / too busy to switch."</summary><div class="det-body">
+      <span class="lbl">The real objection</span>"I don't have bandwidth for a rip-and-replace."
+      <span class="lbl">Reframe to the future</span>"You're too busy <i>because</i> you're still doing the mechanical work by hand — that's the thing we take off your plate. There's nothing to rip out; it learns your business in the trial and runs alongside what you've got. The busier you are, the more there is to hand off."
+    </div></details>
+    <details><summary>"Show me proof it works."</summary><div class="det-body">
+      <span class="lbl">The real objection</span>"This is new and unproven — why should I be the guinea pig?"
+      <span class="lbl">Reframe to the future</span>"Fair — it <i>is</i> new. So we don't ask you to believe a deck. We run your real bid package through it and you judge the output yourself. Early partners shape the roadmap and lock in design-partner pricing — you're not a guinea pig, you're getting in before everyone else does." (Honest pre-launch posture.)
+    </div></details>
+
+    <div class="build">
+      <div class="bh">🔨 Build together</div>
+      <ol>
+        <li>What objections did <b>Built / Zwick actually raise</b>? Real beats hypothetical.</li>
+        <li>The <b>"just hire another estimator"</b> objection — sharpen the agent-first counter (this is the true competitor: human headcount, not other software).</li>
+        <li>Which <b>future-state picture</b> lands hardest with blue-collar owners — pin the one or two we lead with (pairs with Module 7 voice).</li>
+        <li>The data-security card for handling owner plans/specs.</li>
+      </ol>
+    </div>
+    <div class="notes-wrap"><label>Your notes — Module 10 <span class="saved" data-for="n9">saved</span></label><textarea class="notes" data-key="n9" placeholder="Real objections heard, best counters…"></textarea></div>
+  </section>
+
+  <!-- ================= MODULE 11 ================= -->
+  <section class="mod" id="m11">
+    <h2><span class="n">11</span> The org build → $100M <span class="badge draft">Draft + math</span></h2>
+    <p class="mod-lead">Your #6 — now <b>GC-first and enterprise-weighted</b>. We go for the <b>head of the beast</b>: our PLG wedge is the plans, scope, and precon docs, and every bid a GC sends out comes back through our stack. Land one enterprise GC and you don't win one logo — you drag that GC's <i>entire sub base</i> onto Perch through the bid funnel. The dual-audience payoff: this is what you hand a future VP Sales to show the path.</p>
+
+    <div class="card">
+      <h3>Annual contract value (ACV) anchors — from pricing (Module 6)</h3>
+      <div class="stat-row">
+        <div class="stat"><div class="v">~$42k</div><div class="l">GC Core /yr</div></div>
+        <div class="stat"><div class="v">~$120k</div><div class="l">GC Pro /yr</div></div>
+        <div class="stat"><div class="v">$300–600k</div><div class="l">GC Enterprise /yr</div></div>
+        <div class="stat"><div class="v">~$84k</div><div class="l">Sub Growth /yr</div></div>
+        <div class="stat"><div class="v">~$150k</div><div class="l">Sub Enterprise /yr</div></div>
+      </div>
+      <p style="margin-top:8px;font-size:12.5px;color:var(--ink-sub)">Premium, enterprise-weighted, GC-first pricing means $100M needs only <b>~570 customers</b> — and roughly half the revenue comes from ~120 enterprise GCs. <b>Concentrated, not sprayed.</b></p>
+    </div>
+
+    <div class="card">
+      <h3>One illustrative path to $100M ARR — GC-first, enterprise-weighted</h3>
+      <table>
+        <tr><th>Segment</th><th>Paying orgs</th><th>ACV</th><th>ARR</th></tr>
+        <tr><td><b>GC Enterprise</b> · the head of the beast</td><td>120</td><td>~$400k</td><td><b>$48M</b></td></tr>
+        <tr><td>GC Pro · mid-market</td><td>250</td><td>~$120k</td><td><b>$30M</b></td></tr>
+        <tr><td>Subs · pulled through GC bid funnels</td><td>200</td><td>~$110k</td><td><b>$22M</b></td></tr>
+        <tr><td><b>Total</b></td><td><b>~570 orgs</b></td><td></td><td><b>~$100M</b></td></tr>
+      </table>
+      <p style="margin-top:10px"><b>Go for the head, not the tail.</b> Nearly half the revenue here comes from <b>~120 enterprise GCs</b>. We don't acquire subs one at a time — once a GC runs its bids through Perch, its subs <i>have</i> to engage through the stack, and they convert themselves. The GC's pipeline becomes our distribution. With ~700k+ US firms, ~570 customers is a rounding error on the TAM — the game is <b>concentrated execution against the biggest GCs</b>, not spray-and-pray. <i>(Illustrative — swap in your real assumptions.)</i></p>
+    </div>
+
+    <div class="card">
+      <h3>The team that gets there (staged)</h3>
+      <ul class="clean">
+        <li><b>Land motion:</b> <b>GC-first, top-down</b> — win the GC, inherit their subs through the bid funnel.</li>
+        <li><b>Now:</b> founder-led + design partners (Brock leading deals; Jeremy learning the motion).</li>
+        <li><b>Enterprise field motion (the engine):</b> AEs + Sales Engineers landing big GCs on MEDDPICC discipline — this is where the revenue concentrates.</li>
+        <li><b>PLG wedge:</b> plans/scope/precon docs — low-friction entry that routes every bid back through the stack and seeds the sub base.</li>
+        <li><b>Pull-through + expansion:</b> growth/lifecycle converts the subs the GCs deliver; RevOps + data from day one.</li>
+        <li><b>Hiring profile:</b> construction-native credibility <i>and</i> modern sales rigor — MEDDPICC-trained, jobsite-fluent.</li>
+      </ul>
+    </div>
+
+    <div class="build">
+      <div class="bh">🔨 Build together</div>
+      <ol>
+        <li>Your <b>real targets</b>: timeline, ACV assumptions, mix between subs/GCs/enterprise.</li>
+        <li><b>Hiring sequence & comp</b> — when does the first non-founder rep land, and the comp model?</li>
+        <li>PLG <b>efficiency assumptions</b> (CAC, conversion, expansion) that make the math hold.</li>
+        <li>What does the <b>MEDDPICC training program</b> for new hires look like (since the whole team is raised on it)?</li>
+      </ol>
+    </div>
+    <div class="notes-wrap"><label>Your notes — Module 11 <span class="saved" data-for="n10">saved</span></label><textarea class="notes" data-key="n10" placeholder="Targets, hiring plan, comp, training program…"></textarea></div>
+  </section>
+
+  <div class="foot">
+    <span>Perch Sales Playbook · v0.1 scaffold · built to be filled in together. Notes & progress save to this browser.</span>
+    <span>
+      <button onclick="window.print()">Print / Export PDF</button>
+      <button onclick="if(confirm('Clear all your notes & progress in this browser?')){Object.keys(localStorage).filter(k=>k.indexOf('perch-pb-')===0).forEach(k=>localStorage.removeItem(k));location.reload();}">Reset</button>
+    </span>
+  </div>
+</div>
+
+<script>
+(function(){
+  var PFX="perch-pb-";
+  /* nav pills */
+  var mods=[["m1","01 Thesis"],["m2","02 Personas"],["m3","03 Stack"],["m4","04 Product"],["m5","05 Value"],
+    ["m6","06 Pricing"],["m7","07 Voice"],["m8","08 MEDDPICC"],["m9","09 Motion"],["m10","10 Objections"],["m11","11 Org→$100M"]];
+  var nav=document.getElementById("navPills");
+  mods.forEach(function(m){
+    var a=document.createElement("a");a.className="pill";a.href="#"+m[0];
+    var sp=m[1].split(" ");a.innerHTML='<span class="pn">'+sp[0]+'</span>'+sp.slice(1).join(" ");
+    nav.appendChild(a);
+  });
+
+  /* notes persistence + progress */
+  var touched={};try{touched=JSON.parse(localStorage.getItem(PFX+"touched"))||{}}catch(e){touched={}}
+  function updateProgress(){
+    var n=Object.keys(touched).filter(function(k){return touched[k]}).length;
+    document.getElementById("progLabel").textContent=n+" / 11 modules touched";
+    document.getElementById("progFill").style.width=(n/11*100)+"%";
+  }
+  document.querySelectorAll("textarea.notes").forEach(function(ta){
+    var key=PFX+ta.dataset.key;
+    ta.value=localStorage.getItem(key)||"";
+    var badge=document.querySelector('.saved[data-for="'+ta.dataset.key+'"]');
+    var t;
+    ta.addEventListener("input",function(){
+      localStorage.setItem(key,ta.value);
+      touched[ta.dataset.key]=ta.value.trim().length>0;
+      localStorage.setItem(PFX+"touched",JSON.stringify(touched));
+      updateProgress();
+      if(badge){badge.classList.add("show");clearTimeout(t);t=setTimeout(function(){badge.classList.remove("show")},1100);}
+    });
+  });
+  updateProgress();
+
+  /* copy buttons */
+  document.querySelectorAll(".copyline").forEach(function(line){
+    var btn=line.querySelector(".cbtn"),txt=line.querySelector(".txt").textContent;
+    btn.addEventListener("click",function(){
+      navigator.clipboard.writeText(txt).then(function(){
+        btn.textContent="Copied";btn.classList.add("ok");
+        setTimeout(function(){btn.textContent="Copy";btn.classList.remove("ok")},1300);
+      });
+    });
+  });
+})();
+</script>
+<script src="notes.js"></script>
+  <script src="/nav.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Perch · Onboarding Test Clients: Format-Check Batch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E8E6DF; --panel:#FBFAF6; --panel2:#F5F3EE; --line:#CECBC1;
+    --ink:#181917; --ink2:#5D5F5A; --ink3:#8A8B84;
+    --blue:#3E6E8E; --green:#5E7E52; --amber:#9A7B1F; --grey:#8A8B84; --red:#B23A2E;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 'Archivo',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:40px 28px 80px}
+  h1{font-size:26px;margin:0 0 6px;letter-spacing:-.01em}
+  .sub{color:var(--ink2);margin:0 0 4px}
+  .meta{color:var(--ink3);font-size:13px;margin:0 0 24px}
+  .banner{background:linear-gradient(180deg,rgba(62,110,142,.10),rgba(62,110,142,.03));border:1px solid rgba(62,110,142,.28);border-radius:14px;padding:16px 18px;margin:0 0 28px}
+  .banner b{color:var(--blue)}
+  h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin:34px 0 14px;border-bottom:1px solid var(--line);padding-bottom:8px}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--ink2);margin:-4px 0 8px}
+  .legend span{white-space:nowrap}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:720px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+  .card .top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .card .name{font-weight:650;font-size:16px}
+  .badge{font-size:11px;font-weight:700;letter-spacing:.04em;padding:3px 8px;border-radius:999px;white-space:nowrap}
+  .b-small{background:rgba(140,150,160,.16);color:#b8c2cc}
+  .b-med{background:rgba(154,123,31,.16);color:var(--amber)}
+  .b-large{background:rgba(94,126,82,.16);color:var(--green)}
+  .b-self{background:rgba(62,110,142,.16);color:var(--blue)}
+  .where{color:var(--ink3);font-size:12.5px;margin-left:auto}
+  dl{margin:6px 0 0;display:grid;grid-template-columns:auto 1fr;gap:3px 12px}
+  dt{color:var(--ink3);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;padding-top:2px}
+  dd{margin:0;color:var(--ink);font-size:13.5px}
+  dd.line{color:var(--ink2)}
+  .conf{font-size:11.5px;margin-top:8px}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
+  .c-high{background:var(--green)} .c-med{background:var(--amber)} .c-low{background:var(--red)}
+  a{color:var(--blue);text-decoration:none} a:hover{text-decoration:underline}
+  .src{font-size:12px;margin-top:6px}
+  .flags{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-top:30px}
+  .flags h3{margin:0 0 10px;font-size:15px;color:var(--amber)}
+  .flags ol{margin:0;padding-left:18px} .flags li{margin:8px 0;color:var(--ink2)}
+  .flags b{color:var(--ink)}
+  .bench{font-size:13px;color:var(--ink2);margin-top:10px}
+  .tradehd{grid-column:1/-1;font-weight:650;color:var(--blue);margin:8px 0 -4px;font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Onboarding Test Clients: <span style="color:var(--blue)">Format-Check Batch</span></h1>
+  <p class="sub">Real, verified Utah companies → exemplars we model mock-up customers on for end-to-end onboarding/sales test runs.</p>
+  <p class="meta">Perch · CRO cockpit · v0 · Jun 2026 · ~/perch-cro/onboarding</p>
+
+  <div class="banner">
+    <b>Review this format before I scale it.</b> This batch = <b>3 GCs</b> (small/medium/large) + <b>5 representative trades</b> (Electrical, Mechanical/HVAC, Concrete, Drywall & Metal Studs, Earthwork & Grading) × <b>{medium + large}</b> + <b>1 self-serve micro sub</b> = 14 companies. All <b>Utah-HQ</b>, all verifiable (source links). If the fields/depth work, I complete the other <b>29 trades × 2</b> the same way.
+  </div>
+
+  <div class="legend">
+    <span><b style="color:var(--ink)">Sizes:</b></span>
+    <span><span class="badge b-small">GC SMALL</span> &lt;$25M / 1–15 emp (Core)</span>
+    <span><span class="badge b-med">GC MED</span> $25–200M / 10–50 (Pro)</span>
+    <span><span class="badge b-large">GC LARGE</span> $200M+ / 50+ (Enterprise)</span>
+    <span><span class="badge b-med">SUB MED</span> ~10–50 emp (Growth)</span>
+    <span><span class="badge b-large">SUB LARGE</span> 50+ emp (Enterprise)</span>
+    <span><span class="dot c-high"></span>high <span class="dot c-med"></span>med <span class="dot c-low"></span>low confidence</span>
+  </div>
+
+  <h2>General Contractors, one per size</h2>
+  <div class="grid">
+
+    <div class="card">
+      <div class="top"><span class="name">Squires Construction</span><span class="badge b-small">SMALL</span><span class="where">Salt Lake City</span></div>
+      <dl>
+        <dt>Size</dt><dd>~10–20 emp · &lt;$25M (est)</dd>
+        <dt>Does</dt><dd>Commercial TI / remodel / small ground-up: restaurant, retail, office</dd>
+        <dt>Who</dt><dd class="line">Lean SLC commercial GC focused on tenant improvements & small builds.</dd>
+        <dt>Onboarding</dt><dd class="line">High-velocity, low-$ TI buyouts. Tests Perch for a lean shop bidding many small packages.</dd>
+      </dl>
+      <div class="conf"><span class="dot c-med"></span>Verified real (address, site, commercial scope); headcount/revenue estimated.</div>
+      <div class="src"><a href="https://www.squiresgc.com/tenant-improvements-remodels" target="_blank">squiresgc.com ↗</a></div>
+    </div>
+
+    <div class="card">
+      <div class="top"><span class="name">Kier Construction</span><span class="badge b-med">MEDIUM</span><span class="where">Ogden</span></div>
+      <dl>
+        <dt>Size</dt><dd>80+ emp · ~$100M+ (self-reported)</dd>
+        <dt>Does</dt><dd>Commercial GC/CM: multifamily, retail, municipal, healthcare, hospitality</dd>
+        <dt>Who</dt><dd class="line">40-yr diversified Intermountain GC/CM; "$5.7B across 1,900+ projects" lifetime.</dd>
+        <dt>Onboarding</dt><dd class="line">Multi-sector buyer with real CM/design-build delivery; one precon team owns it (mid-market precon test).</dd>
+      </dl>
+      <div class="conf"><span class="dot c-high"></span>High on existence/HQ/emp; revenue self-reported. <b style="color:var(--amber)">Note: 80+ emp is above the 10–50 hint, fits MED by revenue (see flag #1).</b></div>
+      <div class="src"><a href="https://www.kier.org/about" target="_blank">kier.org ↗</a></div>
+    </div>
+
+    <div class="card">
+      <div class="top"><span class="name">Big-D Construction</span><span class="badge b-large">LARGE</span><span class="where">Salt Lake City</span></div>
+      <dl>
+        <dt>Size</dt><dd>~1,500 emp · ~$950M–$2.5B (est, trackers vary)</dd>
+        <dt>Does</dt><dd>Commercial, industrial/adv-mfg, healthcare, higher-ed, data centers, mixed-use</dd>
+        <dt>Who</dt><dd class="line">One of Utah's largest builders, family-founded 1967, ENR Top 400, multi-state.</dd>
+        <dt>Onboarding</dt><dd class="line">Enterprise test: high bid volume across many divisions, sophisticated precon dept, multi-office, large structured buyouts.</dd>
+      </dl>
+      <div class="conf"><span class="dot c-high"></span>High on existence/HQ/tier; revenue estimates conflict (both clear $200M+).</div>
+      <div class="src"><a href="https://big-d.com/" target="_blank">big-d.com ↗</a> · alts: Okland, Layton</div>
+    </div>
+
+  </div>
+
+  <h2>Subcontractors, medium + large per trade</h2>
+  <div class="grid">
+
+    <div class="tradehd">⚡ Electrical</div>
+    <div class="card">
+      <div class="top"><span class="name">CTI Electric</span><span class="badge b-med">MEDIUM</span><span class="where">Ogden</span></div>
+      <dl>
+        <dt>Size</dt><dd>~11–50 emp · private</dd>
+        <dt>Does</dt><dd>Commercial/industrial electrical + design-build; MV, controls, fire alarm, CCTV</dd>
+        <dt>Onboarding</dt><dd class="line">Mid-volume bidder on the Ogden/SLC corridor with design-build estimating: "growing sub standardizing precon."</dd>
+      </dl>
+      <div class="conf"><span class="dot c-med"></span>Real, Utah-HQ. Caveat: electrical arm of CTI Construction (a self-perform GC). Figures blur between entities.</div>
+      <div class="src"><a href="https://ctielectric.com/about/" target="_blank">ctielectric.com ↗</a></div>
+    </div>
+    <div class="card">
+      <div class="top"><span class="name">Cache Valley Electric</span><span class="badge b-large">LARGE</span><span class="where">Logan</span></div>
+      <dl>
+        <dt>Size</dt><dd>~2,300 emp · $700M–$1.5B (est)</dd>
+        <dt>Does</dt><dd>Design-build electrical, mission-critical/data center, network integration, low-voltage</dd>
+        <dt>Onboarding</dt><dd class="line">Very high bid volume + mature in-house estimating/VDC: "sophisticated incumbent" scale stress test.</dd>
+      </dl>
+      <div class="conf"><span class="dot c-high"></span>Utah's oldest/largest electrical contractor. Revenue varies across DBs (estimate). Alts: Hunt, Taylor Electric.</div>
+      <div class="src"><a href="https://www.cve.com/" target="_blank">cve.com ↗</a></div>
+    </div>
+
+    <div class="tradehd">❄️ Mechanical (HVAC)</div>
+    <div class="card">
+      <div class="top"><span class="name">All States Mechanical</span><span class="badge b-med">MEDIUM</span><span class="where">Midvale</span></div>
+      <dl>
+        <dt>Size</dt><dd>~11–50 emp · private</dd>
+        <dt>Does</dt><dd>Commercial design-build HVAC + plumbing, BIM coordination, high-purity/process</dd>
+        <dt>Onboarding</dt><dd class="line">Design-build + plan-and-spec bids to many GCs with BIM demands. Ideal mid-market onboarding test.</dd>
+      </dl>
+      <div class="conf"><span class="dot c-med"></span>Real, AGC-Utah member. Caveat: a "&lt;$5M" tracker tag looks low vs scope, trust the emp band.</div>
+      <div class="src"><a href="https://www.allstatesmechanical.com/" target="_blank">allstatesmechanical.com ↗</a></div>
+    </div>
+    <div class="card">
+      <div class="top"><span class="name">UMC (Utah Mechanical Contractors)</span><span class="badge b-large">LARGE</span><span class="where">Springville</span></div>
+      <dl>
+        <dt>Size</dt><dd>400+ emp · ~$84–100M+ (est)</dd>
+        <dt>Does</dt><dd>HVAC + plumbing for GCs/developers; volume multifamily + commercial (40k+ units)</dd>
+        <dt>Onboarding</dt><dd class="line">High bid volume across production-builder GCs with repeatable unit-based estimating at scale.</dd>
+      </dl>
+      <div class="conf"><span class="dot c-high"></span>50-yr regional leader; multiple corroborating sources.</div>
+      <div class="src"><a href="https://umc.us/" target="_blank">umc.us ↗</a></div>
+    </div>
+
+    <div class="tradehd">🧱 Concrete</div>
+    <div class="card">
+      <div class="top"><span class="name">RIPS Construction</span><span class="badge b-med">MEDIUM</span><span class="where">Salt Lake City</span></div>
+      <dl>
+        <dt>Size</dt><dd>10–50 emp (Procore band) · $1–10M avg contract</dd>
+        <dt>Does</dt><dd>Structural + flatwork: slabs, parking structures, post-tension, shoring, foundations</dd>
+        <dt>Onboarding</dt><dd class="line">$1–10M contracts w/ PT/parking scope. Real volume where one precon change is felt company-wide.</dd>
+      </dl>
+      <div class="conf"><span class="dot c-high"></span>Tier firm (Procore band). Caveat: HQ address varies across directories (SLC vs West Jordan/Syracuse).</div>
+      <div class="src"><a href="https://www.ripsconstruction.com/" target="_blank">ripsconstruction.com ↗</a></div>
+    </div>
+    <div class="card">
+      <div class="top"><span class="name">Axiom Constructors</span><span class="badge b-large">LARGE</span><span class="where">South Weber</span></div>
+      <dl>
+        <dt>Size</dt><dd>51–200 emp (LinkedIn) · private</dd>
+        <dt>Does</dt><dd>Cast-in-place structural: PT parking structures, podium decks, tilt-up, foundations</dd>
+        <dt>Onboarding</dt><dd class="line">PT podium/parking is among the most estimating-intensive concrete. Stress-tests complex structural takeoffs.</dd>
+      </dl>
+      <div class="conf"><span class="dot c-high"></span>HQ/specialty/tier solid; exact headcount within band + revenue inferred.</div>
+      <div class="src"><a href="https://www.axiom.work/about" target="_blank">axiom.work ↗</a></div>
+    </div>
+
+    <div class="tradehd">🧰 Drywall & Metal Studs</div>
+    <div class="card">
+      <div class="top"><span class="name">Alpine Drywall &amp; Floorcoverings</span><span class="badge b-med">MEDIUM</span><span class="where">Salt Lake City</span></div>
+      <dl>
+        <dt>Size</dt><dd>~10–50 emp (inferred) · &lt;$5M (tracker)</dd>
+        <dt>Does</dt><dd>Commercial interior finish: acoustical ceilings, drywall, metal stud framing, FRP, flooring</dd>
+        <dt>Onboarding</dt><dd class="line">Established estimators bidding commercial finish packages. Perch adoption is a single-team decision.</dd>
+      </dl>
+      <div class="conf"><span class="dot c-med"></span>Real, AGC-Utah listed. Caveat: no public headcount, tier inferred from revenue + 50-yr tenure (confirm before relying).</div>
+      <div class="src"><a href="https://alpinedf.com/" target="_blank">alpinedf.com ↗</a></div>
+    </div>
+    <div class="card">
+      <div class="top"><span class="name">DAW Construction Group</span><span class="badge b-large">LARGE</span><span class="where">Draper</span></div>
+      <dl>
+        <dt>Size</dt><dd>~180–300+ emp · ~$30–104M (est, varies)</dd>
+        <dt>Does</dt><dd>Metal stud framing, drywall, insulation at mid/large scale; multi-state</dd>
+        <dt>Onboarding</dt><dd class="line">High bid volume across 5 sectors + mature estimating dept: multi-estimator, multi-project concurrency test.</dd>
+      </dl>
+      <div class="conf"><span class="dot c-high"></span>All sources agree 50+ (180–300+); revenue figures vary widely (estimate). Alts: Wallboard Specialties, Tolman.</div>
+      <div class="src"><a href="https://dawcg.com/" target="_blank">dawcg.com ↗</a></div>
+    </div>
+
+    <div class="tradehd">🚜 Earthwork &amp; Grading</div>
+    <div class="card">
+      <div class="top"><span class="name">Pride Excavating</span><span class="badge b-med">MEDIUM</span><span class="where">Draper</span></div>
+      <dl>
+        <dt>Size</dt><dd>11–50 emp (tracker) · ~$5–25M (est)</dd>
+        <dt>Does</dt><dd>Commercial/residential excavation, demolition, site prep, mass grading, civil</dd>
+        <dt>Onboarding</dt><dd class="line">Steady commercial pad/subdivision/demo bids across SLC→St. George, recurring sitework volume.</dd>
+      </dl>
+      <div class="conf"><span class="dot c-med"></span>Real, family-owned (2005). Emp band from aggregator, not disclosed.</div>
+      <div class="src"><a href="https://prideexcavating.com/about" target="_blank">prideexcavating.com ↗</a></div>
+    </div>
+    <div class="card">
+      <div class="top"><span class="name">Wollam Construction</span><span class="badge b-large">LARGE</span><span class="where">Draper</span></div>
+      <dl>
+        <dt>Size</dt><dd>~200 emp · $400M bonding capacity</dd>
+        <dt>Does</dt><dd>Mass earthmoving, structural excavation, utilities, MSE walls (heavy civil)</dd>
+        <dt>Onboarding</dt><dd class="line">Complex civil at scale (mines, data centers, power): high-$ bids, multi-crew scheduling, heavy bonding.</dd>
+      </dl>
+      <div class="conf"><span class="dot c-high"></span>Real, ~200 emp. <b style="color:var(--amber)">Skews industrial/heavy-civil (see flag #3). VanCon (~175 emp) is a more commercial-building earthwork alt.</b></div>
+      <div class="src"><a href="https://wollamconstruction.com/" target="_blank">wollamconstruction.com ↗</a></div>
+    </div>
+
+  </div>
+
+  <h2>Self-serve micro sub, one example</h2>
+  <div class="grid">
+    <div class="card">
+      <div class="top"><span class="name">Frank Nolte Painting</span><span class="badge b-self">SELF-SERVE</span><span class="where">Salt Lake City</span></div>
+      <dl>
+        <dt>Size</dt><dd>~2–3 emp (owner-operator) · &lt;$1M</dd>
+        <dt>Does</dt><dd>Residential interior/exterior painting, faux finishes, cabinets, texture repair</dd>
+        <dt>Onboarding</dt><dd class="line">Clean PLG signup: a 1–2 person crew that creates an account online, no procurement, no salesperson.</dd>
+      </dl>
+      <div class="conf"><span class="dot c-med"></span>Real, family-owned since 1974. <b style="color:var(--amber)">Residential, not commercial.</b> A $4M tracker figure is clearly wrong for a 2–3 person shop (disregard).</div>
+      <div class="src"><a href="https://www.franknoltepainting.com/" target="_blank">franknoltepainting.com ↗</a></div>
+    </div>
+  </div>
+
+  <div class="flags">
+    <h3>⚑ Decisions / flags for you (these shape the other 29 trades)</h3>
+    <ol>
+      <li><b>GC tier by revenue or headcount?</b> Kier is 80+ emp (above the "10–50" hint) but ~$100M revenue = clearly Pro/medium. I'd make <b>revenue the primary band for GCs, headcount primary for subs</b>; confirm and I'll apply it consistently.</li>
+      <li><b>Medium subs carry the softest data.</b> Private trades rarely publish headcount/revenue; for mediums I infer the tier from aggregator bands + tenure/scope and label confidence. OK to proceed on "best verifiable estimate + flag," or do you want a higher bar (e.g., only companies with a public size signal)?</li>
+      <li><b>Industrial vs commercial-building skew.</b> Some "large" subs (Wollam) are heavy-civil/industrial (mines, data centers). Do you want exemplars that bid <b>commercial-building GCs</b> specifically (matches Zwick/Big-D), or is industrial fine? Affects earthwork, electrical, concrete picks.</li>
+      <li><b>Self-serve = residential or commercial micro?</b> Frank Nolte is residential. If your self-serve PLG target is small <i>commercial</i> subs, I'll pick a tiny commercial specialty shop instead.</li>
+      <li><b>Field set & depth:</b> each card has Size · Does · Who · Onboarding-angle · Source · Confidence. Want more (e.g., est. annual bid count, current software stack, key contact/title, sectors), fewer, or a sortable table for the full 68?</li>
+    </ol>
+    <div class="bench"><b>Verified bench (instant swaps):</b> Large GC → Okland, Layton · Med GC → Hughes (K-12) · Large electrical → Hunt, Taylor · Large concrete → Tom Stuart, Messerly · Large drywall → Wallboard Specialties, Tolman · Earthwork → VanCon (~175, commercial), Newman ($21.6M), Skinner (small).</div>
+  </div>
+
+</div>
+<script src="/nav.js" defer></script>
+</body>
+</html>

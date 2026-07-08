@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Perch · Customer Journey Mind Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E8E6DF; --panel:#FBFAF6; --panel2:#F5F3EE; --line:#CECBC1;
+    --ink:#181917; --ink2:#5D5F5A; --ink3:#8A8B84;
+    --blue:#3E6E8E; --green:#5E7E52; --amber:#9A7B1F; --grey:#8A8B84; --red:#B23A2E; --violet:#6F5499;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 'Archivo',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:40px 28px 90px}
+  a{color:var(--blue)}
+  h1{font-size:27px;margin:0 0 6px;letter-spacing:-.01em}
+  .sub{color:var(--ink2);margin:0 0 16px;max-width:860px}
+  .meta{color:var(--ink3);font-size:13px;margin:0 0 22px}
+  h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin:44px 0 14px;border-bottom:1px solid var(--line);padding-bottom:8px}
+  b.bl{color:var(--blue)} b.gr{color:var(--green)} b.am{color:var(--amber)} b.vi{color:var(--violet)}
+  .assume{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.04em;color:var(--amber);background:rgba(154,123,31,.14);border:1px solid rgba(154,123,31,.3);border-radius:6px;padding:1px 6px;vertical-align:middle;margin-left:6px}
+  .build{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.04em;color:var(--violet);background:rgba(111,84,153,.14);border:1px solid rgba(111,84,153,.3);border-radius:6px;padding:1px 6px;vertical-align:middle;margin-left:6px}
+  .thesis{background:linear-gradient(180deg,rgba(62,110,142,.10),rgba(62,110,142,.03));border:1px solid rgba(62,110,142,.28);border-radius:14px;padding:16px 20px;margin:0 0 8px;font-size:14.5px;color:var(--ink2)}
+  .thesis b{color:var(--blue)} .thesis i{color:var(--ink);font-style:normal;font-weight:600}
+
+  /* spine */
+  .spine{display:flex;flex-wrap:wrap;align-items:stretch;gap:0;margin-bottom:6px}
+  .snode{flex:1;min-width:120px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 13px}
+  .snode+.snode{margin-left:9px}
+  .snode .sk{font-size:10px;font-weight:800;letter-spacing:.05em;color:var(--ink3);text-transform:uppercase}
+  .snode b{display:block;font-size:13px;margin:3px 0}
+  .snode small{color:var(--ink3);font-size:11.5px}
+  .snode.hot{border-color:rgba(111,84,153,.45);background:rgba(111,84,153,.06)}
+  .snode.fork{border-color:rgba(154,123,31,.4);background:rgba(154,123,31,.05)}
+  .snode.q{border-color:rgba(62,110,142,.5);background:rgba(62,110,142,.07)}
+  .sar{align-self:center;color:var(--ink3);font-size:17px;padding:0 1px}
+
+  /* engine table */
+  .engine{width:100%;border-collapse:collapse;font-size:13px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .engine th{background:var(--panel2);color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;font-size:10.5px;text-align:left;padding:11px 14px;border-bottom:1px solid var(--line)}
+  .engine td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink2)}
+  .engine tr:last-child td{border-bottom:none}
+  .engine td.role{color:var(--ink);font-weight:600;white-space:nowrap}
+  .engine td.lever b{color:var(--amber)}
+  .engine td.q{color:var(--blue);font-style:italic}
+  .engine td.surf{color:var(--ink3);font-size:12px}
+  .engine .field b{color:var(--ink3);font-weight:700}
+
+  /* journeys */
+  .jcard{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:0;margin:14px 0;overflow:hidden}
+  .jhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .jhead.ss{background:rgba(62,110,142,.07)} .jhead.wg{background:rgba(94,126,82,.06)}
+  .jtag{font-size:10.5px;font-weight:800;letter-spacing:.05em;padding:3px 9px;border-radius:999px;text-transform:uppercase}
+  .t-ss{background:rgba(62,110,142,.18);color:var(--blue)} .t-wg{background:rgba(94,126,82,.18);color:var(--green)}
+  .jhead .jn{font-weight:700;font-size:16px}
+  .jhead .jp{color:var(--ink3);font-size:12.5px}
+  .jhead .sizeband{font-size:11px;color:var(--ink3);border:1px solid var(--line);border-radius:999px;padding:2px 9px}
+  .jhead .clockline{margin-left:auto;font-size:11.5px;color:var(--ink3)}
+  .jhead .clockline b{color:var(--green)}
+  .lane{display:grid;grid-template-columns:repeat(6,1fr);gap:0}
+  @media(max-width:900px){.lane{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.lane{grid-template-columns:1fr}}
+  .stage{padding:13px 15px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .stage .sl{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);margin-bottom:5px}
+  .stage .sc{font-size:12.5px;color:var(--ink2)}
+  .stage .sc b{color:var(--ink)}
+  .stage .say{font-size:12px;color:var(--blue);font-style:italic;display:block;margin-top:5px;border-left:2px solid rgba(62,110,142,.4);padding-left:8px}
+  .stage.wgsay .say{color:var(--green);border-left-color:rgba(94,126,82,.4)}
+  .stage.qcell{background:rgba(62,110,142,.05)}
+  .stage.qcell.wg{background:rgba(94,126,82,.05)}
+  .rolebend{padding:10px 18px;font-size:12.5px;color:var(--ink3);border-top:1px dashed var(--line)}
+  .rolebend b{color:var(--amber)}
+  .rolebend i{color:var(--ink2);font-style:normal}
+
+  /* trade panel */
+  .tradegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:860px){.tradegrid{grid-template-columns:1fr}}
+  .tcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:0;overflow:hidden}
+  .tcard .th{padding:12px 16px;border-bottom:1px solid var(--line);background:var(--panel2);display:flex;align-items:center;gap:9px}
+  .tcard .th .tn{font-weight:700;font-size:15px}
+  .tcard .th .turl{margin-left:auto;font-size:11.5px;color:var(--ink3);font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace}
+  .tcard .tb{padding:14px 16px}
+  .tcard dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 12px}
+  .tcard dt{color:var(--ink3);font-size:10px;text-transform:uppercase;letter-spacing:.04em;padding-top:3px}
+  .tcard dd{margin:0;font-size:12.5px;color:var(--ink2)}
+  .tcard dd b{color:var(--ink)}
+  .tcard dd.takeoff b{color:var(--violet)}
+  .tcard dd.lever b{color:var(--amber)}
+  .tcard dd.q{color:var(--blue);font-style:italic}
+  .tnote{font-size:12.5px;color:var(--ink3);margin-top:12px}
+
+  /* next */
+  .next{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px}
+  @media(max-width:760px){.next{grid-template-columns:1fr}}
+  .nc{border-radius:14px;padding:16px 18px;border:1px solid var(--line);background:var(--panel2)}
+  .nc h4{margin:0 0 9px;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3)}
+  .nc ul{margin:0;padding-left:17px} .nc li{font-size:13px;color:var(--ink2);margin:6px 0}
+  .nc li b{color:var(--ink)}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--ink2);margin:10px 0 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Customer Journey Mind Map: <span style="color:var(--blue)">every customer type</span>, one engine</h1>
+  <p class="sub">How each archetype (GC and sub, small to enterprise, by role and by trade) moves from <i>landed on the site</i> to <i>activated, paying customer</i> in the fewest, most motivating steps. One spine; the <b style="color:var(--ink)">questions, value, and close bend</b> to who they are.</p>
+  <p class="meta">Perch · CRO cockpit · Jun 24 2026 · <span class="assume">amber = assumption / illustrative</span> <span class="build">violet = to build</span></p>
+
+  <div class="thesis">
+    <b>The rule that drives every cell.</b> We ask for <i>one thing</i>: name + email. While they confirm it, sub-agents learn the company in the background. We come back not to <i>interrogate</i> but to <i>confirm</i>, and then the single next question is always the one that <i>reveals the most dollar-value for that person</i>. The answer to "who are they?" (<b>type × size × role × trade</b>) picks the question, the wow, and the close.
+  </div>
+
+  <!-- SPINE -->
+  <h2>The spine: same five beats for everyone</h2>
+  <div class="spine">
+    <div class="snode"><span class="sk">1 · Ask</span><b>Name + email only</b><small>Trade/role page already hints intent.</small></div>
+    <span class="sar">→</span>
+    <div class="snode hot"><span class="sk">2 · Enrich <span class="build">build</span></span><b>Swarm fires on confirm</b><small>Company · type · size · trade · role · a live project.</small></div>
+    <span class="sar">→</span>
+    <div class="snode"><span class="sk">3 · Confirm</span><b>"This is you, right?"</b><small>One tap. Don't ask what we can know.</small></div>
+    <span class="sar">→</span>
+    <div class="snode"><span class="sk">4 · Reveal value</span><b>Role-specific wow</b><small>Built from the research. No data entry.</small></div>
+    <span class="sar">→</span>
+    <div class="snode q"><span class="sk">5 · The next question</span><b>The most-motivating ask</b><small>Reveals $ <i>and</i> pulls real data in.</small></div>
+  </div>
+  <p class="meta" style="margin-top:10px">Size sets the <b style="color:var(--blue)">track</b>: &lt;$10M → <b class="bl">self-serve</b> (the agent <i>is</i> the salesperson, closes trial→card in-flow) · M/L → <b class="gr">white-glove</b> (the research arms a human FDE/AE; MEDDPICC close). Role sets the <b style="color:var(--amber)">question</b>.</p>
+
+  <!-- ENGINE -->
+  <h2>The engine: role → what Perch does → their $ lever → the next question</h2>
+  <p class="sub" style="margin-bottom:14px">This is the reusable kernel. Every journey below is just this table, conditioned on who landed.</p>
+  <table class="engine">
+    <thead><tr><th>Role</th><th>What Perch does for them</th><th>Their dollar lever</th><th>The next question (the value-revealing ask)</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="role">Estimator<br><span class="surf">(sub & GC precon)</span></td>
+        <td>Reads the full plan set, drafts takeoff + scope, flags risk (<span class="surf">Jobs · Chat · <b style="color:var(--ink)">Sarah</b></span>)</td>
+        <td class="lever"><b>Bid volume × win rate.</b> 2 bids/wk by hand → 5.</td>
+        <td class="q">"What are you bidding this week?" → pulls a real plan in; Sarah returns a takeoff in 60s.</td>
+      </tr>
+      <tr>
+        <td class="role">Owner /<br>Exec</td>
+        <td>Portfolio view, pipeline, margin + win-rate alerts (<span class="surf">Analytics · Network · <b style="color:var(--ink)">Tom</b></span>)</td>
+        <td class="lever"><b>Win rate, margin, capacity.</b> 1% margin on volume = real money.</td>
+        <td class="q">"Want to see where your team lost its last 5 bids?" → connect pipeline/email.</td>
+      </tr>
+      <tr>
+        <td class="role">VP Precon /<br>Chief Estimator <span class="surf">(GC)</span></td>
+        <td>Standardize estimators, win-rate by sector, buyout / VE margin (<span class="surf">Analytics · Company Brain</span>)</td>
+        <td class="lever"><b>Dept throughput + margin.</b> Consistent bids across the team.</td>
+        <td class="q">"Want your win-rate by sector and where buyout is leaking margin?"</td>
+      </tr>
+      <tr>
+        <td class="role">PM / PE</td>
+        <td>Job board, RFI/submittal cycle, at-risk dates, subs (<span class="surf">Jobs · Network · <b style="color:var(--ink)">Carlos</b></span>)</td>
+        <td class="lever"><b>On-time, fewer surprises.</b> Cycle time + rework.</td>
+        <td class="q">"Want your open RFIs and at-risk dates on one board?"</td>
+      </tr>
+      <tr>
+        <td class="role">Foreman /<br>Field</td>
+        <td>Time, safety, crew scheduling on mobile (<span class="surf">Field Ops · precon_mobile <b style="color:var(--ink3)">(not chat)</b></span>)</td>
+        <td class="lever"><b>Labor hours, safety.</b> Productive crew time.</td>
+        <td class="q">"Clock your crew in and see today's schedule?" Different surface entirely.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="meta" style="margin-top:10px">Note the field role breaks the pattern: it doesn't belong in chat at all → it's the clearest signal that <b style="color:var(--ink)">role must be captured and routed</b>, which today's onboarding doesn't do.</p>
+
+  <!-- GC JOURNEYS -->
+  <h2>General contractors: small → enterprise</h2>
+
+  <div class="jcard">
+    <div class="jhead ss">
+      <span class="jtag t-ss">Self-serve</span>
+      <span class="jn">Small GC · owner-operator</span>
+      <span class="sizeband">&lt;$10M</span>
+      <span class="jp">"Dana Builds" · ~$8M · Provo · retail/restaurant TI</span>
+      <span class="clockline">value <b>&lt;3 min</b> · check <b>same session</b></span>
+    </div>
+    <div class="lane">
+      <div class="stage"><div class="sl">1 · Ask</div><div class="sc">Referral link from a sub → LP. Warm. Name + email.</div></div>
+      <div class="stage"><div class="sl">2 · Enrich</div><div class="sc">GC, ~$8M, retail/restaurant TI. Dana = owner who also estimates + runs jobs.</div></div>
+      <div class="stage"><div class="sl">3 · Confirm</div><div class="sc">One tap.<span class="say">"Dana Builds, Provo GC, retail + restaurant TI. You run it. Right?"</span></div></div>
+      <div class="stage"><div class="sl">4 · Reveal value</div><div class="sc"><b>Tom</b> shows a pre-filled pipeline + the subs she already uses; flags a bid due in 3 days.<span class="say">"Found 4 jobs you're likely bidding and 9 subs you use. Here's your board."</span></div></div>
+      <div class="stage qcell"><div class="sl">5 · Next question</div><div class="sc">The owner-operator wears every hat → lead with the board, then:<span class="say">"Which of these 4 is most worth winning? I'll scope it now."</span></div></div>
+      <div class="stage"><div class="sl">Check</div><div class="sc">Trial auto-started → card after she moves a job. <b>Agent-closed.</b></div></div>
+    </div>
+    <div class="rolebend"><b>Role-bend:</b> <i>If the estimator (not the owner) lands first → swap the wow to a live takeoff ("what are you bidding this week?") and the owner becomes the buyer they invite.</i></div>
+  </div>
+
+  <div class="jcard">
+    <div class="jhead wg">
+      <span class="jtag t-wg">White-glove</span>
+      <span class="jn">Mid GC · VP Precon lands</span>
+      <span class="sizeband">$10–500M</span>
+      <span class="jp">~$150M · multi-office · healthcare + higher-ed (Zwick-class)</span>
+      <span class="clockline">first call = <b>insight, not discovery</b> · enterprise annual</span>
+    </div>
+    <div class="lane">
+      <div class="stage"><div class="sl">1 · Ask</div><div class="sc">SLG / SDR books a demo, or a precon lead self-signs from a trade page.</div></div>
+      <div class="stage"><div class="sl">2 · Enrich</div><div class="sc">~$150M GC, sophisticated precon dept, ~8 estimators. Lander = VP Precon (champion target).</div></div>
+      <div class="stage wgsay"><div class="sl">3 · Confirm</div><div class="sc">FDE walks in knowing them cold. No discovery.<span class="say">"You run precon across 3 offices, ~8 estimators, healthcare + higher-ed."</span></div></div>
+      <div class="stage wgsay"><div class="sl">4 · Reveal value</div><div class="sc"><b>Analytics</b> pre-loaded: win-rate by sector + a buyout margin-leak insight.<span class="say">"Your win rate by sector, and where buyout is quietly leaking margin."</span></div></div>
+      <div class="stage qcell wg"><div class="sl">5 · Next question</div><div class="sc">VP cares about dept consistency:<span class="say">"Want to see all 8 estimators bidding the same way, and capture [senior estimator]'s playbook before he retires?"</span></div></div>
+      <div class="stage"><div class="sl">Check</div><div class="sc"><b>AE + MEDDPICC.</b> VP = champion; CFO = gate. Annual; Perch migrates pipeline.</div></div>
+    </div>
+    <div class="rolebend"><b>Role-bend:</b> <i>If a single estimator lands first (PLG wedge) → give the Sarah-takeoff wow, make them the internal champion who pulls the VP into a white-glove motion.</i></div>
+  </div>
+
+  <div class="jcard">
+    <div class="jhead wg">
+      <span class="jtag t-wg">White-glove · Enterprise</span>
+      <span class="jn">Large GC · exec buyer</span>
+      <span class="sizeband">&gt;$500M</span>
+      <span class="jp">~$900M · ENR-scale · multi-region (Big-D-class) · Chief Estimator / VP Ops</span>
+      <span class="clockline">multi-stakeholder · 1% margin = <b>$9M</b></span>
+    </div>
+    <div class="lane">
+      <div class="stage"><div class="sl">1 · Ask</div><div class="sc">SLG · SDR (human) books an exec meeting. Size → enterprise white-glove.</div></div>
+      <div class="stage"><div class="sl">2 · Enrich</div><div class="sc">ENR-scale GC, many sectors, large precon org, 20+ estimators across regions.</div></div>
+      <div class="stage wgsay"><div class="sl">3 · Confirm</div><div class="sc">Dossier-level brief; rep speaks their portfolio language from minute one.<span class="say">"~$900M, regional offices, self-perform concrete + steel."</span></div></div>
+      <div class="stage wgsay"><div class="sl">4 · Reveal value</div><div class="sc">Exec lever = margin on volume. <b>Analytics + Company Brain</b> at portfolio scale.<span class="say">"At your volume, the buyout discipline we just showed is worth ~$9M a point."</span></div></div>
+      <div class="stage qcell wg"><div class="sl">5 · Next question</div><div class="sc">Exec wants risk + knowledge retention:<span class="say">"Want to standardize precon across every region, and stop losing institutional knowledge when estimators leave?"</span></div></div>
+      <div class="stage"><div class="sl">Check</div><div class="sc"><b>AE + MEDDPICC.</b> Multi-threaded: VP Ops EB, Chief Estimator champion, IT/security. Enterprise annual; full migration.</div></div>
+    </div>
+    <div class="rolebend"><b>Role-bend:</b> <i>A lone estimator landing here is a land-and-expand seed, not the deal. Log them, value-wow them, route the account to SLG for the top-down motion.</i></div>
+  </div>
+
+  <!-- SUB JOURNEYS -->
+  <h2>Subcontractors: small → enterprise</h2>
+
+  <div class="jcard">
+    <div class="jhead ss">
+      <span class="jtag t-ss">Self-serve</span>
+      <span class="jn">Small sub · owner-estimator</span>
+      <span class="sizeband">&lt;$10M</span>
+      <span class="jp">"Brightspark Electric" · ~$6M · SLC · commercial TI</span>
+      <span class="clockline">value <b>&lt;2 min</b> · check <b>same session</b></span>
+    </div>
+    <div class="lane">
+      <div class="stage"><div class="sl">1 · Ask</div><div class="sc">Googles "electrical estimating" → <b>/electrical</b> trade page. Trade known. Email.</div></div>
+      <div class="stage"><div class="sl">2 · Enrich</div><div class="sc">Commercial electrical sub, ~$6M, TI + healthcare. Owner does the bidding himself.</div></div>
+      <div class="stage"><div class="sl">3 · Confirm</div><div class="sc">One tap.<span class="say">"Brightspark Electric, commercial electrical, SLC, mostly TI. You're estimating. Right?"</span></div></div>
+      <div class="stage"><div class="sl">4 · Reveal value</div><div class="sc"><b>Sarah</b> pulls a live public bid in their market; offers a takeoff.<span class="say">"I found an SLC clinic TI that's bidding right now."</span></div></div>
+      <div class="stage qcell"><div class="sl">5 · Next question</div><div class="sc">The single most motivating ask: his live bid, not a demo.<span class="say">"What are you bidding this week? Drop the plans and I'll have device counts + a risk flag in a minute."</span></div></div>
+      <div class="stage"><div class="sl">Check</div><div class="sc">Trial auto-started; after the takeoff lands, card-on-file. <b>Agent-closed.</b></div></div>
+    </div>
+    <div class="rolebend"><b>Role-bend:</b> <i>At &lt;$10M owner = estimator = buyer, so the takeoff wow and the close collapse into one motion: fastest path to a card.</i></div>
+  </div>
+
+  <div class="jcard">
+    <div class="jhead wg">
+      <span class="jtag t-wg">White-glove</span>
+      <span class="jn">Mid sub · estimator lands, owner buys</span>
+      <span class="sizeband">$10–100M</span>
+      <span class="jp">~$60M mechanical · multiple estimators · chief estimator/owner</span>
+      <span class="clockline">land estimator → expand to dept · annual</span>
+    </div>
+    <div class="lane">
+      <div class="stage"><div class="sl">1 · Ask</div><div class="sc">An estimator self-signs from <b>/mechanical</b> (PLG), or referral. Email.</div></div>
+      <div class="stage"><div class="sl">2 · Enrich</div><div class="sc">~$60M HVAC/plumbing sub, multifamily + commercial, ~4 estimators, a chief estimator.</div></div>
+      <div class="stage wgsay"><div class="sl">3 · Confirm</div><div class="sc">Confirm the person + the shop.<span class="say">"You estimate HVAC at a ~$60M shop doing multifamily + commercial."</span></div></div>
+      <div class="stage wgsay"><div class="sl">4 · Reveal value</div><div class="sc">Sarah takeoff for the individual → then the team frame.<span class="say">"Here's your takeoff. Now, your 4 estimators could all bid this way."</span></div></div>
+      <div class="stage qcell wg"><div class="sl">5 · Next question</div><div class="sc">Expand from one seat to the dept + the buyer:<span class="say">"Want your chief estimator to see how the team standardizes, and how Perch keeps your senior guy's pricing logic?"</span></div></div>
+      <div class="stage"><div class="sl">Check</div><div class="sc"><b>AE + MEDDPICC.</b> Estimator = champion, owner/chief estimator = EB. Annual; import historical jobs.</div></div>
+    </div>
+    <div class="rolebend"><b>Role-bend:</b> <i>If the owner lands first → skip the single-seat wow, open at the dept level (standardization + Company Brain knowledge capture) and run a straight white-glove close.</i></div>
+  </div>
+
+  <div class="jcard">
+    <div class="jhead wg">
+      <span class="jtag t-wg">White-glove · Enterprise</span>
+      <span class="jn">Large sub · exec buyer</span>
+      <span class="sizeband">$100M+</span>
+      <span class="jp">~$150M mechanical · 400+ emp · 6 estimators · founder near retirement</span>
+      <span class="clockline">rep walks in <b>fully briefed</b> · enterprise annual</span>
+    </div>
+    <div class="lane">
+      <div class="stage"><div class="sl">1 · Ask</div><div class="sc">Cold outbound / referral. Size → enterprise white-glove (FDE), not pure agent.</div></div>
+      <div class="stage"><div class="sl">2 · Enrich</div><div class="sc">400 emp, ~$150M, multifamily + commercial HVAC/plumbing, 6 estimators, founder retiring soon.</div></div>
+      <div class="stage wgsay"><div class="sl">3 · Confirm</div><div class="sc">FDE gets a pre-built dossier + a loaded demo. No discovery call.<span class="say">Opens with their last 30 days of bids, modeled.</span></div></div>
+      <div class="stage wgsay"><div class="sl">4 · Reveal value</div><div class="sc">Estimating-at-scale + <b>Company Brain</b> to capture the retiring founder's playbook.<span class="say">"Here's how your 6 estimators standardize, and how we keep [founder]'s knowledge."</span></div></div>
+      <div class="stage qcell wg"><div class="sl">5 · Next question</div><div class="sc">Exec lever = scale + continuity risk:<span class="say">"What happens to your win rate the day [founder] retires? Want to bottle that before he goes?"</span></div></div>
+      <div class="stage"><div class="sl">Check</div><div class="sc"><b>AE + MEDDPICC.</b> EB = founder/CEO. Enterprise annual; Perch migrates historical jobs + seats the team.</div></div>
+    </div>
+    <div class="rolebend"><b>Role-bend:</b> <i>If an estimator lands first → land-and-expand: wow the seat, but the deal is won top-down on continuity + standardization, so route to the AE early.</i></div>
+  </div>
+
+  <!-- TRADE BEND -->
+  <h2>The trade-bend: same sub journey, 3 of 34 trades <span class="assume">3 shown; the other 31 follow this spine</span></h2>
+  <p class="sub" style="margin-bottom:14px">Only three things change by trade: the <b style="color:var(--ink)">lander</b> they hit, the <b style="color:var(--violet)">takeoff "wow"</b> Sarah runs, and the <b style="color:var(--amber)">$ framing</b>. The five beats don't move. Picked these three because their takeoffs are structurally different (<b>counts</b> vs <b>volume</b> vs <b>area</b>), so the bend is real, not cosmetic.</p>
+  <div class="tradegrid">
+    <div class="tcard">
+      <div class="th"><span class="tn">⚡ Electrical</span><span class="turl">/electrical</span></div>
+      <div class="tb"><dl>
+        <dt>Lander</dt><dd><b>Electrical OS</b></dd>
+        <dt>Takeoff</dt><dd class="takeoff"><b>Counts:</b> devices, fixtures, gear, panel schedules; spec-compliance flag from the spec book.</dd>
+        <dt>$ lever</dt><dd class="lever"><b>Bid more TI/healthcare; catch gear lead-time + scope gaps</b> that blow the job.</dd>
+        <dt>Next Q</dt><dd class="q">"What are you bidding this week? I'll count devices + flag spec risk."</dd>
+      </dl></div>
+    </div>
+    <div class="tcard">
+      <div class="th"><span class="tn">🧱 Concrete</span><span class="turl">/concrete</span></div>
+      <div class="tb"><dl>
+        <dt>Lander</dt><dd><b>Concrete OS</b></dd>
+        <dt>Takeoff</dt><dd class="takeoff"><b>Volume:</b> CY of concrete, SF of formwork, tons of rebar from the structural set.</dd>
+        <dt>$ lever</dt><dd class="lever"><b>Self-perform crews; win on quantity accuracy + pour scheduling;</b> catch addenda quantity swings.</dd>
+        <dt>Next Q</dt><dd class="q">"Drop the structural set and I'll give you yardage, formwork SF, and rebar tons."</dd>
+      </dl></div>
+    </div>
+    <div class="tcard">
+      <div class="th"><span class="tn">🧰 Drywall & Metal Studs</span><span class="turl">/drywall</span></div>
+      <div class="tb"><dl>
+        <dt>Lander</dt><dd><b>Drywall OS</b></dd>
+        <dt>Takeoff</dt><dd class="takeoff"><b>Area:</b> wall area by partition type, LF of track, opening counts from the arch set.</dd>
+        <dt>$ lever</dt><dd class="lever"><b>Labor-driven, high-volume bidding: bid more jobs faster;</b> catch finish-schedule scope.</dd>
+        <dt>Next Q</dt><dd class="q">"Send the arch set and I'll break out wall types and square footage by area."</dd>
+      </dl></div>
+    </div>
+  </div>
+  <p class="tnote"><b style="color:var(--ink)">Generalization, now built:</b> all 34 trades are mapped in the <a href="trade-library" style="color:var(--blue)">Trade-Config Library</a> (lander + Sarah recipe + $ lever + money flag each), collapsing into <b style="color:var(--ink)">6 takeoff families</b> so the engine stays trade-agnostic. The 3 above are just the worked examples.</p>
+
+  <div class="legend">
+    <span><b style="color:var(--ink)">Real surfaces referenced:</b></span>
+    <span><b class="bl">Sarah</b> = estimator sub-agent (takeoffs)</span>
+    <span><b class="bl">Tom</b> = lead agent (pipeline, alerts)</span>
+    <span><b class="bl">Carlos</b> = trades/CRM sub-agent</span>
+    <span>Company Brain · Analytics · Network/CRM · Field Ops · Bid Portal</span>
+  </div>
+
+  <!-- DECISIONS -->
+  <h2>What the team decides against this</h2>
+  <div class="next">
+    <div class="nc">
+      <h4>Product decisions this map forces</h4>
+      <ul>
+        <li><b>Capture role at signup:</b> the whole map hinges on it; today's flow doesn't.</li>
+        <li><b>Route field roles to Field Ops/mobile</b>, not chat. They don't belong in the same door.</li>
+        <li><b>The self-serve / white-glove line:</b> confirm &lt;$10M as the cut, or gate on ACV instead.</li>
+        <li><b>The "next question" per cell:</b> sign off on the exact ask, since it's the conversion lever.</li>
+      </ul>
+    </div>
+    <div class="nc">
+      <h4>Open / to validate</h4>
+      <ul>
+        <li><b>Research swarm feasibility:</b> greenfield; what's buildable first, and the ~100% accuracy bar.</li>
+        <li><b>Land-and-expand vs top-down</b> on mid/large. When does a single seat trigger SLG?</li>
+        <li><b>Which agent meets them at init:</b> customer "Company Brain" vs Tom/Sarah/Carlos.</li>
+        <li><b>Trade priority:</b> which trades get a tuned lander + takeoff recipe first (beyond these 3)?</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+<script src="/nav.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Perch · Trade-Config Library (34 trades)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E8E6DF; --panel:#FBFAF6; --panel2:#F5F3EE; --line:#CECBC1; --line2:#BDB8AC;
+    --ink:#181917; --ink2:#5D5F5A; --ink3:#8A8B84;
+    --blue:#3E6E8E; --green:#5E7E52; --amber:#9A7B1F; --violet:#6F5499; --red:#B23A2E;
+    --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 'Archivo',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1120px;margin:0 auto;padding:34px 26px 100px}
+  a{color:var(--blue)}
+  h1{font-size:26px;margin:0 0 6px;letter-spacing:-.01em}
+  .sub{color:var(--ink2);margin:0 0 14px;max-width:880px}
+  .sub b{color:var(--ink)}
+  .meta{color:var(--ink3);font-size:13px;margin:0 0 8px}
+  .mono{font-family:var(--mono)}
+
+  .thesis{background:linear-gradient(180deg,rgba(94,126,82,.08),rgba(94,126,82,.02));border:1px solid rgba(94,126,82,.26);border-radius:14px;padding:15px 19px;margin:6px 0 10px;font-size:14px;color:var(--ink2)}
+  .thesis b{color:var(--ink)} .thesis .g{color:var(--green);font-weight:700}
+
+  .feeds{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:14px 0 8px}
+  @media(max-width:760px){.feeds{grid-template-columns:1fr}}
+  .feed{background:var(--panel);border:1px solid var(--line2);border-radius:11px;padding:11px 14px}
+  .feed .fn{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px}
+  .feed .fc{font-size:12px;color:var(--ink2)} .feed .fc b{color:var(--ink)} .feed .fc .mono{color:var(--green);font-size:11px}
+
+  h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin:36px 0 6px;border-bottom:1px solid var(--line);padding-bottom:8px;scroll-margin-top:110px}
+  .fam{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:4px 0 10px}
+  .fam .ft{font-size:15px;font-weight:700;color:var(--ink)}
+  .fam .fp{font-size:12.5px;color:var(--ink3)}
+  .fam .fp .mono{color:var(--violet)}
+  .fam .cnt{font-size:11px;color:var(--ink3);border:1px solid var(--line2);border-radius:999px;padding:2px 9px}
+
+  table.t{width:100%;border-collapse:collapse;font-size:12.5px;border:1px solid var(--line);border-radius:11px;overflow:hidden;margin-top:4px}
+  table.t th{background:var(--panel2);color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;font-size:9.5px;text-align:left;padding:8px 12px;border-bottom:1px solid var(--line)}
+  table.t td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink2)}
+  table.t tr:last-child td{border-bottom:0}
+  table.t td.tr{white-space:nowrap}
+  table.t td.tr b{color:var(--ink);font-size:13px}
+  table.t td.tr .lnd{display:block;font-family:var(--mono);font-size:10.5px;color:var(--blue);margin-top:2px}
+  table.t td.rec{color:var(--ink2)}
+  table.t td.lev{color:var(--green)}
+  table.t td.flag{color:var(--amber)}
+  .toc{position:sticky;top:50px;z-index:40;background:rgba(232,230,223,.93);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--line2);border-radius:12px;padding:9px 12px;margin:14px 0 18px;display:flex;flex-wrap:wrap;gap:5px}
+  .toc a{font-size:11.5px;color:var(--ink2);text-decoration:none;padding:5px 10px;border-radius:7px;white-space:nowrap}
+  .toc a:hover{background:rgba(24,25,23,.05);color:var(--ink)}
+  .toc .c{font-size:10px;color:var(--ink3);margin-left:3px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Trade-Config Library: <span style="color:var(--green)">all 34 trades</span></h1>
+  <p class="sub">The structured levers the onboarding generator multiplies. For each trade: its <b>lander</b>, what <b>Sarah extracts</b>, the <b>$ lever</b>, and the <b>money flag</b> (the spec-vs-drawing gotcha that's a change order or a lead-time miss). The next question is <i>composed</i> from <span class="mono" style="color:var(--violet)">persona × size × this row</span>, not hand-written per cell.</p>
+  <p class="meta">Perch · CRO cockpit · Jun 25 2026 · 34 canonical trades from <span class="mono">trades-data.ts</span> · feeds <a href="tech-mapping">tech-mapping</a> (TradeConfig) + <a href="journey-map">journey-map</a></p>
+
+  <div class="thesis">
+    <b>Why this isn't a 150-cell matrix.</b> The 34 trades collapse into <span class="g">6 takeoff families</span>: Sarah needs <b>six recipe patterns</b>, not thirty-four. Each trade row is just structured data; the agent generates the per-company question at runtime. And <b>positions within a trade</b> (chief vs design-build vs service estimator) only diverge at <b>enterprise</b> scale, where a human AE already carries the prompt via the battle pack. So the self-serve generator never needs a position-level map.
+  </div>
+
+  <div class="feeds">
+    <div class="feed"><div class="fn">→ Marketing / front-end</div><div class="fc">Each row is a <span class="mono">/{trade}</span> lander ("<b>{Trade} OS</b>") with the hero value lever + proof point baked in.</div></div>
+    <div class="feed"><div class="fn">→ Data model (Brock)</div><div class="fc">Each row = a <span class="mono">TradeConfig</span> record; <span class="mono">composeQuestion()</span> reads it. Seed data for the router.</div></div>
+    <div class="feed"><div class="fn">→ Sarah (agents)</div><div class="fc">The <b>family</b> sets the takeoff recipe; the <b>flag</b> sets the risk-detection pass per trade.</div></div>
+  </div>
+
+  <div class="toc">
+    <a href="#count">Count<span class="c">10</span></a>
+    <a href="#area">Area<span class="c">10</span></a>
+    <a href="#linear">Linear<span class="c">6</span></a>
+    <a href="#volume">Volume<span class="c">3</span></a>
+    <a href="#weight">Weight<span class="c">2</span></a>
+    <a href="#systems">Systems<span class="c">3</span></a>
+  </div>
+
+  <!-- COUNT -->
+  <h2 id="count">Family 1 · Count</h2>
+  <div class="fam"><span class="ft">Count: each / devices / fixtures / openings</span><span class="fp">recipe: <span class="mono">count discrete items off the schedules, cross-check spec</span></span><span class="cnt">10 trades</span></div>
+  <table class="t">
+    <thead><tr><th style="width:18%">Trade</th><th style="width:30%">Sarah extracts</th><th style="width:24%">$ lever</th><th style="width:28%">Money flag</th></tr></thead>
+    <tbody>
+      <tr><td class="tr"><b>Electrical</b><span class="lnd">/electrical · Electrical OS</span></td><td class="rec">devices, fixtures, gear, panel schedules</td><td class="lev">bid 5 jobs not 2; win TI/healthcare</td><td class="flag">spec-buried switchgear (40-wk lead) missing on E-sheets</td></tr>
+      <tr><td class="tr"><b>Fire Alarm &amp; Security</b><span class="lnd">/fire-alarm · Fire Alarm OS</span></td><td class="rec">initiating + notification devices, panels, risers</td><td class="lev">more bids; pass AHJ first time</td><td class="flag">device spacing / coverage gaps vs code</td></tr>
+      <tr><td class="tr"><b>Low Voltage &amp; Data</b><span class="lnd">/low-voltage · Low Voltage OS</span></td><td class="rec">drops, racks, AP / camera counts, cable</td><td class="lev">more bids; protect margin</td><td class="flag">pathway / conduit assumed "by others"</td></tr>
+      <tr><td class="tr"><b>Controls &amp; Instrumentation</b><span class="lnd">/controls · Controls OS</span></td><td class="rec">I/O points, controllers, valves, sensors</td><td class="lev">points-accurate bids</td><td class="flag">points-list vs sequence-of-operations gaps</td></tr>
+      <tr><td class="tr"><b>Plumbing</b><span class="lnd">/plumbing · Plumbing OS</span></td><td class="rec">fixtures, water heaters, floor drains, pipe LF</td><td class="lev">fixture-count speed</td><td class="flag">med-gas / grease-waste specialty scope</td></tr>
+      <tr><td class="tr"><b>Fire Sprinklers</b><span class="lnd">/fire-sprinklers · Sprinkler OS</span></td><td class="rec">head count, pipe LF, riser / FDC</td><td class="lev">density-checked bids</td><td class="flag">hazard classification vs hydraulic calc</td></tr>
+      <tr><td class="tr"><b>Doors, Frames &amp; Hardware</b><span class="lnd">/doors · Door &amp; Hardware OS</span></td><td class="rec">door / frame / hardware-set counts</td><td class="lev">opening-by-opening accuracy</td><td class="flag">hardware set vs door schedule + fire rating</td></tr>
+      <tr><td class="tr"><b>Specialties (Div 10)</b><span class="lnd">/specialties · Specialties OS</span></td><td class="rec">partitions, accessories, lockers, signage (ea)</td><td class="lev">fast each-counts</td><td class="flag">accessory schedule + ADA mounting gaps</td></tr>
+      <tr><td class="tr"><b>Elevators &amp; Lifts</b><span class="lnd">/elevators · Elevator OS</span></td><td class="rec">units, stops, capacities, speeds</td><td class="lev">config-accurate bids</td><td class="flag">pit / overhead / hoistway dimension conflicts</td></tr>
+      <tr><td class="tr"><b>Firestopping</b><span class="lnd">/firestopping · Firestopping OS</span></td><td class="rec">penetrations by UL system, joints</td><td class="lev">penetration count + UL match</td><td class="flag">wrong / missing UL-listed system</td></tr>
+    </tbody>
+  </table>
+
+  <!-- AREA -->
+  <h2 id="area">Family 2 · Area</h2>
+  <div class="fam"><span class="ft">Area: square footage by type</span><span class="fp">recipe: <span class="mono">measure surfaces by type off the arch / structural sheets</span></span><span class="cnt">10 trades</span></div>
+  <table class="t">
+    <thead><tr><th style="width:18%">Trade</th><th style="width:30%">Sarah extracts</th><th style="width:24%">$ lever</th><th style="width:28%">Money flag</th></tr></thead>
+    <tbody>
+      <tr><td class="tr"><b>Drywall &amp; Metal Studs</b><span class="lnd">/drywall · Drywall OS</span></td><td class="rec">wall area by partition type, track LF, openings</td><td class="lev">high-volume area bidding</td><td class="flag">rated-assembly + finish-schedule scope</td></tr>
+      <tr><td class="tr"><b>Acoustical Ceilings</b><span class="lnd">/ceilings · Ceiling OS</span></td><td class="rec">ceiling SF by type, grid, soffits</td><td class="lev">SF speed</td><td class="flag">seismic bracing + soffit details</td></tr>
+      <tr><td class="tr"><b>Painting &amp; Wallcoverings</b><span class="lnd">/painting · Painting OS</span></td><td class="rec">wall / ceiling SF, coats, substrates</td><td class="lev">SF + coats accuracy</td><td class="flag">special coatings + substrate prep scope</td></tr>
+      <tr><td class="tr"><b>Resilient &amp; Soft Flooring</b><span class="lnd">/flooring · Flooring OS</span></td><td class="rec">floor SF by type, base LF</td><td class="lev">SF speed</td><td class="flag">moisture mitigation + floor prep (big $)</td></tr>
+      <tr><td class="tr"><b>Tile &amp; Stone</b><span class="lnd">/tile · Tile OS</span></td><td class="rec">floor / wall SF, setting materials</td><td class="lev">SF accuracy</td><td class="flag">wet-area waterproofing + substrate</td></tr>
+      <tr><td class="tr"><b>Roofing &amp; Sheet Metal</b><span class="lnd">/roofing · Roofing OS</span></td><td class="rec">roof SF by system, flashing LF</td><td class="lev">SF + system match</td><td class="flag">insulation R-value + warranty assembly</td></tr>
+      <tr><td class="tr"><b>Cladding &amp; Wall Panels</b><span class="lnd">/cladding · Cladding OS</span></td><td class="rec">facade SF by panel type, attachment</td><td class="lev">SF accuracy</td><td class="flag">rainscreen / attachment engineering scope</td></tr>
+      <tr><td class="tr"><b>Glazing &amp; Storefronts</b><span class="lnd">/glazing · Glazing OS</span></td><td class="rec">glass / curtainwall SF, openings</td><td class="lev">SF + openings</td><td class="flag">glass spec lead-time; structural / thermal</td></tr>
+      <tr><td class="tr"><b>Waterproofing &amp; Damp-proofing</b><span class="lnd">/waterproofing · Waterproofing OS</span></td><td class="rec">below / above-grade SF, detailing LF</td><td class="lev">SF + detailing</td><td class="flag">transitions / terminations scope</td></tr>
+      <tr><td class="tr"><b>Masonry</b><span class="lnd">/masonry · Masonry OS</span></td><td class="rec">wall SF, unit count, reinforcing</td><td class="lev">SF + units</td><td class="flag">veneer vs structural; anchorage scope</td></tr>
+    </tbody>
+  </table>
+
+  <!-- LINEAR -->
+  <h2 id="linear">Family 3 · Linear</h2>
+  <div class="fam"><span class="ft">Linear: runs by type + structures</span><span class="fp">recipe: <span class="mono">measure runs by type; count structures / terminations</span></span><span class="cnt">6 trades</span></div>
+  <table class="t">
+    <thead><tr><th style="width:18%">Trade</th><th style="width:30%">Sarah extracts</th><th style="width:24%">$ lever</th><th style="width:28%">Money flag</th></tr></thead>
+    <tbody>
+      <tr><td class="tr"><b>Joint Sealants</b><span class="lnd">/sealants · Sealants OS</span></td><td class="rec">joint LF by type / width</td><td class="lev">LF accuracy</td><td class="flag">sealant compatibility + movement class</td></tr>
+      <tr><td class="tr"><b>Rough Carpentry</b><span class="lnd">/carpentry · Carpentry OS</span></td><td class="rec">blocking / framing LF, sheathing SF</td><td class="lev">LF / SF accuracy</td><td class="flag">blocking-not-shown coordination</td></tr>
+      <tr><td class="tr"><b>Site Utilities</b><span class="lnd">/site-utilities · Site Utilities OS</span></td><td class="rec">pipe LF by type, structures (ea), depth</td><td class="lev">LF + structures</td><td class="flag">depth / dewatering + utility conflicts</td></tr>
+      <tr><td class="tr"><b>Paving &amp; Striping</b><span class="lnd">/paving · Paving OS</span></td><td class="rec">pavement SF, stripe LF, signage</td><td class="lev">SF accuracy</td><td class="flag">subgrade prep + section spec</td></tr>
+      <tr><td class="tr"><b>Landscaping &amp; Irrigation</b><span class="lnd">/landscaping · Landscape OS</span></td><td class="rec">plantings (ea), irrigation LF, area SF</td><td class="lev">mixed-unit accuracy</td><td class="flag">plant size / warranty + establishment</td></tr>
+      <tr><td class="tr"><b>Site Improvements &amp; Fencing</b><span class="lnd">/site-improvements · Sitework OS</span></td><td class="rec">fence LF, furnishings (ea), gates</td><td class="lev">LF + each</td><td class="flag">gate / access + footing scope</td></tr>
+    </tbody>
+  </table>
+
+  <!-- VOLUME -->
+  <h2 id="volume">Family 4 · Volume</h2>
+  <div class="fam"><span class="ft">Volume: cubic yards off the model</span><span class="fp">recipe: <span class="mono">compute volumes off the structural / civil model</span></span><span class="cnt">3 trades</span></div>
+  <table class="t">
+    <thead><tr><th style="width:18%">Trade</th><th style="width:30%">Sarah extracts</th><th style="width:24%">$ lever</th><th style="width:28%">Money flag</th></tr></thead>
+    <tbody>
+      <tr><td class="tr"><b>Concrete</b><span class="lnd">/concrete · Concrete OS</span></td><td class="rec">CY concrete, formwork SF, rebar tons</td><td class="lev">yardage accuracy + pour schedule</td><td class="flag">addenda quantity swings; mix-design spec</td></tr>
+      <tr><td class="tr"><b>Earthwork &amp; Grading</b><span class="lnd">/earthwork · Earthwork OS</span></td><td class="rec">cut / fill CY, export, grading SF</td><td class="lev">earthwork balance</td><td class="flag">unsuitable soils / rock / dewatering</td></tr>
+      <tr><td class="tr"><b>Deep Foundations &amp; Shoring</b><span class="lnd">/deep-foundations · Foundations OS</span></td><td class="rec">pile LF / ea, shoring SF, CY</td><td class="lev">production-rate bids</td><td class="flag">refusal / obstruction + geotech risk</td></tr>
+    </tbody>
+  </table>
+
+  <!-- WEIGHT -->
+  <h2 id="weight">Family 5 · Weight</h2>
+  <div class="fam"><span class="ft">Weight: tonnage + piece counts</span><span class="fp">recipe: <span class="mono">tonnage + connection / piece counts off the structural set</span></span><span class="cnt">2 trades</span></div>
+  <table class="t">
+    <thead><tr><th style="width:18%">Trade</th><th style="width:30%">Sarah extracts</th><th style="width:24%">$ lever</th><th style="width:28%">Money flag</th></tr></thead>
+    <tbody>
+      <tr><td class="tr"><b>Structural Steel</b><span class="lnd">/structural-steel · Steel OS</span></td><td class="rec">tonnage, connections, decking SF</td><td class="lev">tonnage + connections</td><td class="flag">connection-design + AESS scope</td></tr>
+      <tr><td class="tr"><b>Miscellaneous Metals</b><span class="lnd">/misc-metals · Misc Metals OS</span></td><td class="rec">railings LF, stairs (ea), embeds</td><td class="lev">each / LF accuracy</td><td class="flag">deferred-design + shop-drawing scope</td></tr>
+    </tbody>
+  </table>
+
+  <!-- SYSTEMS -->
+  <h2 id="systems">Family 6 · Systems</h2>
+  <div class="fam"><span class="ft">Systems: schedules + assemblies, not one unit</span><span class="fp">recipe: <span class="mono">read equipment schedules + assemblies, multiple units</span></span><span class="cnt">3 trades</span></div>
+  <table class="t">
+    <thead><tr><th style="width:18%">Trade</th><th style="width:30%">Sarah extracts</th><th style="width:24%">$ lever</th><th style="width:28%">Money flag</th></tr></thead>
+    <tbody>
+      <tr><td class="tr"><b>Mechanical (HVAC)</b><span class="lnd">/mechanical · Mechanical OS</span></td><td class="rec">equipment schedule (units), duct LF / lbs, pipe LF</td><td class="lev">equipment + duct accuracy</td><td class="flag">equipment lead-time + spec-buried units</td></tr>
+      <tr><td class="tr"><b>Millwork &amp; Casework</b><span class="lnd">/millwork · Millwork OS</span></td><td class="rec">casework LF, countertop SF, items (ea)</td><td class="lev">LF / SF accuracy</td><td class="flag">material grade + shop-drawing scope</td></tr>
+      <tr><td class="tr"><b>Demolition &amp; Abatement</b><span class="lnd">/demolition · Demo OS</span></td><td class="rec">demo SF / CY, hazmat scope</td><td class="lev">SF / CY + hazard scoping</td><td class="flag">abatement / hazmat survey (liability $)</td></tr>
+    </tbody>
+  </table>
+
+  <p class="meta" style="margin-top:24px"><b style="color:var(--ink)">How the question gets composed:</b> <span class="mono" style="color:var(--violet)">composeQuestion(persona, size, tradeConfig)</span> → e.g. estimator × small × Electrical = <i>"What are you bidding this week? Drop the plans. I'll count devices + flag any long-lead gear."</i> Same template, different row, per-company phrasing from the enrichment. See <a href="tech-mapping#routing">the router</a>.</p>
+
+</div>
+<script src="/nav.js" defer></script>
+</body>
+</html>

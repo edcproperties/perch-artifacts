@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Perch · Walkthrough: Squires · cold vs warm start</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E8E6DF; --panel:#FBFAF6; --panel2:#F5F3EE; --line:#CECBC1; --line2:#BDB8AC;
+    --ink:#181917; --ink2:#5D5F5A; --ink3:#8A8B84;
+    --blue:#3E6E8E; --green:#5E7E52; --amber:#9A7B1F; --violet:#6F5499; --red:#B23A2E;
+    --cold:#3E6E8E; --warm:#C8743A;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 'Archivo',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:36px 26px 90px}
+  a{color:var(--blue)}
+  h1{font-size:26px;margin:0 0 6px;letter-spacing:-.01em}
+  .sub{color:var(--ink2);margin:0 0 16px;max-width:840px}
+  .sub b{color:var(--ink)}
+  .meta{color:var(--ink3);font-size:13px;margin:0 0 18px}
+
+  /* customer header */
+  .cust{display:flex;gap:16px;flex-wrap:wrap;align-items:center;background:linear-gradient(180deg,rgba(62,110,142,.08),rgba(62,110,142,.02));border:1px solid rgba(62,110,142,.26);border-radius:14px;padding:14px 20px;margin-bottom:14px}
+  .cust .nm{font-weight:700;font-size:18px}
+  .cust dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-size:12.5px}
+  .cust dt{color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;font-size:10.5px;padding-top:2px}
+  .cust dd{margin:0;color:var(--ink2)}
+
+  /* toggle */
+  .togwrap{position:sticky;top:50px;z-index:50;background:rgba(232,230,223,.93);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--line2);border-radius:14px;padding:12px 16px;margin-bottom:8px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .seg{display:inline-flex;background:var(--panel2);border:1px solid var(--line2);border-radius:11px;padding:3px}
+  .seg button{appearance:none;border:0;background:transparent;color:var(--ink2);font:600 13.5px/1 inherit;padding:9px 16px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .14s}
+  .seg button .d{font-size:14px}
+  body.mode-cold .seg .b-cold{background:rgba(62,110,142,.16);color:var(--cold);box-shadow:inset 0 0 0 1px rgba(62,110,142,.4)}
+  body.mode-warm .seg .b-warm{background:rgba(240,168,104,.16);color:var(--warm);box-shadow:inset 0 0 0 1px rgba(240,168,104,.45)}
+  .modecap{font-size:12.5px;color:var(--ink2);flex:1;min-width:260px}
+  .modecap b{color:var(--ink)}
+  body.mode-cold .warm-cap,body.mode-warm .cold-cap{display:none}
+
+  /* mode-conditional visibility */
+  body.mode-cold .warm-only{display:none}
+  body.mode-warm .cold-only{display:none}
+
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12px;color:var(--ink2);margin:12px 0 4px}
+  .pill{font-size:10px;font-weight:800;letter-spacing:.04em;padding:2px 7px;border-radius:6px;text-transform:uppercase;vertical-align:middle}
+  .p-surface{background:rgba(62,110,142,.14);color:var(--blue);border:1px solid rgba(62,110,142,.3)}
+  .p-built{background:rgba(94,126,82,.14);color:var(--green);border:1px solid rgba(94,126,82,.3)}
+  .p-build{background:rgba(111,84,153,.14);color:var(--violet);border:1px solid rgba(111,84,153,.3)}
+  .p-cust{background:rgba(154,123,31,.14);color:var(--amber);border:1px solid rgba(154,123,31,.3)}
+
+  /* flow + counter numbering (auto-renumbers; hidden steps skip) */
+  .flow{counter-reset:step}
+  .step{display:grid;grid-template-columns:44px 1fr;gap:0;counter-increment:step}
+  .rail{display:flex;flex-direction:column;align-items:center}
+  .num{width:30px;height:30px;border-radius:50%;background:var(--panel2);border:1px solid var(--line2);color:var(--ink);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;margin-top:14px}
+  .num::before{content:counter(step)}
+  body.mode-cold .step.warm-tint .num,body.mode-warm .step .num{border-color:rgba(240,168,104,.5)}
+  body.mode-warm .step .num{background:rgba(240,168,104,.1)}
+  body.mode-cold .step .num{border-color:rgba(62,110,142,.45);background:rgba(62,110,142,.08)}
+  .wire{flex:1;width:2px;background:linear-gradient(180deg,var(--line2),var(--line));margin:6px 0 0}
+  .body{padding:12px 0 18px}
+  .shead{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:8px}
+  .shead .st{font-weight:700;font-size:16px}
+  .row{display:grid;grid-template-columns:430px 1fr;gap:18px;align-items:start}
+  @media(max-width:840px){.row{grid-template-columns:1fr}}
+  .txt .narr{font-size:13.5px;color:var(--ink2);margin:0 0 10px}
+  .txt .narr b{color:var(--ink)}
+  .cubox{border-left:3px solid rgba(154,123,31,.5);background:rgba(154,123,31,.05);border-radius:0 10px 10px 0;padding:10px 13px;font-size:12.5px;color:var(--ink2)}
+  .cubox .cl{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--amber);display:block;margin-bottom:3px}
+  .cubox b{color:var(--ink)}
+  .cubox .greenfield{color:var(--violet);font-weight:700}
+
+  /* skipped strip (warm) */
+  .skipped{display:flex;align-items:center;gap:12px;margin:2px 0 2px 44px;padding:9px 14px;border:1px dashed var(--line2);border-radius:10px;background:rgba(240,168,104,.04);font-size:12.5px;color:var(--ink3)}
+  .skipped .k{color:var(--warm);font-weight:700}
+  .skipped s{color:var(--ink3)}
+
+  /* converge divider */
+  .converge{display:flex;align-items:center;gap:12px;margin:10px 0 6px;padding-left:8px}
+  .converge .line{flex:1;height:1px;background:linear-gradient(90deg,var(--line2),transparent)}
+  .converge .lbl{font-size:12px;color:var(--ink2);background:var(--panel2);border:1px solid var(--line2);border-radius:999px;padding:5px 13px}
+  .converge .lbl b{color:var(--ink)}
+
+  /* ---- mock components ---- */
+  .mock{background:var(--panel);border:1px solid var(--line2);border-radius:12px;overflow:hidden;font-size:12px}
+  .mbar{display:flex;align-items:center;gap:6px;padding:8px 11px;background:#EDEAE1;border-bottom:1px solid var(--line)}
+  .mbar i{width:9px;height:9px;border-radius:50%;background:#C5BFB2;display:inline-block}
+  .mbar .url{margin-left:8px;font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace;font-size:10.5px;color:var(--ink3);background:#F7F5F0;border:1px solid var(--line);border-radius:6px;padding:2px 9px}
+  .mb{padding:14px 15px}
+  .ph{height:9px;border-radius:5px;background:var(--line2)}
+  .ph.s{height:7px;background:var(--line)}
+  .h-lg{height:15px;border-radius:5px;background:linear-gradient(90deg,var(--ink2),var(--line2));width:78%}
+  .muted{color:var(--ink3)} .accent{color:var(--blue)} .ok{color:var(--green)}
+  .btn{display:inline-block;background:linear-gradient(135deg,var(--blue),#3E6E8E);color:#F0ECE3;font-weight:700;font-size:12px;padding:7px 14px;border-radius:8px;margin-top:4px}
+  .btn.warm{background:linear-gradient(135deg,var(--warm),#C8743A)}
+  .btn.sec{background:transparent;color:var(--blue);border:1px solid rgba(62,110,142,.4)}
+  .field{display:block;width:100%;background:#F7F5F0;border:1px solid var(--line2);border-radius:8px;padding:8px 10px;color:var(--ink2);font-size:12px;margin:4px 0 8px}
+  .lbl2{font-size:10.5px;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em}
+  .chip{display:inline-block;font-size:11px;color:var(--ink);background:var(--panel2);border:1px solid var(--line2);border-radius:7px;padding:3px 9px;margin:3px 4px 0 0}
+  .chip.on{border-color:rgba(62,110,142,.5);background:rgba(62,110,142,.1);color:var(--blue)}
+  .chip.warm{border-color:rgba(240,168,104,.5);background:rgba(240,168,104,.1);color:var(--warm)}
+  .logos{display:flex;gap:6px;margin-top:9px}
+  .logos i{width:34px;height:11px;border-radius:3px;background:var(--line);display:inline-block}
+  .greet{font-size:14px;color:var(--ink);font-weight:600}
+
+  .engine{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .ag{background:var(--panel2);border:1px solid rgba(111,84,153,.28);border-radius:8px;padding:7px 9px}
+  .ag.cached{border-color:rgba(240,168,104,.32)}
+  .ag .an{font-size:10.5px;font-weight:700;color:var(--violet)}
+  .ag.cached .an{color:var(--warm)}
+  .ag .ao{font-size:10.5px;color:var(--ink3);margin-top:2px}
+  .ag .ao b{color:var(--green)}
+
+  .kan{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+  .kcol .kh{font-size:9.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink3);margin-bottom:5px}
+  .jc{background:var(--panel2);border:1px solid var(--line2);border-radius:7px;padding:6px 8px;margin-bottom:5px}
+  .jc .jt{font-size:11px;color:var(--ink);font-weight:600}
+  .jc .jm{font-size:10px;color:var(--ink3);margin-top:2px}
+  .alert{display:flex;align-items:center;gap:7px;background:rgba(154,123,31,.08);border:1px solid rgba(154,123,31,.28);border-radius:8px;padding:7px 10px;margin-bottom:9px;font-size:11px;color:var(--amber)}
+
+  .chat .bub{max-width:90%;border-radius:12px;padding:8px 11px;font-size:12px;margin:6px 0}
+  .chat .agent{background:var(--panel2);border:1px solid var(--line2);color:var(--ink);border-bottom-left-radius:3px}
+  .chat .you{background:rgba(62,110,142,.12);border:1px solid rgba(62,110,142,.3);color:var(--ink);margin-left:auto;border-bottom-right-radius:3px;max-width:72%}
+  .chat .who{font-size:9.5px;color:var(--ink3);margin-bottom:2px}
+
+  .li{display:flex;justify-content:space-between;font-size:11px;padding:5px 0;border-bottom:1px solid var(--line)}
+  .li b{color:var(--ink)} .li .q{color:var(--blue);font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace}
+  .flagrow{display:flex;align-items:center;gap:7px;background:rgba(178,58,46,.08);border:1px solid rgba(178,58,46,.28);border-radius:7px;padding:6px 9px;margin-top:8px;font-size:10.5px;color:var(--red)}
+
+  .invrow{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--line);font-size:11px}
+  .av{width:22px;height:22px;border-radius:50%;background:var(--line2)}
+  .dd{margin-left:auto;font-size:10.5px;color:var(--ink2);background:#F7F5F0;border:1px solid var(--line2);border-radius:6px;padding:3px 8px}
+  .dd.hot{border-color:rgba(154,123,31,.45);color:var(--amber)}
+
+  /* fork (warm confirm) */
+  .fork{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .fk{border:1px solid var(--line2);border-radius:9px;padding:9px 11px;background:var(--panel2)}
+  .fk .ft{font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--warm);margin-bottom:5px}
+  .fk .fd{font-size:11px;color:var(--ink2)}
+
+  /* tables */
+  .cmp,.ledger{width:100%;border-collapse:collapse;font-size:12.5px;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:8px}
+  .cmp th,.ledger th{background:var(--panel2);color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;font-size:10px;text-align:left;padding:9px 12px;border-bottom:1px solid var(--line)}
+  .cmp td,.ledger td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink2)}
+  .cmp tr:last-child td,.ledger tr:last-child td{border-bottom:none}
+  .cmp td.k,.ledger td.s{color:var(--ink);font-weight:600;white-space:nowrap}
+  .cmp .cold{color:var(--cold)} .cmp .warm{color:var(--warm)}
+  h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin:42px 0 14px;border-bottom:1px solid var(--line);padding-bottom:8px}
+</style>
+</head>
+<body class="mode-cold">
+<div class="wrap">
+  <h1>Walkthrough: <span style="color:var(--blue)">Squires Construction</span> · <span class="cold-cap" style="color:var(--cold)">cold start</span><span class="warm-cap" style="color:var(--warm)">warm start</span></h1>
+  <p class="sub">One real test customer, run end-to-end across Perch's actual <b>application surfaces</b>, now with two journeys. <b>Cold</b> = a stranger we learn about only after they hand over an email. <b>Warm</b> = a PLG lead we already know, fully customized from the first pixel. Toggle below; the steps, asks, and numbering change with it.</p>
+  <p class="meta">Perch · CRO cockpit · Jun 25 2026 · mock-ups are schematic · sibling to <a href="journey-map">journey-map</a></p>
+
+  <div class="cust">
+    <div>
+      <div style="display:flex;align-items:center;gap:9px;margin-bottom:6px"><span class="nm">Squires Construction</span></div>
+      <dl>
+        <dt>Type</dt><dd>Small commercial GC · Salt Lake City · ~10–20 emp · &lt;$25M</dd>
+        <dt>Does</dt><dd>Commercial TI / remodel: restaurant, retail, office</dd>
+        <dt>Lands as</dt><dd>Owner-operator (Darin, runs estimating + the company)</dd>
+      </dl>
+    </div>
+  </div>
+
+  <!-- TOGGLE -->
+  <div class="togwrap">
+    <div class="seg" role="tablist" aria-label="Start type">
+      <button class="b-cold" onclick="setMode('cold')" aria-pressed="true"><span class="d">❄</span> Cold start</button>
+      <button class="b-warm" onclick="setMode('warm')" aria-pressed="false"><span class="d">🔥</span> Warm start</button>
+    </div>
+    <div class="modecap">
+      <span class="cold-cap"><b>Cold:</b> we know nothing. The email is the trigger. Everything is gathered <b>after</b>. ~2 asks before value.</span>
+      <span class="warm-cap"><b>Warm (PLG):</b> we already have email + name, like McDonald's, the usual is ready. Enrichment pre-ran <b>before they arrived</b>. <b>Zero asks</b> (at most one role tap, depending how warm).</span>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><span class="pill p-surface">surface</span> real app surface</span>
+    <span><span class="pill p-built">built</span> exists today</span>
+    <span><span class="pill p-build">to build</span> greenfield</span>
+    <span><span class="pill p-cust">customize</span> tailor to customer</span>
+  </div>
+
+  <div class="flow">
+
+    <!-- ===== ARRIVE (COLD) ===== -->
+    <div class="step cold-only">
+      <div class="rail"><div class="num"></div><div class="wire"></div></div>
+      <div class="body">
+        <div class="shead"><span class="st">Arrive: a stranger</span><span class="pill p-surface">Marketing lander</span><span class="pill p-built">built</span></div>
+        <div class="row">
+          <div class="mock">
+            <div class="mbar"><i></i><i></i><i></i><span class="url">perch.pro/general-contractor</span></div>
+            <div class="mb">
+              <div class="h-lg"></div>
+              <div class="ph s" style="width:60%;margin-top:8px"></div>
+              <div class="ph s" style="width:52%;margin-top:6px"></div>
+              <div class="btn" style="margin-top:11px">Try it on your jobs</div>
+              <span class="btn sec" style="margin-left:6px">Log in</span>
+              <div class="logos"><i></i><i></i><i></i><i></i></div>
+            </div>
+          </div>
+          <div class="txt">
+            <p class="narr">An anonymous visitor hits a GC-framed lander. We know <b>nothing</b> yet (at most a channel hint: search vs ad). The page can't be personalized; it has to earn the email.</p>
+            <div class="cubox"><span class="cl">Customization here</span> Best we can do is segment by <b>channel / landing URL</b>. Real personalization is impossible until step 2.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ARRIVE (WARM) ===== -->
+    <div class="step warm-only">
+      <div class="rail"><div class="num"></div><div class="wire"></div></div>
+      <div class="body">
+        <div class="shead"><span class="st">Arrive: already known</span><span class="pill p-surface">Personalized entry</span><span class="pill p-build">to build</span></div>
+        <div class="row">
+          <div class="mock">
+            <div class="mbar"><i></i><i></i><i></i><span class="url">app.perch.pro/i/squires · invited</span></div>
+            <div class="mb">
+              <div class="greet">Welcome, Darin 👋</div>
+              <div class="ph s" style="width:70%;margin:8px 0 4px"></div>
+              <div style="font-size:12px;color:var(--ink2);margin-bottom:9px"><b style="color:var(--ink)">Squires Construction</b>'s workspace is ready.</div>
+              <span class="chip warm">Commercial TI</span><span class="chip warm">SLC</span>
+              <div class="btn warm" style="margin-top:10px">Open my board →</div>
+            </div>
+          </div>
+          <div class="txt">
+            <p class="narr">Squires came in through PLG: a bid invite, a shared plan link, a teammate, or outbound we already had their email for. The very first screen is <b>personalized to them by name and company</b>. No form, no generic lander.</p>
+            <div class="cubox"><span class="cl">Customization here</span> <span class="greenfield">Identity is passed in on the PLG link</span> (email + name + company), and <span class="greenfield">enrichment pre-ran before they ever clicked</span>. This is the McDonald's move. The order's already up.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ASK EMAIL (COLD only) ===== -->
+    <div class="step cold-only">
+      <div class="rail"><div class="num"></div><div class="wire"></div></div>
+      <div class="body">
+        <div class="shead"><span class="st">Ask: email only</span><span class="pill p-surface">Signup</span><span class="pill p-cust">customize</span></div>
+        <div class="row">
+          <div class="mock">
+            <div class="mbar"><i></i><i></i><i></i><span class="url">app.perch.pro/start</span></div>
+            <div class="mb">
+              <div class="ph" style="width:46%;margin-bottom:10px"></div>
+              <span class="lbl2">Work email</span>
+              <span class="field">darin@squiresgc.com</span>
+              <div class="btn">See my workspace →</div>
+            </div>
+          </div>
+          <div class="txt">
+            <p class="narr">The <b>only</b> ask. No org, no type picker, no password wall. The email <b>domain</b> is the single seed everything downstream grows from.</p>
+            <div class="cubox"><span class="cl">Customization here</span> <b>Collapse today's 6-step form to one field.</b> This step is the entire reason cold is slower than warm. It's the ask warm doesn't need.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== WARM skipped strip ===== -->
+    <div class="skipped warm-only">
+      <span class="k">✓ Skipped</span>
+      <span><s>Ask email</s>, already have it (PLG)&nbsp;&nbsp;·&nbsp;&nbsp;<s>Ask name</s>, already have it&nbsp;&nbsp;·&nbsp;&nbsp;no signup form at all</span>
+    </div>
+
+    <!-- ===== ENRICH (COLD) ===== -->
+    <div class="step cold-only">
+      <div class="rail"><div class="num"></div><div class="wire"></div></div>
+      <div class="body">
+        <div class="shead"><span class="st">Enrich: swarm fires on email</span><span class="pill p-surface">background</span><span class="pill p-build">to build</span></div>
+        <div class="row">
+          <div class="mock">
+            <div class="mbar"><i></i><i></i><i></i><span class="url">⚙ researching squiresgc.com…</span></div>
+            <div class="mb">
+              <div class="engine">
+                <div class="ag"><div class="an">⌖ Domain → site</div><div class="ao">→ <b>Squires Construction</b></div></div>
+                <div class="ag"><div class="an">⌖ Classifier</div><div class="ao">→ <b>GC · commercial TI</b></div></div>
+                <div class="ag"><div class="an">⌖ Size</div><div class="ao">→ <b>&lt;$25M · small</b></div></div>
+                <div class="ag"><div class="an">⌖ Role</div><div class="ao">→ <b>Owner (Darin)</b></div></div>
+                <div class="ag"><div class="an">⌖ Project finder</div><div class="ao">→ <b>4 SLC TI bids</b></div></div>
+                <div class="ag"><div class="an">⌖ Network seeder</div><div class="ao">→ <b>9 subs</b></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="txt">
+            <p class="narr">The instant the email lands, six sub-agents go learn the company <b>while</b> the email confirms. This is the moment a cold lead becomes known.</p>
+            <div class="cubox"><span class="cl">Customization here</span> <span class="greenfield">Entire swarm is greenfield.</span> In cold it runs <b>on the critical path</b>: the customer is waiting, so speed + the ~100% accuracy bar both matter.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ENRICH / PRE-LOADED (WARM) ===== -->
+    <div class="step warm-only">
+      <div class="rail"><div class="num"></div><div class="wire"></div></div>
+      <div class="body">
+        <div class="shead"><span class="st">Pre-enriched: ready from the rip</span><span class="pill p-surface">ran ahead</span><span class="pill p-build">to build</span></div>
+        <div class="row">
+          <div class="mock">
+            <div class="mbar"><i></i><i></i><i></i><span class="url">✓ cached before arrival</span></div>
+            <div class="mb">
+              <div class="engine">
+                <div class="ag cached"><div class="an">✓ Domain → site</div><div class="ao">→ <b>Squires Construction</b></div></div>
+                <div class="ag cached"><div class="an">✓ Classifier</div><div class="ao">→ <b>GC · commercial TI</b></div></div>
+                <div class="ag cached"><div class="an">✓ Size</div><div class="ao">→ <b>&lt;$25M · small</b></div></div>
+                <div class="ag cached"><div class="an">✓ Role</div><div class="ao">→ <b>maybe known</b></div></div>
+                <div class="ag cached"><div class="an">✓ Project finder</div><div class="ao">→ <b>4 SLC TI bids</b></div></div>
+                <div class="ag cached"><div class="an">✓ Network seeder</div><div class="ao">→ <b>9 subs</b></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="txt">
+            <p class="narr">Because we had the email <b>ahead of time</b>, the swarm already ran off the critical path, before Squires showed up. Nothing to wait for; it's all cached and loaded.</p>
+            <div class="cubox"><span class="cl">Customization here</span> <span class="greenfield">Pre-enrichment is triggered at PLG capture, not at their click.</span> Same swarm as cold, but it gets <b>more time and can go deeper</b>, and the only soft spot is whether <b>role</b> came with the lead.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CONFIRM (COLD) ===== -->
+    <div class="step cold-only">
+      <div class="rail"><div class="num"></div><div class="wire"></div></div>
+      <div class="body">
+        <div class="shead"><span class="st">Confirm, don't ask</span><span class="pill p-surface">Onboarding</span><span class="pill p-cust">customize</span></div>
+        <div class="row">
+          <div class="mock">
+            <div class="mbar"><i></i><i></i><i></i><span class="url">app.perch.pro/confirm</span></div>
+            <div class="mb">
+              <div style="font-size:12px;color:var(--ink);margin-bottom:8px">"<b>Squires Construction</b>, SLC commercial GC, mostly restaurant + retail TI. You run it. Right?"</div>
+              <span class="chip on">GC</span><span class="chip on">Commercial TI</span><span class="chip on">Restaurant · Retail</span><span class="chip on">Owner</span>
+              <div style="margin-top:11px"><span class="btn">Yes, that's us</span><span class="btn sec" style="margin-left:6px">Fix something</span></div>
+            </div>
+          </div>
+          <div class="txt">
+            <p class="narr">One screen, one tap. Pre-filled chips replace three old form steps (type, sectors, profile). Wrong? "Fix something" degrades gracefully to a question. <b>Role is captured here.</b></p>
+            <div class="cubox"><span class="cl">Customization here</span> Confirm copy + chips <b>generated from the enrichment</b>. Needed in cold because the data is freshly-guessed and the customer hasn't vouched for it yet.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CONFIRM / ROLE (WARM, forks on how warm) ===== -->
+    <div class="step warm-only">
+      <div class="rail"><div class="num"></div><div class="wire"></div></div>
+      <div class="body">
+        <div class="shead"><span class="st">Maybe one tap (depends how warm)</span><span class="pill p-surface">Onboarding</span><span class="pill p-cust">customize</span></div>
+        <div class="row">
+          <div class="mock">
+            <div class="mbar"><i></i><i></i><i></i><span class="url">app.perch.pro/ · warm</span></div>
+            <div class="mb">
+              <div class="fork">
+                <div class="fk"><div class="ft">🔥🔥 Role known</div><div class="fd">No ask at all. Straight to the board.<br>"Welcome back, Darin. Here's Squires."</div></div>
+                <div class="fk"><div class="ft">🔥 Role unknown</div><div class="fd">Exactly one micro-tap:<br>"You're at Squires: estimating, or running it?"</div></div>
+              </div>
+              <div style="margin-top:9px"><span class="chip warm">estimating</span><span class="chip warm">running the company</span></div>
+            </div>
+          </div>
+          <div class="txt">
+            <p class="narr">"How warm" decides everything here. The <b>warmest</b> leads (role came with them) skip even the confirm and land straight on their board. Slightly cooler leads get <b>one</b> question, their role, and nothing else, ever.</p>
+            <div class="cubox"><span class="cl">Customization here</span> The <b>only possible ask in the warm journey is role, and only when it's unknown.</b> Everything else is already true and pre-filled. Role still must be captured (today's gap). Here it's at most a single tap.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CONVERGE ===== -->
+    <div class="converge">
+      <div class="line"></div>
+      <div class="lbl">▼ From here, <b>both journeys converge</b>: same surfaces, same value</div>
+      <div class="line"></div>
+    </div>
+
+    <!-- ===== REVEAL VALUE (shared) ===== -->
+    <div class="step">
+      <div class="rail"><div class="num"></div><div class="wire"></div></div>
+      <div class="body">
+        <div class="shead"><span class="st">Reveal value: a pre-filled workspace</span><span class="pill p-surface">Jobs · Tom</span><span class="pill p-build">to build</span></div>
+        <div class="row">
+          <div class="mock">
+            <div class="mbar"><i></i><i></i><i></i><span class="url">app.perch.pro/dashboard</span></div>
+            <div class="mb">
+              <div class="alert">⚑ A restaurant TI in Sugar House bids in <b style="color:var(--ink)">3 days</b>. Want to scope it?</div>
+              <div class="kan">
+                <div class="kcol"><div class="kh">Bidding</div>
+                  <div class="jc"><div class="jt">Sugar House café TI</div><div class="jm">$420k · due Fri</div></div>
+                  <div class="jc"><div class="jt">Retail shell, Draper</div><div class="jm">$1.1M · due 6/30</div></div>
+                </div>
+                <div class="kcol"><div class="kh">Watching</div>
+                  <div class="jc"><div class="jt">Office TI, Murray</div><div class="jm">$680k</div></div>
+                </div>
+                <div class="kcol"><div class="kh">Subs</div>
+                  <div class="jc"><div class="jt">9 subs you use</div><div class="jm">pre-loaded</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="txt">
+            <p class="narr">Squires lands in a workspace that's <b>already populated</b>: a pipeline of TI jobs they're likely bidding, the subs they use, and a Tom alert on a bid closing this week. Not an empty workspace + a notes box. <span class="warm-only">(In warm, this is the <b>first</b> thing they see.)</span></p>
+            <div class="cubox"><span class="cl">Customization here</span> Pipeline seeded from <span class="greenfield">public bids / permits (project-finder)</span>; subs from the <span class="greenfield">network seeder</span>. The stickiness lever: <b>real data in during onboarding.</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== NEXT QUESTION (shared) ===== -->
+    <div class="step">
+      <div class="rail"><div class="num"></div><div class="wire"></div></div>
+      <div class="body">
+        <div class="shead"><span class="st">The next question: the conversion lever</span><span class="pill p-surface">Chat / Copilot</span><span class="pill p-cust">customize</span></div>
+        <div class="row">
+          <div class="mock">
+            <div class="mbar"><i></i><i></i><i></i><span class="url">app.perch.pro/c</span></div>
+            <div class="mb chat">
+              <div class="who">Perch</div>
+              <div class="bub agent"><span class="warm-only">Darin, </span>you've got 4 live bids on the board. <b>Which one's most worth winning?</b> Drop the plans and I'll scope it right now.</div>
+              <div class="bub you">The Sugar House café. Here's the set 📎</div>
+            </div>
+          </div>
+          <div class="txt">
+            <p class="narr">The single most-motivating ask, tuned to an <b>owner-operator</b>: not "what are you bidding this week?" (the estimator's line) but "which is worth winning? I'll scope it." The payoff is their real, live bid.</p>
+            <div class="cubox"><span class="cl">Customization here</span> The question is <b>role + size conditioned</b>. This exact line per cell is the lever the team signs off on.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SARAH (shared) ===== -->
+    <div class="step">
+      <div class="rail"><div class="num"></div><div class="wire"></div></div>
+      <div class="body">
+        <div class="shead"><span class="st">Value proof: Sarah scopes the real plan</span><span class="pill p-surface">Jobs · Sarah</span><span class="pill p-built">built</span></div>
+        <div class="row">
+          <div class="mock">
+            <div class="mbar"><i></i><i></i><i></i><span class="url">app.perch.pro/jobs/sugar-house-cafe</span></div>
+            <div class="mb">
+              <div class="lbl2" style="margin-bottom:6px">Scope · Sugar House café TI <span class="ok">· 47 pages read</span></div>
+              <div class="li"><span>Demo + partitions</span><span class="q">1,240 SF</span></div>
+              <div class="li"><span>Kitchen rough-in (MEP)</span><span class="q">flagged</span></div>
+              <div class="li"><span>Storefront / glazing</span><span class="q">2 ea</span></div>
+              <div class="li"><span>Finishes schedule</span><span class="q">12 rooms</span></div>
+              <div class="flagrow">⚠ Spec calls for grease-duct rated assembly, not in the base drawings. Possible change order.</div>
+            </div>
+          </div>
+          <div class="txt">
+            <p class="narr">Sarah reads the actual plan set and returns a scope summary in seconds, with a <b>money flag</b> (a spec/drawing conflict = likely change order). The wow is on their own job, not a canned demo.</p>
+            <div class="cubox"><span class="cl">Customization here</span> Recipe tuned to <b>GC TI work</b> (scope + buyout summary), not a single-trade takeoff. <span class="p-built" style="padding:1px 5px;border-radius:4px">Sarah exists</span>. The GC recipe is the work.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== TEAM (shared) ===== -->
+    <div class="step">
+      <div class="rail"><div class="num"></div><div class="wire"></div></div>
+      <div class="body">
+        <div class="shead"><span class="st">Activate team</span><span class="pill p-surface">Team</span><span class="pill p-cust">customize</span></div>
+        <div class="row">
+          <div class="mock">
+            <div class="mbar"><i></i><i></i><i></i><span class="url">app.perch.pro/team</span></div>
+            <div class="mb">
+              <div class="lbl2" style="margin-bottom:6px">Pull your crew into the board</div>
+              <div class="invrow"><span class="av"></span><span>estimator@squiresgc.com</span><span class="dd hot">Role: Estimator ▾</span></div>
+              <div class="invrow"><span class="av"></span><span>super@squiresgc.com</span><span class="dd hot">Role: Field → Field Ops ▾</span></div>
+              <div class="btn" style="margin-top:9px">Send invites</div>
+            </div>
+          </div>
+          <div class="txt">
+            <p class="narr">Squires invites an estimator and a superintendent into the already-built pipeline. Roles are set at invite, and the field role routes somewhere different.</p>
+            <div class="cubox"><span class="cl">Customization here</span> <b>Capture role at invite</b> (today hardcoded "member"). The <b>super routes to Field Ops / mobile</b>, not chat. <span class="greenfield">Role-aware invite is a build.</span> Each invite is also a fresh <b>warm</b> lead for the next person.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CHECK (shared) ===== -->
+    <div class="step">
+      <div class="rail"><div class="num"></div></div>
+      <div class="body">
+        <div class="shead"><span class="st">Check: close in-flow</span><span class="pill p-surface">Plan · Stripe</span><span class="pill p-built">built</span></div>
+        <div class="row">
+          <div class="mock">
+            <div class="mbar"><i></i><i></i><i></i><span class="url">app.perch.pro/plan</span></div>
+            <div class="mb">
+              <div style="font-size:12px;color:var(--ink);margin-bottom:8px">You scoped a live bid and built your board. Keep it running:</div>
+              <span class="chip on">21-day trial active</span>
+              <div class="lbl2" style="margin:10px 0 4px">Add a card to keep your pipeline after the trial</div>
+              <span class="field muted">•••• •••• •••• 4242</span>
+              <div class="btn">Start Squires on Perch</div>
+            </div>
+          </div>
+          <div class="txt">
+            <p class="narr">The card ask comes <b>after</b> the value, triggered when Squires scopes a real bid and moves a job. Agent-closed, one session, no salesperson.</p>
+            <div class="cubox"><span class="cl">Customization here</span> The <b>trigger moment</b> is the customization: earn the card after the first real wow. <span class="p-built" style="padding:1px 5px;border-radius:4px">Stripe + trial exist</span>; the in-flow trigger is the change.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /flow -->
+
+  <!-- COLD vs WARM CONTRAST -->
+  <h2>Cold vs warm: what actually differs</h2>
+  <table class="cmp">
+    <thead><tr><th>&nbsp;</th><th class="cold">❄ Cold start</th><th class="warm">🔥 Warm start (PLG)</th></tr></thead>
+    <tbody>
+      <tr><td class="k">First touch</td><td>Anonymous visitor on a generic lander</td><td>Personalized entry: greeted by name + company</td></tr>
+      <tr><td class="k">Email + name</td><td>The one thing we ask for</td><td>Already have it, never asked</td></tr>
+      <tr><td class="k">Enrichment</td><td>Fires <b>after</b> email, on the critical path</td><td>Pre-ran <b>before</b> arrival, cached, deeper</td></tr>
+      <tr><td class="k">Confirm step</td><td>Needed. Data is freshly guessed</td><td>Usually skipped. Only a role tap if role is unknown</td></tr>
+      <tr><td class="k">Asks before value</td><td>~2 (email → confirm)</td><td>0–1 (maybe role)</td></tr>
+      <tr><td class="k">Feels like</td><td>A fast, smart intake</td><td>McDonald's: "the usual," already up</td></tr>
+      <tr><td class="k">From value on</td><td colspan="2" style="color:var(--ink2)">Identical. Both converge on the same surfaces (Jobs · Chat · Sarah · Team · Plan)</td></tr>
+    </tbody>
+  </table>
+
+  <!-- LEDGER -->
+  <h2>Customization ledger: what each journey demands</h2>
+  <p class="sub" style="margin-bottom:12px">The diagram collapsed into a build list, the seed for Brock's <b>decision tree</b> + technical mapping. Warm front-loads the work onto the <b>PLG capture</b>; cold front-loads it onto <b>post-email enrichment</b>.</p>
+  <table class="ledger">
+    <thead><tr><th>Stage</th><th>Surface</th><th>Customization required</th><th>Applies to</th></tr></thead>
+    <tbody>
+      <tr><td class="s">Warm capture</td><td>PLG touchpoint</td><td>Pass identity (email+name+role-if-any) on the link; pre-run enrichment before arrival</td><td><span class="pill" style="color:var(--warm);border:1px solid rgba(240,168,104,.4)">warm</span> <span class="pill p-build">to build</span></td></tr>
+      <tr><td class="s">Arrive</td><td>Lander / entry</td><td>Cold: channel-segmented lander · Warm: personalized, name+company</td><td>both</td></tr>
+      <tr><td class="s">Ask</td><td>Signup</td><td>Cold only: collapse 6-step form → email. Warm: removed</td><td><span class="pill" style="color:var(--cold);border:1px solid rgba(62,110,142,.4)">cold</span></td></tr>
+      <tr><td class="s">Enrich</td><td>Swarm</td><td>6-agent research; ~100% bar. Cold = on critical path, warm = pre-cached</td><td>both <span class="pill p-build">to build</span></td></tr>
+      <tr><td class="s">Confirm / role</td><td>Onboarding</td><td>Cold: full confirm + role capture · Warm: skip, or one role tap if unknown</td><td>both <span class="pill p-cust">customize</span></td></tr>
+      <tr><td class="s">Reveal value</td><td>Jobs · Tom</td><td>Seed pipeline from public bids + subs from network seeder</td><td>both <span class="pill p-build">to build</span></td></tr>
+      <tr><td class="s">Next question</td><td>Chat</td><td>Role + size–conditioned question (the conversion lever)</td><td>both <span class="pill p-cust">customize</span></td></tr>
+      <tr><td class="s">Value proof</td><td>Jobs · Sarah</td><td>GC-TI scope recipe + spec-vs-drawing change-order flag</td><td>both <span class="pill p-built">Sarah built</span></td></tr>
+      <tr><td class="s">Activate</td><td>Team</td><td>Role-at-invite; field → Field Ops; each invite = a new warm lead</td><td>both <span class="pill p-cust">customize</span></td></tr>
+      <tr><td class="s">Check</td><td>Plan · Stripe</td><td>Value-triggered in-flow close (after the wow)</td><td>both <span class="pill p-built">Stripe built</span></td></tr>
+    </tbody>
+  </table>
+  <p class="meta" style="margin-top:12px"><b style="color:var(--ink)">Next:</b> run a <b>white-glove</b> customer (Kier / Zwick-class) the same way · then turn this ledger + the cold/warm fork into the decision tree.</p>
+
+</div>
+
+<script>
+  function setMode(m){
+    document.body.className = 'mode-' + m;
+    var btns = document.querySelectorAll('.seg button');
+    btns[0].setAttribute('aria-pressed', m === 'cold');
+    btns[1].setAttribute('aria-pressed', m === 'warm');
+  }
+</script>
+<script src="/nav.js" defer></script>
+</body>
+</html>

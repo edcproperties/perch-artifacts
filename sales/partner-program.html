@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perch · Perch Partner Program</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E8E6DF;--surface:#F5F3EE;--surface-2:#FBFAF6;
+    --ink:#181917;--slate:#5D5F5A;--faint:#8A8B84;
+    --line:#CECBC1;--line-soft:#DEDBD2;
+    --signal:#D2531D;--signal-deep:#A23C12;
+    --sans:'Archivo','Helvetica Neue',Arial,sans-serif;
+    --mono:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+    --maxw:980px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+  .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--signal-deep);font-weight:500}
+  .label{font-family:var(--mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);font-weight:500}
+  h1{font-weight:800;letter-spacing:-.02em;line-height:1.04;font-size:clamp(2.3rem,5.6vw,4rem)}
+  h2{font-weight:700;letter-spacing:-.01em;line-height:1.12;font-size:clamp(1.5rem,3.2vw,2.1rem)}
+  h3{font-weight:700;font-size:1.06rem;letter-spacing:-.005em}
+  p{color:var(--slate)}
+  strong{color:var(--ink);font-weight:600}
+  em{font-style:normal;color:var(--ink);font-weight:600}
+  .lead{font-size:clamp(1.05rem,1.8vw,1.22rem);color:var(--ink);font-weight:400;line-height:1.5}
+
+  header.hero{padding:74px 0 46px;border-bottom:1.5px solid var(--ink)}
+  .hero-top{display:flex;justify-content:space-between;align-items:baseline;gap:18px;flex-wrap:wrap;margin-bottom:44px}
+  .hero h1{max-width:16ch;margin:26px 0 22px}
+  .hero .lead{max-width:62ch}
+  .fieldnote{background:var(--surface-2);border:1px solid var(--line);border-left:3px solid var(--signal);padding:22px 24px;margin-top:34px}
+  .fieldnote .label{display:block;margin-bottom:10px}
+  .fieldnote p{color:var(--ink);font-size:.99rem}
+
+  section{padding:54px 0;border-bottom:1px solid var(--line-soft)}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:30px}
+  .sec-head .num{font-family:var(--mono);font-size:.78rem;color:var(--signal-deep);font-weight:600;padding-top:.25em}
+
+  /* terms sheet */
+  .terms{display:grid;gap:1px;background:var(--line-soft);border:1px solid var(--line-soft)}
+  .term{background:var(--surface-2);padding:20px 24px;display:grid;grid-template-columns:150px 1fr;gap:20px;align-items:baseline}
+  .term .tk{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--signal-deep);padding-top:2px}
+  .term .tv{font-size:1rem;color:var(--ink)}
+  .term .tv strong{color:var(--ink)}
+  .term .tv .mono{font-family:var(--mono);font-size:.86rem;color:var(--slate)}
+
+  /* callout */
+  .callout{border:1px solid var(--line);border-left:3px solid var(--signal);background:var(--surface-2);padding:24px 26px}
+  .callout .label{display:block;margin-bottom:10px;color:var(--signal-deep)}
+  .callout p{color:var(--ink);font-size:.99rem}
+  .callout p + p{margin-top:10px}
+  .callout .decided{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--signal);padding:3px 9px;border-radius:3px;margin-right:8px}
+
+  /* principles */
+  .principles{display:grid;gap:1px;background:var(--line-soft);border:1px solid var(--line-soft)}
+  .principle{background:var(--paper);padding:20px 24px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start}
+  .principle .tick{color:var(--signal);font-family:var(--mono);font-weight:600;font-size:.95rem;line-height:1.5}
+  .principle h3{margin-bottom:4px;font-size:1rem}
+  .principle p{font-size:.94rem}
+
+  /* ladder */
+  .ladder{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line)}
+  .rung{padding:20px 20px;border-right:1px solid var(--line);position:relative;background:var(--surface)}
+  .rung:last-child{border-right:none}
+  .rung .stage{font-family:var(--mono);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);display:block;margin-bottom:8px}
+  .rung h3{font-size:1rem;margin-bottom:5px}
+  .rung p{font-size:.86rem;line-height:1.45}
+  .rung.live{background:var(--surface-2)}
+  .rung.live .stage{color:var(--signal-deep)}
+  .rung .dot{width:9px;height:9px;border-radius:50%;background:var(--line);position:absolute;top:22px;right:18px}
+  .rung.live .dot{background:var(--signal)}
+  .rung.open{background:var(--paper)}
+  .rung.open h3{color:var(--slate)}
+
+  /* give / ask */
+  .trade{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .col{background:var(--surface);border:1px solid var(--line);padding:24px 24px}
+  .col .label{display:block;margin-bottom:14px}
+  .col.give .label{color:var(--signal-deep)}
+  .col ul{list-style:none}
+  .col li{font-size:.95rem;color:var(--ink);padding:9px 0;border-bottom:1px solid var(--line-soft);display:grid;grid-template-columns:auto 1fr;gap:11px}
+  .col li:last-child{border-bottom:none}
+  .col li .m{font-family:var(--mono);color:var(--signal);font-weight:600}
+
+  /* steps */
+  .steps{display:grid;gap:1px;background:var(--line-soft);border:1px solid var(--line-soft)}
+  .step{background:var(--surface-2);padding:20px 24px;display:grid;grid-template-columns:120px 1fr;gap:20px;align-items:start}
+  .step .when{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--signal-deep);padding-top:3px}
+  .step h3{margin-bottom:3px}
+  .step p{font-size:.94rem}
+
+  /* exit */
+  .exit{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line)}
+  .ex{padding:22px 22px;border-right:1px solid var(--line);background:var(--surface-2)}
+  .ex:last-child{border-right:none}
+  .ex .n{font-family:var(--mono);color:var(--signal);font-weight:600;font-size:.9rem;display:block;margin-bottom:8px}
+  .ex h3{font-size:1rem;margin-bottom:5px}
+  .ex p{font-size:.88rem}
+  .closer{font-family:var(--mono);font-size:.9rem;color:var(--ink);margin-top:22px;letter-spacing:.01em}
+  .closer span{color:var(--signal-deep)}
+
+  footer{padding:40px 0 60px}
+  footer .frow{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center}
+  footer .label{color:var(--faint)}
+  a{color:var(--signal-deep)}
+
+  .rv{opacity:0;transform:translateY(14px);transition:opacity .7s ease,transform .7s ease}
+  .rv.in{opacity:1;transform:none}
+  @media (max-width:760px){
+    body{font-size:16px}
+    .trade,.ladder,.exit{grid-template-columns:1fr}
+    .rung,.ex{border-right:none;border-bottom:1px solid var(--line)}
+    .rung:last-child,.ex:last-child{border-bottom:none}
+    .term{grid-template-columns:1fr;gap:6px}
+    .step{grid-template-columns:1fr;gap:5px}
+  }
+  @media (prefers-reduced-motion:reduce){.rv{transition:none;opacity:1;transform:none}html{scroll-behavior:auto}}
+  a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-top">
+      <span class="eyebrow">Perch · Perch Partner Program</span>
+      <span class="label">Internal · the operating playbook</span>
+    </div>
+    <h1>How we run the first five.</h1>
+    <p class="lead">Three to five partners build the product with us, at our cost, and become the proof that wins the next ninety-five. The <a href="growth-thesis.html">Growth Thesis</a> says why this works. This says how it runs.</p>
+    <div class="fieldnote">
+      <span class="label">Start here</span>
+      <p>The operating manual for the partner program: the terms, who we pick, what we trade, and what "done" looks like. The plan sits in the <a href="growth-thesis.html">Growth Thesis</a>; the proof it works is in <a href="role-models.html">Role Models</a>.</p>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="rv">
+    <div class="sec-head"><span class="num">A</span><h2>The terms</h2></div>
+    <div class="terms">
+      <div class="term"><span class="tk">Cohort</span><div class="tv"><strong>3–5 partners</strong>, 1–2 general contractors + 1–2 subcontractors. Small enough to serve deeply.</div></div>
+      <div class="term"><span class="tk">The engineer</span><div class="tv">One <strong>forward-deployed engineer</strong> embedded per partner, inside their workflow, building against what they actually do.</div></div>
+      <div class="term"><span class="tk">The price</span><div class="tv"><strong>At cost.</strong> Partners cover our hard costs only: the FDE's time and token usage. <span class="mono">~80% below list · no margin.</span></div></div>
+      <div class="term"><span class="tk">The term</span><div class="tv"><strong>~60–90 days</strong>, time-boxed, one shared goal. A deadline forces a decision.</div></div>
+      <div class="term"><span class="tk">The exit</span><div class="tv">A <strong>paid contract</strong>, a <strong>reference</strong>, and a <strong>case study</strong>, agreed on day one, not hoped for at the end.</div></div>
+    </div>
+  </section>
+
+  <section class="rv">
+    <div class="sec-head"><span class="num">B</span><h2>Why at cost</h2></div>
+    <div class="callout">
+      <span class="label">The pricing call</span>
+      <p><span class="decided">Decided</span>Not free, not full price. <strong>Free pilots attract tourists</strong>; full price is too much to ask of a partner who's also doing us the favor of building alongside us. <strong>At cost is the middle.</strong></p>
+      <p>It carries enough commitment to filter the serious from the curious (Sierra ran <em>paid</em> pilots and converted <strong>100%</strong>), and we take <strong>no margin</strong>, the rule a16z prescribes for early services: sell them at cost, never as a profit center. Partners pay only what they cost us: the engineer and the tokens. <span style="color:var(--faint)">Evidence in <a href="role-models.html">Role Models</a>.</span></p>
+    </div>
+  </section>
+
+  <section class="rv">
+    <div class="sec-head"><span class="num">C</span><h2>Who we pick</h2></div>
+    <p style="max-width:64ch;margin-bottom:26px">Pick partners who <strong>bleed</strong> from the problem, not partners who think it looks neat. Pain over friendliness. The selection is the whole game.</p>
+    <div class="principles" style="margin-bottom:34px">
+      <div class="principle"><span class="tick">+</span><div><h3>Bleeds from the problem.</h3><p>The pain is real and expensive enough that they'll give us access and an hour a week to fix it.</p></div></div>
+      <div class="principle"><span class="tick">+</span><div><h3>Has the bids to seed the loop.</h3><p>A GC whose bid volume puts Perch in front of real subs. The partner is also the first turn of the engine.</p></div></div>
+      <div class="principle"><span class="tick">+</span><div><h3>A decision-maker who shows up.</h3><p>Someone who can say yes, in the room, every week. No proxy.</p></div></div>
+      <div class="principle"><span class="tick">+</span><div><h3>Looks like the next hundred.</h3><p>Representative, not an edge case. What we build for them has to generalize back to the platform.</p></div></div>
+    </div>
+    <span class="label" style="display:block;margin-bottom:14px">Where we are: the credibility ladder</span>
+    <div class="ladder">
+      <div class="rung live"><span class="dot"></span><span class="stage">Partner 01 · live</span><h3>Built Exteriors</h3><p>Sub · founder embedded · $15k/mo. Proves the model works.</p></div>
+      <div class="rung"><span class="dot"></span><span class="stage">Partner 02 · next</span><h3>Zwick</h3><p>GC · proves it works beyond a friend.</p></div>
+      <div class="rung open"><span class="dot"></span><span class="stage">Slots · open</span><h3>1 GC + 1 sub</h3><p>Fill to the full cohort, one more of each side of the loop.</p></div>
+      <div class="rung open"><span class="dot"></span><span class="stage">Accelerant · target</span><h3>A marquee GC</h3><p>Bigger logo = bigger viral seed. Land once the program is proven.</p></div>
+    </div>
+  </section>
+
+  <section class="rv">
+    <div class="sec-head"><span class="num">D</span><h2>The trade</h2></div>
+    <div class="trade">
+      <div class="col give">
+        <span class="label">We give</span>
+        <ul>
+          <li><span class="m">+</span>A dedicated FDE inside their workflow</li>
+          <li><span class="m">+</span>Direct founder access</li>
+          <li><span class="m">+</span>Features shaped to their work that generalize back to the platform</li>
+          <li><span class="m">+</span>The product at cost</li>
+        </ul>
+      </div>
+      <div class="col ask">
+        <span class="label">We ask</span>
+        <ul>
+          <li><span class="m">·</span>Payment at cost</li>
+          <li><span class="m">·</span>System + jobsite access</li>
+          <li><span class="m">·</span>A standing weekly working session</li>
+          <li><span class="m">·</span>A decision-maker in the room</li>
+        </ul>
+      </div>
+    </div>
+    <p style="max-width:64ch;margin-top:20px"><strong>The ask is the filter.</strong> A partner who won't commit the access and the hour was never going to convert. Better to learn that in week one than month three.</p>
+  </section>
+
+  <section class="rv">
+    <div class="sec-head"><span class="num">E</span><h2>The 60–90 days</h2></div>
+    <div class="steps">
+      <div class="step"><span class="when">Week 0</span><div><h3>Select &amp; sign</h3><p>Pick the partner, set the one shared goal, sign the at-cost terms, and the case study, up front.</p></div></div>
+      <div class="step"><span class="when">Weeks 1–2</span><div><h3>Embed &amp; observe</h3><p>FDE inside their workflow. Watch how they actually bid. Don't ask, see. The first build targets come from what we observe.</p></div></div>
+      <div class="step"><span class="when">Weeks 3–8</span><div><h3>Build against what we see</h3><p>Ship to their real work, every week. The standing session keeps the one goal honest and the scope from sprawling.</p></div></div>
+      <div class="step"><span class="when">Weeks 8–12</span><div><h3>Convert</h3><p>The value is proven on their own jobs. Flip to a paid contract, collect the reference, write up the case study.</p></div></div>
+    </div>
+  </section>
+
+  <section class="rv" style="border-bottom:none">
+    <div class="sec-head"><span class="num">F</span><h2>What "done" looks like</h2></div>
+    <div class="exit">
+      <div class="ex"><span class="n">01</span><h3>A paid contract</h3><p>At list now. The at-cost window closes when the program does.</p></div>
+      <div class="ex"><span class="n">02</span><h3>A reference</h3><p>A logo we can name and a person who'll take the call.</p></div>
+      <div class="ex"><span class="n">03</span><h3>A case study</h3><p>Drafted from day one, the proof that arms the next pitch.</p></div>
+    </div>
+    <p class="closer">Three of these and we have a <span>repeatable motion</span>. Five and we have a <span>market</span>.</p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap frow">
+    <span class="label">Perch · Perch Partner Program · the operating playbook</span>
+    <span class="label">For: Brock · Mackenzie · Braden</span>
+  </div>
+</footer>
+
+<script>
+  const rv=document.querySelectorAll('.rv');
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+    rv.forEach(el=>io.observe(el));
+  } else { rv.forEach(el=>el.classList.add('in')); }
+</script>
+<script src="/nav.js" defer></script>
+</body>
+</html>

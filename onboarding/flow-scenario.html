@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Perch · Flow in Action: customer walkthrough</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E8E6DF; --panel:#FBFAF6; --panel2:#F5F3EE; --line:#CECBC1; --line2:#BDB8AC;
+    --ink:#181917; --ink2:#5D5F5A; --ink3:#8A8B84; --blue:#3E6E8E; --green:#5E7E52; --amber:#9A7B1F; --red:#B23A2E; --violet:#6F5499;
+    --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 'Archivo',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:34px 26px 90px}
+  a{color:var(--blue)}
+  h1{font-size:26px;margin:0 0 6px;letter-spacing:-.01em}
+  .sub{color:var(--ink2);margin:0 0 14px;max-width:880px}
+  .sub b{color:var(--ink)}
+  .meta{color:var(--ink3);font-size:13px;margin:0 0 16px}
+
+  /* scenario selector */
+  .pick{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .pick button{appearance:none;border:1px solid var(--line2);background:var(--panel);color:var(--ink2);border-radius:10px;padding:9px 14px;cursor:pointer;font:600 13px/1 inherit;display:flex;gap:8px;align-items:center}
+  .pick button .tg{font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:2px 6px;border-radius:5px}
+  .pick button.ss .tg{background:rgba(62,110,142,.16);color:var(--blue)}
+  .pick button.wg .tg{background:rgba(94,126,82,.16);color:var(--green)}
+  .pick button[aria-pressed="true"]{border-color:var(--blue);background:var(--panel2);color:var(--ink)}
+
+  /* customer card */
+  .cust{display:flex;gap:16px;flex-wrap:wrap;align-items:center;background:var(--panel);border:1px solid var(--line2);border-radius:13px;padding:13px 18px;margin-bottom:12px}
+  .cust .nm{font-weight:700;font-size:16px}
+  .cust .desc{font-size:12.5px;color:var(--ink2)}
+  .cust .lane{margin-left:auto;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:999px}
+  .cust .lane.ss{background:rgba(62,110,142,.16);color:var(--blue)} .cust .lane.wg{background:rgba(94,126,82,.16);color:var(--green)}
+
+  /* stepper */
+  .stepper{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:12px}
+  .stepper button{appearance:none;border:1px solid var(--line2);background:var(--panel);color:var(--ink);border-radius:9px;padding:8px 13px;cursor:pointer;font:600 13px/1 inherit}
+  .stepper button:hover{border-color:var(--blue)}
+  .stepper button:disabled{opacity:.4;cursor:default}
+  .stepper button.primary{background:linear-gradient(135deg,var(--blue),#3E6E8E);color:#F0ECE3;border:0}
+  .stepper .pos{font-size:12.5px;color:var(--ink3)}
+  .stepper .gate{font-size:12.5px;color:var(--amber);font-weight:600}
+
+  .stage{display:grid;grid-template-columns:1fr 392px;gap:16px;align-items:start}
+  @media(max-width:900px){.stage{grid-template-columns:1fr}}
+
+  .diagram{background:var(--panel);border:1px solid var(--line2);border-radius:14px;padding:14px;max-height:660px;overflow:auto;position:relative}
+  .diagram svg{max-width:100%;height:auto}
+  .fallback{color:var(--ink3);font-size:13px;padding:10px}
+  /* node highlight states */
+  #diagram g.node{transition:opacity .25s}
+  #diagram g.node.dimmed{opacity:.16}
+  #diagram g.node.ahead{opacity:.42}
+  #diagram g.node.lit{opacity:1}
+  #diagram g.node.cur :is(polygon,rect,path,circle){stroke:var(--amber)!important;stroke-width:3px!important;filter:drop-shadow(0 0 5px rgba(154,123,31,.55))}
+
+  /* conversation */
+  .convo{background:var(--panel);border:1px solid var(--line2);border-radius:14px;padding:6px 14px 14px;max-height:660px;overflow:auto;position:sticky;top:62px}
+  .convo .ch{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);position:sticky;top:0;background:var(--panel);padding:10px 0 8px}
+  .note{font-size:11.5px;color:var(--ink3);font-style:italic;text-align:center;margin:10px 0;padding:0 8px}
+  .bub{max-width:86%;border-radius:13px;padding:8px 12px;font-size:12.5px;margin:7px 0;line-height:1.5}
+  .from{font-size:9.5px;font-weight:700;letter-spacing:.03em;color:var(--ink3);margin:8px 0 1px}
+  .us .bub{background:rgba(62,110,142,.1);border:1px solid rgba(62,110,142,.28)}
+  .them{display:flex;flex-direction:column;align-items:flex-end}
+  .them .bub{background:var(--panel2);border:1px solid var(--line2)}
+  .them .from{text-align:right}
+  .sys{background:rgba(111,84,153,.07);border:1px dashed rgba(111,84,153,.3);border-radius:10px;padding:8px 11px;font-size:11.5px;color:var(--ink2);margin:9px 0}
+  .sys::before{content:"⚙ ";color:var(--violet)}
+  .new{animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+  details.src{margin-top:20px;border:1px solid var(--line2);border-radius:12px;background:var(--panel)}
+  details.src summary{cursor:pointer;padding:11px 16px;font-size:13px;color:var(--ink2);font-weight:600}
+  details.src .gloss{padding:0 16px 14px;font-size:12.5px;color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Flow in Action: <span style="color:var(--blue)">a real customer walks the path</span></h1>
+  <p class="sub">The same <a href="flow-diagram">flow diagram</a>, but watched live: pick a customer, step through, and see their <b>lane light up</b> on the left while the <b>real conversation</b> (our responses, their questions) plays out on the right.</p>
+  <p class="meta">Perch · CRO cockpit · Jun 25 2026 · illustrative dialogue on real test-client profiles</p>
+
+  <div class="pick" id="pick"></div>
+  <div class="cust" id="cust"></div>
+
+  <div class="stepper">
+    <button id="prev">‹ Back</button>
+    <button id="next" class="primary">Next ›</button>
+    <button id="play">▶ Play</button>
+    <button id="restart">↺ Restart</button>
+    <span class="pos" id="pos"></span>
+    <span class="gate" id="gate"></span>
+  </div>
+
+  <div class="stage">
+    <div class="diagram"><div id="diagram"><div class="fallback">Rendering diagram…</div></div></div>
+    <div class="convo"><div class="ch">Conversation</div><div id="convo"></div></div>
+  </div>
+</div>
+
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+
+  const src = `flowchart TD
+START(["Visitor arrives"]) --> CH{"Where did they come from?"}
+CH -->|"GC search"| LGC["GC landing page<br/>/general-contractor"]
+CH -->|"Sub search by trade"| LTR["Trade landing page<br/>/{trade} · {Trade} OS"]
+CH -->|"Referral / shared link"| LREF["Personalized link"]
+CH -->|"We reached out"| LOUT["Outbound to a target account"]
+LGC --> G0{"Do we already know them?"}
+LTR --> G0
+LREF --> G0
+LOUT --> G0
+G0 -->|"Yes - we have their email"| PRE["Company already researched<br/>before they arrive"]
+G0 -->|"No - a stranger"| ASK["Ask one thing: their email"]
+ASK --> ENR["AI researches the company<br/>after the email"]
+PRE --> PROF["Now we know:<br/>company · type · size · role · trade"]
+ENR --> PROF
+PROF --> G2{"What kind of account?"}
+G2 -->|"Homeowner"| HO(["Different product<br/>not this funnel"])
+G2 -->|"General contractor"| G3{"How big?<br/>sets the sales track"}
+G2 -->|"Subcontractor"| TF["Load the trade's playbook<br/>lander · takeoff method · money angle"]
+TF --> G3
+G3 -->|"Small - under $10M"| SS["Self-serve<br/>the AI agent sells and closes"]
+G3 -->|"Mid-size"| WGM["White-glove<br/>a rep lands one seat, then expands"]
+G3 -->|"Enterprise"| WGE["White-glove<br/>a rep sells to the executive"]
+SS --> G4{"Who is this person?<br/>their role"}
+WGM --> G4
+WGE --> G4
+G4 -->|"Estimator"| RE["AI runs a takeoff on their live bid"]
+G4 -->|"Owner / Exec"| RO["Show their pipeline and win/loss"]
+G4 -->|"Project manager"| RP["Show open RFIs and at-risk dates"]
+G4 -->|"Field / foreman"| RF(["Field app, not chat"])
+RE --> NQ["Ask the one question<br/>that proves the most value"]
+RO --> NQ
+RP --> NQ
+NQ --> VAL["Show real value on their own job"]
+VAL --> G7{"How does it close?"}
+G7 -->|"Self-serve"| C1(["Agent closes in-app<br/>free trial then card on file"])
+G7 -->|"White-glove"| C2(["Rep, pre-armed by AI,<br/>closes an annual contract"])
+classDef gate fill:#F5F3EE,stroke:#9A7B1F,color:#181917,stroke-width:1.4px;
+classDef ss fill:#E4ECF1,stroke:#3E6E8E,color:#181917;
+classDef wg fill:#E6F0E6,stroke:#5E7E52,color:#181917;
+classDef exit fill:#F3E6E3,stroke:#B23A2E,color:#181917;
+class G0,G2,G3,G4,G7 gate;
+class SS,RE,C1 ss;
+class WGM,WGE,C2 wg;
+class HO,RF exit;`;
+
+  const A = (from, t) => ({ who: "us", from, t });
+  const U = (from, t) => ({ who: "them", from, t });
+  const S = (t) => ({ who: "sys", t });
+
+  const SCENARIOS = {
+    squires: {
+      label: "Squires", lane: "ss", laneLabel: "Self-serve",
+      cust: { nm: "Squires Construction", desc: "Small SLC commercial GC · TI + remodel · ~15 people · Darin (owner) lands · cold" },
+      steps: [
+        { node: "START", note: "Darin owns Squires, a small SLC commercial GC (restaurant + retail TI, ~15 people).", chat: [] },
+        { node: "CH", gate: "GC search", note: "He googled “bidding software for general contractors” and hit the GC page.", chat: [] },
+        { node: "LGC", note: "The GC landing page, one clear CTA.", chat: [A("Perch", "See Perch on your own jobs. Just drop your email.")] },
+        { node: "G0", gate: "No, a stranger", note: "We've never seen Darin. Cold start: the only ask is an email.", chat: [] },
+        { node: "ASK", note: "He enters his email. That is the entire form.", chat: [U("Darin", "darin@squiresgc.com"), A("Perch", "Give me 20 seconds…")] },
+        { node: "ENR", note: "Research agents look up squiresgc.com.", chat: [S("Found: General Contractor · commercial TI · Salt Lake City · ~15 employees · Darin = owner. Plus 4 SLC tenant-improvement projects out for bid and 9 subs Squires regularly uses.")] },
+        { node: "PROF", note: "Everything resolved: no forms, no typing.", chat: [S("Profile: Squires Construction · GC · small · owner · restaurant & retail TI.")] },
+        { node: "G2", gate: "General contractor", note: "From the research: a GC (not a sub or homeowner).", chat: [] },
+        { node: "G3", gate: "Small → Self-serve", note: "Under ~$10M, so the AI agent is the salesperson.", chat: [] },
+        { node: "SS", note: "Confirm, don't interrogate.", chat: [A("Perch", "Squires Construction: SLC GC, mostly restaurant + retail TI. You run it, right?"), U("Darin", "Yeah, that's us. How'd you know all that?"), A("Perch", "Pulled it from your site and the public bid boards. Let me show you what that means for you.")] },
+        { node: "G4", gate: "Owner / Exec", note: "Darin's the owner, so we lead with the whole-business view, not one takeoff.", chat: [] },
+        { node: "RO", note: "The wow is a pre-built board on his real market.", chat: [A("Perch", "Here's a board I built for you: 4 jobs you're likely bidding, the 9 subs you already use, and one bid that closes in 3 days."), U("Darin", "Hold on. Where did these jobs come from?"), A("Perch", "Public bid boards and permits in your area, matched to your scope. Nothing you had to enter.")] },
+        { node: "NQ", note: "The single most-motivating question for an owner.", chat: [A("Perch", "Which of these 4 is most worth winning? I'll scope it right now."), U("Darin", "The Sugar House café. Here are the plans.")] },
+        { node: "VAL", note: "Value on his own job, including a money-flag.", chat: [A("Perch", "Read all 47 pages. Scope's drafted, and heads up: the spec calls for a grease-duct-rated assembly that isn't in the base drawings. Likely change order."), U("Darin", "How sure are you on that?"), A("Perch", "It's in spec section 23 but missing from the mechanical sheets. Flagged it so you can confirm before you bid.")] },
+        { node: "G7", gate: "Self-serve", note: "Closes in the app, no salesperson.", chat: [] },
+        { node: "C1", note: "The card ask comes AFTER the value.", chat: [A("Perch", "You've got your board and your first scope. Your 21-day trial just started. Add a card whenever you're ready to keep it."), U("Darin", "Done. This already saved me a night of takeoffs.")] }
+      ]
+    },
+    cve: {
+      label: "Cache Valley Electric", lane: "wg", laneLabel: "White-glove",
+      cust: { nm: "Cache Valley Electric", desc: "Large electrical sub · Logan · ~2,300 emp · data centers · we go outbound to the VP of Precon" },
+      steps: [
+        { node: "START", note: "Cache Valley Electric: a ~2,300-person electrical sub (design-build, data centers). On our target-account list.", chat: [] },
+        { node: "CH", gate: "We reached out", note: "No inbound. Our team goes outbound to a named account.", chat: [] },
+        { node: "LOUT", note: "CVE enters the pipeline as a target account.", chat: [S("Trigger: CVE flagged as an ICP target. The agents start working the account.")] },
+        { node: "G0", gate: "Stranger (but a known company)", note: "No person yet, but we know the company, so the research goes deep, off the critical path.", chat: [] },
+        { node: "ENR", note: "Agents build a full battle pack.", chat: [S("Dossier: 2,300 emp · design-build electrical · mission-critical / data centers · uses Accubid + in-house VDC · live pursuit: a Mountain West hyperscale data-center package · champion = VP Preconstruction.")] },
+        { node: "PROF", note: "Profile resolved at enterprise depth.", chat: [S("Profile: CVE · subcontractor · electrical · enterprise · VP Precon target.")] },
+        { node: "G2", gate: "Subcontractor", note: "A sub → match the trade.", chat: [] },
+        { node: "TF", note: "Electrical playbook loads, and Sarah pre-runs their REAL job.", chat: [S("Sarah pre-takeoff on CVE's live data-center package: flags a spec-buried, 40-week-lead gear item missed on the base drawings.")] },
+        { node: "G3", gate: "Enterprise → White-glove", note: "$100M+ → a human rep sells, armed with all of the above.", chat: [] },
+        { node: "WGE", note: "Routed to white-glove. The agents did the prep; now a person carries it.", chat: [] },
+        { node: "G4", gate: "VP Precon (the champion)", note: "The rep targets the decision-maker: the VP of Preconstruction.", chat: [] },
+        { node: "RE", note: "The hook is the takeoff Sarah already ran on their real pursuit.", chat: [A("SDR · Taylor", "Saw Cache Valley is chasing the Mountain West hyperscale package. On jobs that size switchgear runs 40+ weeks and the spec usually buries a gear item the E-sheets miss. I already ran your package: it flagged 3 worth a look. Worth 15 minutes?"), U("VP Precon", "…how do you know what we're bidding? Send a couple times.")] },
+        { node: "NQ", note: "The first call is insight, not discovery.", chat: [A("AE", "I'll skip discovery. I know Cache Valley: design-build, big on mission-critical, mature team on Accubid. Here's the only thing worth your 15 minutes."), U("VP Precon", "We've got a strong estimating team and we run Accubid. What's this replace?"), A("AE", "Nothing. Your team's why you win. Perch reads the 800-page set first so they spend hours on judgment, not page-flipping. It caught that 40-week gear item in 90 seconds.")] },
+        { node: "VAL", note: "The demo is pre-loaded with their own pursuit.", chat: [A("AE", "Here's Perch already on your real data-center package: the 3 flags, the device counts, and how your 6 estimators standardize.")] },
+        { node: "G7", gate: "White-glove", note: "Human-led, annual.", chat: [] },
+        { node: "C2", note: "A pre-qualified close.", chat: [S("FDE seats the estimating dept + imports historical jobs."), A("AE", "Pre-qualified on MEDDPICC: champion = VP Precon, economic buyer = COO. Annual enterprise contract; we migrate your data."), U("VP Precon", "Let's get IT and the COO on the next call.")] }
+      ]
+    }
+  };
+
+  mermaid.initialize({
+    startOnLoad: false, securityLevel: "loose", theme: "base",
+    themeVariables: { background:"#E8E6DF", primaryColor:"#FBFAF6", primaryTextColor:"#181917",
+      primaryBorderColor:"#BDB8AC", lineColor:"#8A8B84", secondaryColor:"#F5F3EE", tertiaryColor:"#FBFAF6", fontSize:"13px" },
+    flowchart: { curve:"basis", htmlLabels:true, nodeSpacing:42, rankSpacing:54 }
+  });
+
+  let nodes = [];
+  const nodeKey = g => { const m = g.id.match(/flowchart-(.+)-\d+$/); return m ? m[1] : null; };
+
+  let curScenario = "squires", step = 0, playing = false, timer = null;
+  const diagramBox = document.querySelector(".diagram");
+  const convoBox = document.querySelector(".convo");
+
+  function renderPicker(){
+    document.getElementById("pick").innerHTML = Object.entries(SCENARIOS).map(([k, s]) =>
+      '<button class="' + s.lane + '" data-k="' + k + '" aria-pressed="' + (k===curScenario) + '">' +
+      '<span class="tg">' + s.laneLabel + '</span>' + s.cust.nm + '</button>').join("");
+    document.querySelectorAll("#pick button").forEach(b =>
+      b.addEventListener("click", () => { stopPlay(); curScenario = b.dataset.k; step = 0; syncAll(); }));
+  }
+
+  function syncAll(){
+    const s = SCENARIOS[curScenario];
+    document.querySelectorAll("#pick button").forEach(b => b.setAttribute("aria-pressed", b.dataset.k === curScenario));
+    document.getElementById("cust").innerHTML =
+      '<div><div class="nm">' + s.cust.nm + '</div><div class="desc">' + s.cust.desc + '</div></div>' +
+      '<span class="lane ' + s.lane + '">' + s.laneLabel + '</span>';
+    applyStep();
+  }
+
+  function pathNodesFor(s){ return s.steps.map(st => st.node); }
+
+  function applyStep(){
+    const s = SCENARIOS[curScenario];
+    const path = pathNodesFor(s);
+    const pathIdx = {}; path.forEach((n, i) => { if (!(n in pathIdx)) pathIdx[n] = i; });
+    const curNode = path[step];
+
+    nodes.forEach(g => {
+      const k = nodeKey(g);
+      g.classList.remove("dimmed","ahead","lit","cur");
+      if (!(k in pathIdx)) { g.classList.add("dimmed"); return; }
+      const i = pathIdx[k];
+      if (i < step) g.classList.add("lit");
+      else if (i === step) g.classList.add("lit","cur");
+      else g.classList.add("ahead");
+    });
+
+    // stepper
+    document.getElementById("pos").textContent = "Step " + (step+1) + " / " + s.steps.length;
+    document.getElementById("gate").textContent = s.steps[step].gate ? ("→ " + s.steps[step].gate) : "";
+    document.getElementById("prev").disabled = step === 0;
+    document.getElementById("next").disabled = step === s.steps.length - 1;
+
+    // conversation (cumulative)
+    let html = "";
+    for (let i = 0; i <= step; i++){
+      const st = s.steps[i];
+      if (st.note) html += '<div class="note' + (i===step?' new':'') + '">' + st.note + '</div>';
+      (st.chat || []).forEach(c => {
+        const isNew = i === step ? ' new' : '';
+        if (c.who === "sys") html += '<div class="sys' + isNew + '">' + c.t + '</div>';
+        else html += '<div class="' + c.who + isNew + '">' + (c.from ? '<div class="from">' + c.from + '</div>' : '') + '<div class="bub">' + c.t + '</div></div>';
+      });
+    }
+    document.getElementById("convo").innerHTML = html;
+    convoBox.scrollTop = convoBox.scrollHeight;
+
+    // scroll diagram to current node
+    const cur = nodes.find(g => nodeKey(g) === curNode);
+    if (cur) {
+      const nb = cur.getBoundingClientRect(), db = diagramBox.getBoundingClientRect();
+      diagramBox.scrollTop += (nb.top - db.top) - db.height/2 + nb.height/2;
+    }
+  }
+
+  function go(d){ const s = SCENARIOS[curScenario]; step = Math.max(0, Math.min(s.steps.length-1, step+d)); applyStep(); }
+  function stopPlay(){ playing = false; clearInterval(timer); document.getElementById("play").textContent = "▶ Play"; }
+  function togglePlay(){
+    const s = SCENARIOS[curScenario];
+    if (playing) return stopPlay();
+    playing = true; document.getElementById("play").textContent = "❚❚ Pause";
+    timer = setInterval(() => {
+      if (step >= s.steps.length - 1) return stopPlay();
+      step++; applyStep();
+    }, 2400);
+  }
+
+  document.getElementById("prev").addEventListener("click", () => { stopPlay(); go(-1); });
+  document.getElementById("next").addEventListener("click", () => { stopPlay(); go(1); });
+  document.getElementById("restart").addEventListener("click", () => { stopPlay(); step = 0; applyStep(); });
+  document.getElementById("play").addEventListener("click", togglePlay);
+
+  try {
+    const { svg } = await mermaid.render("perchFlow", src);
+    document.getElementById("diagram").innerHTML = svg;
+    nodes = Array.from(document.querySelectorAll("#diagram g.node"));
+    renderPicker();
+    syncAll();
+  } catch (e) {
+    document.getElementById("diagram").innerHTML = '<div class="fallback">Could not render (' + e.message + ').</div>';
+  }
+</script>
+<script src="/nav.js" defer></script>
+</body>
+</html>

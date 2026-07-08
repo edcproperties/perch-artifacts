@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Perch · Onboarding Flow Diagram (mermaid)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E8E6DF; --panel:#FBFAF6; --panel2:#F5F3EE; --line:#CECBC1; --line2:#BDB8AC;
+    --ink:#181917; --ink2:#5D5F5A; --ink3:#8A8B84; --blue:#3E6E8E; --green:#5E7E52; --amber:#9A7B1F; --red:#B23A2E;
+    --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 'Archivo',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:34px 26px 90px}
+  a{color:var(--blue)}
+  h1{font-size:26px;margin:0 0 6px;letter-spacing:-.01em}
+  .sub{color:var(--ink2);margin:0 0 12px;max-width:880px}
+  .sub b{color:var(--ink)}
+  .meta{color:var(--ink3);font-size:13px;margin:0 0 14px}
+  .howto{font-size:12.5px;color:var(--ink2);background:var(--panel2);border:1px solid var(--line2);border-radius:10px;padding:9px 14px;margin:0 0 12px}
+  .howto b{color:var(--ink)} .howto .k{color:var(--amber);font-weight:700} .howto .u{border-bottom:1px dotted var(--blue);color:var(--blue)}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12px;color:var(--ink2);margin:6px 0 14px}
+  .sw{display:inline-block;width:11px;height:11px;border-radius:3px;vertical-align:middle;margin-right:5px;border:1px solid var(--line2)}
+
+  .diagram{background:var(--panel);border:1px solid var(--line2);border-radius:14px;padding:18px;overflow:auto}
+  .diagram svg{max-width:100%;height:auto}
+  .fallback{color:var(--ink3);font-size:13px;padding:10px}
+  /* clickable gates */
+  #diagram g.node.expandable{cursor:pointer}
+  #diagram g.node.expandable:hover polygon,#diagram g.node.expandable:hover rect{stroke:var(--amber)!important;stroke-width:2.4px!important}
+  #diagram g.node.gactive polygon,#diagram g.node.gactive rect{stroke:var(--amber)!important;stroke-width:3px!important}
+  #diagram g.node.hasdef{cursor:help}
+
+  /* detail panel */
+  #detail{display:none;margin-top:14px;border:1px solid rgba(154,123,31,.4);background:rgba(154,123,31,.05);border-radius:12px;padding:14px 18px}
+  #detail.show{display:block}
+  #detail .dh{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+  #detail .dt{font-weight:700;font-size:15px;color:var(--ink)}
+  #detail .dx{margin-left:auto;cursor:pointer;color:var(--ink3);font-size:18px;line-height:1;border:0;background:transparent}
+  #detail .db{font-size:13.5px;color:var(--ink2)} #detail .db b{color:var(--ink)}
+
+  /* tooltip */
+  #tip{position:fixed;z-index:9999;max-width:300px;background:#E8E6DF;border:1px solid var(--line2);border-radius:10px;
+    padding:9px 12px;font-size:12px;line-height:1.5;color:var(--ink2);box-shadow:0 12px 30px rgba(0,0,0,.55);
+    pointer-events:none;display:none}
+  #tip b{color:var(--amber)}
+
+  /* glossary */
+  h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin:34px 0 12px;border-bottom:1px solid var(--line);padding-bottom:8px}
+  .gloss{display:grid;grid-template-columns:1fr 1fr;gap:9px 18px}
+  @media(max-width:760px){.gloss{grid-template-columns:1fr}}
+  .gi{font-size:13px;color:var(--ink2)} .gi b{color:var(--blue)}
+  details.src{margin-top:22px;border:1px solid var(--line2);border-radius:12px;background:var(--panel)}
+  details.src summary{cursor:pointer;padding:11px 16px;font-size:13px;color:var(--ink2);font-weight:600}
+  details.src pre{margin:0;padding:0 16px 16px;overflow:auto;font-family:var(--mono);font-size:11.5px;line-height:1.55;color:var(--ink2);white-space:pre}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Onboarding Flow: <span style="color:var(--blue)">every perspective</span></h1>
+  <p class="sub">From <b>landing page</b> to <b>activated customer</b>, branching by every perspective (where they came from, whether we know them, GC / sub / homeowner, self-serve vs white-glove, role, and how it closes). The visual twin of the <a href="decision-tree">decision tree</a>.</p>
+  <p class="meta">Perch · CRO cockpit · Jun 25 2026</p>
+
+  <div class="howto">
+    <span class="k">Click</span> any <b>gold diamond</b> (a decision) to expand its detail. <span class="u">Hover</span> any node with a dotted underline cue for a plain-English definition. Glossary at the bottom.
+  </div>
+  <div class="legend">
+    <span><span class="sw" style="background:#F5F3EE;border-color:#9A7B1F"></span>decision (click to expand)</span>
+    <span><span class="sw" style="background:#E4ECF1;border-color:#3E6E8E"></span>self-serve path</span>
+    <span><span class="sw" style="background:#E6F0E6;border-color:#5E7E52"></span>white-glove path</span>
+    <span><span class="sw" style="background:#F3E6E3;border-color:#B23A2E"></span>other door / exit</span>
+  </div>
+
+  <div class="diagram"><div id="diagram"><div class="fallback">Rendering diagram… (if it doesn't appear, the source is in the panel below).</div></div></div>
+  <div id="detail"><div class="dh"><span class="dt"></span><button class="dx" aria-label="close">×</button></div><div class="db"></div></div>
+
+  <h2>Glossary: plain-English definitions</h2>
+  <div class="gloss" id="gloss"></div>
+
+  <details class="src">
+    <summary>Mermaid source, copy / paste</summary>
+    <pre id="src"></pre>
+  </details>
+</div>
+
+<div id="tip"></div>
+
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+
+  const src = `flowchart TD
+START(["Visitor arrives"]) --> CH{"Where did they come from?"}
+CH -->|"GC search"| LGC["GC landing page<br/>/general-contractor"]
+CH -->|"Sub search by trade"| LTR["Trade landing page<br/>/{trade} · {Trade} OS"]
+CH -->|"Referral / shared link"| LREF["Personalized link"]
+CH -->|"We reached out"| LOUT["Outbound to a target account"]
+LGC --> G0{"Do we already know them?"}
+LTR --> G0
+LREF --> G0
+LOUT --> G0
+G0 -->|"Yes - we have their email"| PRE["Company already researched<br/>before they arrive"]
+G0 -->|"No - a stranger"| ASK["Ask one thing: their email"]
+ASK --> ENR["AI researches the company<br/>after the email"]
+PRE --> PROF["Now we know:<br/>company · type · size · role · trade"]
+ENR --> PROF
+PROF --> G2{"What kind of account?"}
+G2 -->|"Homeowner"| HO(["Different product<br/>not this funnel"])
+G2 -->|"General contractor"| G3{"How big?<br/>sets the sales track"}
+G2 -->|"Subcontractor"| TF["Load the trade's playbook<br/>lander · takeoff method · money angle"]
+TF --> G3
+G3 -->|"Small - under $10M"| SS["Self-serve<br/>the AI agent sells and closes"]
+G3 -->|"Mid-size"| WGM["White-glove<br/>a rep lands one seat, then expands"]
+G3 -->|"Enterprise"| WGE["White-glove<br/>a rep sells to the executive"]
+SS --> G4{"Who is this person?<br/>their role"}
+WGM --> G4
+WGE --> G4
+G4 -->|"Estimator"| RE["AI runs a takeoff on their live bid"]
+G4 -->|"Owner / Exec"| RO["Show their pipeline and win/loss"]
+G4 -->|"Project manager"| RP["Show open RFIs and at-risk dates"]
+G4 -->|"Field / foreman"| RF(["Field app, not chat"])
+RE --> NQ["Ask the one question<br/>that proves the most value"]
+RO --> NQ
+RP --> NQ
+NQ --> VAL["Show real value on their own job"]
+VAL --> G7{"How does it close?"}
+G7 -->|"Self-serve"| C1(["Agent closes in-app<br/>free trial then card on file"])
+G7 -->|"White-glove"| C2(["Rep, pre-armed by AI,<br/>closes an annual contract"])
+classDef gate fill:#F5F3EE,stroke:#9A7B1F,color:#181917,stroke-width:1.4px;
+classDef ss fill:#E4ECF1,stroke:#3E6E8E,color:#181917;
+classDef wg fill:#E6F0E6,stroke:#5E7E52,color:#181917;
+classDef exit fill:#F3E6E3,stroke:#B23A2E,color:#181917;
+class G0,G2,G3,G4,G7 gate;
+class SS,RE,C1 ss;
+class WGM,WGE,C2 wg;
+class HO,RF exit;`;
+
+  document.getElementById("src").textContent = src;
+
+  // --- definitions (hover tooltips, keyed by node) ---
+  const TIP = {
+    PRE: "<b>Pre-researched.</b> We already had their email (from a referral or product-led link), so the research ran before they ever showed up. Onboarding starts warm.",
+    ENR: "<b>AI research.</b> The moment we have an email, agents look up the company: website, type, size, trade, the person's role, even their live projects. No forms.",
+    G3: "<b>Sales track.</b> Set by company size and expected deal value (ACV = Annual Contract Value). Small = self-serve; bigger = white-glove.",
+    SS: "<b>Self-serve.</b> The customer signs up and the AI agent guides them all the way to paying, no human rep involved.",
+    WGM: "<b>White-glove · land &amp; expand.</b> A human rep runs the sale (helped by AI prep). 'Land &amp; expand' = start with one user, then grow into the whole team.",
+    WGE: "<b>White-glove · enterprise.</b> A human rep sells to the executive buyer, usually after we reach out (outbound).",
+    TF: "<b>Trade playbook.</b> Each of the 34 trades has its own landing page, takeoff method, and money angle. (Takeoff = measuring/counting the plans to price a bid.)",
+    RE: "<b>Takeoff.</b> Counting and measuring everything in the plans to price a bid: devices, square footage, cubic yards, etc. Here the AI does a first pass on their live job.",
+    RP: "<b>RFI.</b> Request for Information, the formal question a contractor sends the GC or architect when the drawings are unclear or conflicting.",
+    C2: "<b>White-glove close.</b> A human rep, pre-armed with AI research, runs the deal to a signed annual contract, qualified with MEDDPICC (a standard B2B sales checklist).",
+    LTR: "<b>{Trade} OS.</b> The trade-specific landing page (e.g. /electrical = 'Electrical OS') framing Perch as that trade's operating system."
+  };
+
+  // --- expandable detail (gates) ---
+  const DETAIL = {
+    G0: { title: "Do we already know them?", body: "The first fork is identity. If we captured their email earlier (a referral, a shared plan, a product-led link) we research the company <b>before they arrive</b> and jump straight to confirming who they are. If they're a stranger, the <b>only</b> thing we ask for is an email; everything else is looked up, never typed." },
+    G2: { title: "What kind of account?", body: "From the research we know whether they're a <b>General Contractor</b>, a <b>Subcontractor</b>, or a <b>Homeowner</b>. Homeowners are routed to a different product. Subs also get matched to their <b>trade</b>, which loads that trade's playbook (landing page, takeoff method, money angle)." },
+    G3: { title: "How big? (the sales track)", body: "Company size and expected deal value decide <b>who does the selling</b>. Small shops (under ~$10M) go <b>self-serve</b>: the AI agent is the salesperson and closes in-app. Mid-size and enterprise go <b>white-glove</b>: a human rep sells, armed with AI-prepared research. Same product underneath; different last mile." },
+    G4: { title: "Who is this person? (role)", body: "Who lands shapes the first moment of value. An <b>estimator</b> wants a takeoff on a live bid; an <b>owner/exec</b> wants their pipeline and win rate; a <b>project manager</b> wants open RFIs and schedule risk; a <b>field/foreman</b> belongs in the mobile app, not the chat. The question we ask next bends to the role." },
+    G7: { title: "How does it close?", body: "<b>Self-serve</b> closes inside the app (a free trial that converts to a card on file once the value lands, with no salesperson). <b>White-glove</b> closes as a human-led <b>annual contract</b>, qualified with MEDDPICC. The research the agents did up front is what lets the rep skip discovery and lead with insight." }
+  };
+
+  // --- glossary (full reference) ---
+  const GLOSS = [
+    ["Self-serve", "The customer onboards and pays guided only by the AI agent, no human rep."],
+    ["White-glove", "A human rep (with AI prep) runs the sale; used for mid-size and enterprise."],
+    ["Land &amp; expand", "Win one user/seat first, then grow into the whole team or company."],
+    ["Lander / landing page", "The first marketing page a visitor hits, e.g. /electrical = 'Electrical OS'."],
+    ["PLG (product-led)", "Growth driven by the product itself, e.g. a shared link that carries identity in."],
+    ["Enrichment / research agents", "Automated lookups that learn the company from just an email."],
+    ["Takeoff", "Measuring/counting the plans to price a bid (devices, SF, cubic yards, etc.)."],
+    ["RFI", "Request for Information: a formal question when drawings are unclear."],
+    ["ACV", "Annual Contract Value, the yearly dollar value of a deal."],
+    ["MEDDPICC", "A B2B sales qualification checklist: Metrics, Economic buyer, Decision criteria & process, Paper process, Identify pain, Champion, Competition."],
+    ["FDE / AE / SDR", "The humans in white-glove: Forward-Deployed Engineer, Account Executive, Sales Development Rep."],
+    ["Sarah / Tom", "Perch's AI agents: Sarah does estimator takeoffs; Tom runs pipeline & alerts."],
+    ["In-flow close", "Closing the sale inside the product (trial → card), without a separate sales process."]
+  ];
+  document.getElementById("gloss").innerHTML = GLOSS.map(g => '<div class="gi"><b>' + g[0] + '</b>: ' + g[1] + '</div>').join("");
+
+  mermaid.initialize({
+    startOnLoad: false, securityLevel: "loose", theme: "base",
+    themeVariables: { background:"#E8E6DF", primaryColor:"#FBFAF6", primaryTextColor:"#181917",
+      primaryBorderColor:"#BDB8AC", lineColor:"#8A8B84", secondaryColor:"#F5F3EE", tertiaryColor:"#FBFAF6", fontSize:"13px" },
+    flowchart: { curve:"basis", htmlLabels:true, nodeSpacing:42, rankSpacing:54 }
+  });
+
+  const tip = document.getElementById("tip");
+  const detail = document.getElementById("detail");
+
+  function nodeKey(g){ const m = g.id.match(/flowchart-(.+)-\d+$/); return m ? m[1] : null; }
+
+  function showDetail(key){
+    const d = DETAIL[key]; if(!d) return;
+    document.querySelectorAll("#diagram g.node.gactive").forEach(n=>n.classList.remove("gactive"));
+    document.querySelectorAll('#diagram g.node').forEach(n=>{ if(nodeKey(n)===key) n.classList.add("gactive"); });
+    detail.querySelector(".dt").textContent = d.title;
+    detail.querySelector(".db").innerHTML = d.body;
+    detail.classList.add("show");
+    detail.scrollIntoView({behavior:"smooth", block:"nearest"});
+  }
+  detail.querySelector(".dx").addEventListener("click", ()=>{
+    detail.classList.remove("show");
+    document.querySelectorAll("#diagram g.node.gactive").forEach(n=>n.classList.remove("gactive"));
+  });
+
+  try {
+    const { svg } = await mermaid.render("perchFlow", src);
+    document.getElementById("diagram").innerHTML = svg;
+
+    document.querySelectorAll("#diagram g.node").forEach(g => {
+      const key = nodeKey(g);
+      if (!key) return;
+      if (DETAIL[key]) {
+        g.classList.add("expandable");
+        g.addEventListener("click", () => {
+          const active = g.classList.contains("gactive");
+          if (active) { detail.classList.remove("show"); g.classList.remove("gactive"); }
+          else showDetail(key);
+        });
+      }
+      if (TIP[key]) {
+        g.classList.add("hasdef");
+        g.addEventListener("mouseenter", () => { tip.innerHTML = TIP[key]; tip.style.display = "block"; });
+        g.addEventListener("mousemove", (e) => {
+          const pad = 14, w = tip.offsetWidth, h = tip.offsetHeight;
+          let x = e.clientX + pad, y = e.clientY + pad;
+          if (x + w > innerWidth) x = e.clientX - w - pad;
+          if (y + h > innerHeight) y = e.clientY - h - pad;
+          tip.style.left = x + "px"; tip.style.top = y + "px";
+        });
+        g.addEventListener("mouseleave", () => { tip.style.display = "none"; });
+      }
+    });
+  } catch (e) {
+    document.getElementById("diagram").innerHTML =
+      '<div class="fallback">Could not render in-page (' + e.message + '). Use the source below.</div>';
+  }
+</script>
+<script src="/nav.js" defer></script>
+</body>
+</html>

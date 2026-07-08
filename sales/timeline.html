@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Perch · Centaur Timeline (Jul '26 → Jun '27)</title>
+<style>
+  :root{
+    --bg:#0c0e12; --panel:#14171d; --panel-2:#1a1e26; --border:#262b35; --border-soft:#20242d;
+    --ink:#e7eaf0; --ink-body:#aab2c0; --ink-sub:#6f7785;
+    --blue:#78bce6; --blue-dim:rgba(120,188,230,.14);
+    --green:#4ade80; --green-dim:rgba(74,222,128,.12);
+    --amber:#fbbf24; --amber-dim:rgba(251,191,36,.10);
+    --red:#f87171; --red-dim:rgba(248,113,113,.12);
+    --violet:#a78bfa; --violet-dim:rgba(167,139,250,.12);
+    --ember:#ff5a1f; --ember-dim:rgba(255,90,31,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:radial-gradient(1200px 600px at 50% -10%,rgba(120,188,230,.06),transparent 60%),var(--bg);
+    color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100vh}
+
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(12,14,18,.86);backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border-soft)}
+  .topbar-inner{max-width:1080px;margin:0 auto;padding:11px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand .mark{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--blue),#4a90c4);
+    display:flex;align-items:center;justify-content:center;font-weight:800;color:#0c0e12;font-size:16px}
+  .brand .name{font-weight:700;font-size:14px;white-space:nowrap}.brand .name span{color:var(--ink-sub);font-weight:500}
+
+  .toggle{margin-left:auto;display:flex;align-items:center;gap:8px}
+  .toggle .tlabel{font-size:11px;color:var(--ink-sub);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+  .seg{display:flex;background:var(--panel-2);border:1px solid var(--border);border-radius:99px;padding:3px}
+  .seg button{font-size:12px;font-weight:700;color:var(--ink-body);background:transparent;border:none;border-radius:99px;
+    padding:6px 13px;cursor:pointer;transition:all .15s;white-space:nowrap}
+  .seg button.active{background:var(--blue);color:#0c0e12}
+  .seg button .star{font-size:9px;vertical-align:super;color:var(--ink-sub)}
+  .seg button.active .star{color:#0c0e12}
+
+  .navrow{max-width:1080px;margin:0 auto;padding:0 22px 11px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .navrow a{font-size:11.5px;font-weight:650;color:var(--ink-body);text-decoration:none;border:1px solid var(--border-soft);background:var(--panel);border-radius:99px;padding:4px 11px}
+  .navrow a:hover{border-color:var(--blue);color:var(--ink)}
+  .navrow a.cross{color:var(--violet);border-color:rgba(167,139,250,.3);background:var(--violet-dim)}
+
+  .legend{max-width:1080px;margin:0 auto;padding:0 22px 11px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:11.5px;color:var(--ink-sub)}
+  .legend .item{display:flex;align-items:center;gap:6px}
+  .dot{width:9px;height:9px;border-radius:99px;display:inline-block}
+  .dot.shipped{background:var(--green)} .dot.partial{background:var(--amber)} .dot.not{background:var(--red)}
+  .legend .sep{width:1px;height:14px;background:var(--border)}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:26px 22px 110px}
+  h1{font-size:27px;font-weight:700;letter-spacing:-.02em;margin-bottom:6px}
+  .sub{color:var(--ink-body);font-size:13.5px;max-width:820px}
+  .sub b{color:var(--ink)}
+
+  abbr{text-decoration:none;border-bottom:1px dotted var(--ink-sub);cursor:help}
+
+  .principle{margin:18px 0 6px;background:linear-gradient(135deg,var(--ember-dim),transparent 70%),var(--panel);
+    border:1px solid rgba(255,90,31,.3);border-radius:14px;padding:15px 18px;display:flex;gap:14px;align-items:flex-start}
+  .principle .ic{font-size:20px;flex:0 0 auto}
+  .principle .big{font-size:15.5px;font-weight:700;color:var(--ink);margin-bottom:3px}
+  .principle p{font-size:13px;color:var(--ink-body)}
+
+  .yah{margin:14px 0 4px;display:flex;align-items:center;gap:12px;background:var(--panel);border:1px dashed var(--blue);
+    border-radius:12px;padding:11px 16px}
+  .yah .pin{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);
+    background:var(--blue-dim);border:1px solid rgba(120,188,230,.3);border-radius:99px;padding:4px 10px;white-space:nowrap}
+  .yah p{font-size:12.5px;color:var(--ink-body)}.yah p b{color:var(--ink)}
+
+  /* day-1 always-on band */
+  .day1{margin-top:18px;background:var(--violet-dim);border:1px solid rgba(167,139,250,.3);border-radius:14px;padding:16px 18px}
+  .day1 h3{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--violet);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+  .day1 .d1sub{font-size:12.5px;color:var(--ink-body);margin-bottom:11px}
+  .day1 .d1grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:680px){.day1 .d1grid{grid-template-columns:1fr}}
+  .day1 .d1card{background:rgba(12,14,18,.4);border:1px solid var(--border-soft);border-radius:11px;padding:12px 14px}
+  .day1 .d1card h4{font-size:12.5px;font-weight:750;color:var(--ink);margin-bottom:5px}
+  .day1 .d1card ul{list-style:none}
+  .day1 .d1card li{font-size:12px;color:var(--ink-body);padding:2px 0 2px 16px;position:relative}
+  .day1 .d1card li:before{content:"▹";position:absolute;left:0;color:var(--violet)}
+
+  .phase{margin-top:22px;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--panel)}
+  .phead{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 18px;background:var(--panel-2);border-bottom:1px solid var(--border)}
+  .phead .pn{width:30px;height:30px;border-radius:9px;background:var(--blue-dim);border:1px solid rgba(120,188,230,.3);
+    display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--blue);font-size:14px;flex:0 0 auto}
+  .phead .pt{font-size:16px;font-weight:700;color:var(--ink)}
+  .phead .pq{font-size:12px;color:var(--ink-sub);font-weight:600}
+  .phead .goal{margin-left:auto;text-align:right}
+  .phead .goal .v{font-size:18px;font-weight:750;color:var(--green);letter-spacing:-.01em}
+  .phead .goal .l{font-size:10.5px;color:var(--ink-sub);text-transform:uppercase;letter-spacing:.06em}
+  .bandrow{padding:10px 18px;background:rgba(120,188,230,.05);border-bottom:1px solid var(--border-soft);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .bandrow .blab{font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-sub)}
+  .bandchip{font-size:11.5px;font-weight:650;color:var(--ink);background:var(--panel);border:1px solid var(--border);border-radius:99px;padding:4px 11px}
+  .bandchip b{color:var(--blue)}
+
+  .lanes{padding:6px 0}
+  .lane{display:grid;grid-template-columns:128px 1fr;gap:0;border-top:1px solid var(--border-soft)}
+  .lane:first-child{border-top:none}
+  .lane .lname{padding:14px 14px;font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;display:flex;flex-direction:column;gap:4px}
+  .lane.product .lname{color:var(--blue)} .lane.plg .lname{color:var(--green)} .lane.slg .lname{color:var(--amber)}
+  .lane .lname .tag{font-size:9px;font-weight:700;letter-spacing:.04em;color:var(--ink-sub);text-transform:none}
+  .lane .items{padding:11px 16px 13px;display:flex;flex-direction:column;gap:8px}
+  .it{font-size:12.8px;color:var(--ink-body);padding-left:18px;position:relative}
+  .it b{color:var(--ink)}
+  .it:before{content:"";position:absolute;left:2px;top:6px;width:8px;height:8px;border-radius:99px;background:var(--ink-sub)}
+  .it.shipped:before{background:var(--green)} .it.partial:before{background:var(--amber)} .it.not:before{background:var(--red)}
+  .it .st{font-size:9.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;padding:1px 6px;border-radius:99px;margin-left:6px;white-space:nowrap}
+  .it.shipped .st{color:var(--green);background:var(--green-dim)}
+  .it.partial .st{color:var(--amber);background:var(--amber-dim)}
+  .it.not .st{color:var(--red);background:var(--red-dim)}
+  /* feature breakdown sub-list */
+  .featb{list-style:none;margin:6px 0 2px 4px;border-left:1px solid var(--border);padding-left:12px}
+  .featb li{font-size:11.8px;color:var(--ink-sub);padding:2px 0}
+  .featb li b{color:var(--ink-body)}
+  /* inline note from founders */
+  .note{margin-top:4px;border-left:2px solid var(--amber);background:var(--amber-dim);border-radius:0 8px 8px 0;padding:8px 12px;font-size:12px;color:var(--ink-body)}
+  .note b{color:var(--amber)}
+  .cadence{margin-top:6px;font-size:11.5px;color:var(--ink-sub);background:var(--panel-2);border:1px solid var(--border-soft);border-radius:8px;padding:7px 11px}
+  .cadence b{color:var(--ink)} .cadence a{color:var(--amber);text-decoration:none;font-weight:700}
+
+  body[data-view="gc"] .sub-view{display:none}
+  body[data-view="sub"] .gc-view{display:none}
+
+  .beyond{margin-top:22px;background:var(--blue-dim);border:1px solid rgba(120,188,230,.3);border-radius:14px;padding:15px 18px}
+  .beyond h3{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);margin-bottom:7px}
+  .beyond ul{list-style:none}
+  .beyond li{font-size:12.8px;color:var(--ink-body);padding:3px 0 3px 18px;position:relative}
+  .beyond li:before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:800}
+  .beyond li b{color:var(--ink)}
+
+  /* glossary */
+  .gloss{margin-top:26px;border:1px solid var(--border);border-radius:16px;background:var(--panel);padding:18px 20px}
+  .gloss h3{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);margin-bottom:12px}
+  .gloss-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px 22px}
+  @media(max-width:680px){.gloss-grid{grid-template-columns:1fr}}
+  .gloss-grid div{font-size:12.5px;color:var(--ink-body)}
+  .gloss-grid b{color:var(--ink)}
+
+  .foot{margin-top:40px;padding-top:18px;border-top:1px solid var(--border-soft);font-size:12px;color:var(--ink-sub);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+
+  @media(max-width:680px){.lane{grid-template-columns:1fr}.lane .lname{padding-bottom:0}}
+  @media print{body{background:#fff;color:#000}.topbar,.toggle{position:static}.phase,.principle,.beyond,.yah,.day1,.gloss{break-inside:avoid}}
+</style>
+</head>
+<body data-view="gc">
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><div class="mark">P</div><div class="name">Perch <span>· Centaur Timeline</span></div></div>
+    <div class="toggle">
+      <span class="tlabel">Motion</span>
+      <div class="seg">
+        <button id="btnGc" class="active" onclick="setView('gc')">GC-first <span class="star">★ preferred</span></button>
+        <button id="btnSub" onclick="setView('sub')">Sub-first</button>
+      </div>
+    </div>
+  </div>
+  <div class="navrow">
+    <a href="index.html">← Hub</a>
+    <a class="cross" href="scenarios.html">$1M → $15M Scenarios</a>
+    <a class="cross" href="sales-engine.html">Sales Engine (daily activity + comp)</a>
+  </div>
+  <div class="legend">
+    <span class="item"><span class="dot shipped"></span> Shipped</span>
+    <span class="item"><span class="dot partial"></span> Partial</span>
+    <span class="item"><span class="dot not"></span> Not started</span>
+    <span class="sep"></span>
+    <span class="item"><span class="dot" style="background:var(--blue)"></span> Product</span>
+    <span class="item"><span class="dot" style="background:var(--green)"></span> PLG</span>
+    <span class="item"><span class="dot" style="background:var(--amber)"></span> SLG + MEDDPICC</span>
+    <span class="item"><span class="dot" style="background:var(--violet)"></span> Day-1 always-on</span>
+  </div>
+</div>
+
+<div class="wrap">
+  <h1>The Perch Centaur Timeline</h1>
+  <p class="sub"><b>52 weeks · Jul 1 2026 → Jun 30 2027.</b> Not a vague roadmap — an operating blueprint. Four phases (your roadmap's own), recalendared to the <abbr title="Minimum Viable Product — the first version real customers pay for and use">MVP</abbr> launch. Each phase carries three swimlanes — <b>Product</b>, <b><abbr title="Product-Led Growth — the product itself drives signup, activation, and expansion (self-serve)">PLG</abbr></b>, and <b><abbr title="Sales-Led Growth — humans (SDRs/AEs) drive the deal">SLG</abbr> + <abbr title="Metrics, Economic buyer, Decision criteria, Decision process, Paper process, Identify pain, Champion, Competition — our deal-qualification discipline">MEDDPICC</abbr></b> — so we see exactly when the sales engine turns on relative to what ships. Toggle the motion: <b>GC-first</b> (preferred) or <b>Sub-first</b>. Full acronym glossary at the bottom.</p>
+
+  <div class="principle">
+    <div class="ic">🔥</div>
+    <div>
+      <div class="big">Sell from the MVP, not the finish line.</div>
+      <p>SLG + MEDDPICC start <b>Week 1 (Jul 1, 2026)</b> — prospecting, discovery, qualification, and lighthouse betas run <i>while</i> the product matures. We never wait for "done." PLG and SLG ramp together as capability lands.</p>
+    </div>
+  </div>
+
+  <div class="yah">
+    <span class="pin">◉ You are here</span>
+    <p><b>Late Jun 2026 — pre-launch.</b> Most of Phase 1's product is already shipped or in flight (we're ahead of the original plan). <b>MVP target: Jul 1, 2026</b> <span style="color:var(--ink-sub)">(assumption — confirm)</span>. The clock below starts there.</p>
+  </div>
+
+  <!-- ================= DAY-1 ALWAYS-ON ================= -->
+  <div class="day1">
+    <h3>◆ Running from Day 1 — not a later phase</h3>
+    <p class="d1sub">Per Jeremy + Brock: the sub-portal, the relationship graph, and the "Mandate" pull-through are <b>already built and being refined</b> — they activate at launch, not in Q3. We run these every day from Jul 1. (Q3 below shows only what genuinely must be <i>newly</i> built.)</p>
+    <div class="d1grid">
+      <div class="d1card">
+        <h4>Product — already live, refining</h4>
+        <ul>
+          <li>Token-based <b>sub-contractor bid portal</b> (landing, claim/signup, Scope · Documents · AI-Proposal · Bid-Summary workspace)</li>
+          <li><b>Bid invitations + submissions</b> (GC invites subs by division; status tracking) — <span style="color:var(--amber)">built, <b>not fully tested yet</b> · QA before we lean on it</span></li>
+          <li><b>Relationship data</b>: CRM companies/contacts, encounters, Deal Board, Forecast, Account-360</li>
+          <li><b>Doc knowledge graph</b> (Neo4j: documents, sections, entities, coordination)</li>
+        </ul>
+      </div>
+      <div class="d1card">
+        <h4>Motion — low-hanging fruit, do daily</h4>
+        <ul>
+          <li><b>The Mandate (light):</b> recruit subs <i>through</i> the GCs we land — every GC bid invite onboards its subs</li>
+          <li><b>SDRs work subs surfaced inside GC bid funnels</b> — warmest leads we have</li>
+          <li><b>Build the pipe:</b> contacts, leads, and SDR outreach from Jul 1 (see Sales Engine)</li>
+          <li><b>Dogfood + referrals</b> via Chris @ Built Exteriors (friends-and-family)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PHASE 1 ================= -->
+  <div class="phase">
+    <div class="phead">
+      <div class="pn">1</div>
+      <div><div class="pt">The Elite Wedge</div><div class="pq">Q3 2026 · Jul–Sep · Weeks 1–12</div></div>
+      <div class="goal"><div class="v">$1M ARR</div><div class="l">Phase goal</div></div>
+    </div>
+    <div class="bandrow"><span class="blab">Targets</span><span class="bandchip"><b>SMB + warm network</b></span><span class="bandchip">Built dogfood + referrals (Chris)</span><span class="bandchip">First cold logo = the milestone</span></div>
+    <div class="lanes">
+      <div class="lane product">
+        <div class="lname">Product<span class="tag">what ships</span></div>
+        <div class="items">
+          <div class="it shipped"><b>MVP launch (Jul 1)</b> — agentic doc pipeline → <abbr title="Scope of Work — the structured list of what a trade is responsible for on a project">SOW</abbr> generation <span class="st">shipped</span></div>
+          <div class="it shipped">Glyph-level traceability / reconstruction <span class="st">shipped</span></div>
+          <div class="it shipped">Entity extraction + spaCy labeling <span class="st">shipped</span></div>
+          <div class="it partial"><b>Full division / section trade coverage</b> — completing &amp; tuning <span class="st">partial</span>
+            <ul class="featb">
+              <li><b>What it means:</b> every uploaded plan/spec page is auto-tagged to its <abbr title="Construction Specifications Institute MasterFormat — the industry-standard numbering that organizes a project into Divisions (e.g. 04 Masonry, 26 Electrical) and Sections (e.g. 04 20 00 Unit Masonry)">CSI MasterFormat</abbr> Division + Section <i>and</i> to one of 34 construction trades — then synthesized into per-division scope (work items, submittals, coordination, materials).</li>
+              <li><b>Built today:</b> spec-affinity vocab for Divisions <b>00–14, 21–28, 31–35</b> — which <i>are</i> the active building-construction divisions; 34 trade pattern packs (masonry, metals, millwork/casework, electrical, mechanical, concrete…); Neo4j Section nodes; V3 division-scope synthesis feeding the job scope view + bid packages.</li>
+              <li><b>✅ Correction (Jeremy was right):</b> Divisions <b>15–20, 24, 29, 30</b> are <b>reserved / unused</b> in modern MasterFormat — <i>not</i> gaps. The 2004 expansion retired old Div&nbsp;15 (Mechanical) &amp; 16 (Electrical) and redistributed them into 21–28. Having no vocab for the reserved numbers is <b>correct</b>; our coverage already spans the divisions a real building bid touches.</li>
+              <li><b>Real remaining work:</b> per-division <b>quality tuning</b> (04/05/06/26 have vocab but extraction quality varies by project type), and — only for industrial/process jobs — the <b>Process Equipment Divisions 40–49</b>. "Full coverage" = consistent quality across the active divisions, not filling reserved holes.</li>
+            </ul>
+          </div>
+          <div class="it partial">Hallucination harness / V3 eval + tuner <span class="st">partial</span></div>
+        </div>
+      </div>
+      <div class="lane plg">
+        <div class="lname">PLG<span class="tag">self-serve</span></div>
+        <div class="items">
+          <div class="gc-view">
+            <div class="it shipped"><b>"Magic moment" trial</b> — small/mid GCs upload a bid package → instant SOW + division scope (Core tier) <span class="st">live at MVP</span></div>
+            <div class="it shipped">Sub pull-through: every GC bid invite onboards its subs self-serve <span class="st">live</span></div>
+          </div>
+          <div class="sub-view">
+            <div class="it shipped"><b>Sub self-serve trial</b> via the $300M partner's sub network — sub uploads an ITB → scope + AI proposal (Essentials/Growth) <span class="st">live at MVP</span></div>
+            <div class="it shipped">Portal claim/signup converts invited subs into accounts <span class="st">live</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="lane slg">
+        <div class="lname">SLG + MEDDPICC<span class="tag">sales engine</span></div>
+        <div class="items">
+          <div class="it shipped"><b>🎯 Phase-1 goal: land our first client OUTSIDE of Chris.</b> Chris @ Built Exteriors is our friends-and-family dogfood + referral source — the milestone is the first <i>cold</i>, self-won logo. <span class="st">the proof point</span></div>
+          <div class="it shipped"><b>Build the pipe from Day 1.</b> Stand up contacts/leads, SDR outreach cadences, and MEDDPICC qualification on every opp from Jul 1 — don't wait for product polish. <span class="st">on at MVP</span></div>
+          <div class="gc-view">
+            <div class="it shipped">SDR prospecting of SMB + warm-network GCs; AE discovery calls; lighthouse lunches/demos <span class="st">core play</span></div>
+          </div>
+          <div class="sub-view">
+            <div class="it shipped">SDR/AE on warm SMB subs via the partner network + Built referrals; MEDDPICC on the bigger ones <span class="st">core play</span></div>
+          </div>
+          <div class="cadence">📞 <b>Q1 daily cadence:</b> ~22 SMB logos to hit $1M → see worked funnel math + per-rep daily targets in the <a href="sales-engine.html">Sales Engine</a>, and customer-makeup paths in <a href="scenarios.html">$1M Scenarios</a>.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PHASE 2 ================= -->
+  <div class="phase">
+    <div class="phead">
+      <div class="pn">2</div>
+      <div><div class="pt">The Enterprise Pivot</div><div class="pq">Q4 2026 · Oct–Dec · Weeks 13–26</div></div>
+      <div class="goal"><div class="v">$15M ARR</div><div class="l">Phase goal</div></div>
+    </div>
+    <div class="bandrow"><span class="blab">Targets</span><span class="bandchip">GC <b>$10M–$500M</b> rev</span><span class="bandchip">Sub <b>$10M–$250M</b> rev</span></div>
+    <div class="lanes">
+      <div class="lane product">
+        <div class="lname">Product<span class="tag">what ships</span></div>
+        <div class="items">
+          <div class="it partial"><b>GC Command Center</b> — today this is distributed across Jobs kanban + Analytics + Workbench; the build is to unify it <span class="st">to build</span>
+            <ul class="featb">
+              <li><b>Unified multi-job control surface</b> (one screen: pipeline kanban, calendar, at-risk jobs)</li>
+              <li><b>GC bid-buyout orchestration</b> — invite subs, track coverage by division, leveling queue (today's orchestrator is sub-pursuit oriented)</li>
+              <li><b>Analytics KPIs</b> wired live: win rate, pipeline value, bids out, cycle time</li>
+              <li><b>GC-side SOW/scope</b> path (currently scope-doc generation is sub-only)</li>
+            </ul>
+          </div>
+          <div class="it partial"><b>Deep Diff engine</b> — addenda/revision intelligence <span class="st">to build</span>
+            <ul class="featb">
+              <li><b>Have today:</b> addendum classification, dual trade+spec affinity on addendum pages, cross-doc entity comparison, document versioning + reprocessing.</li>
+              <li><b>To build:</b> baseline-vs-addendum <b>section-level diff</b> ("Addendum 3 changed Div 07 waterproofing"), page redline, and a structured change artifact pushed to affected scope.</li>
+            </ul>
+          </div>
+          <div class="it partial">Analytics — KPIs, usage, funnel, at-risk jobs <span class="st">partial</span></div>
+        </div>
+      </div>
+      <div class="lane plg">
+        <div class="lname">PLG<span class="tag">self-serve</span></div>
+        <div class="items">
+          <div class="gc-view">
+            <div class="it shipped"><b>Smaller GCs self-serve</b> on Core/Pro; in-product upgrade prompts <span class="st">live</span>
+              <div class="note"><b>Note (Jeremy):</b> self-serve is for <b>smaller companies only</b>. Enterprise is NOT self-serve — see white-glove note in the SLG lane.</div>
+            </div>
+            <div class="it partial">Usage-based <abbr title="Product-Qualified Lead — a self-serve user whose in-product behavior signals buying intent">PQL</abbr>s auto-routed to AEs (PLG→SLG handoff) <span class="st">partial</span></div>
+          </div>
+          <div class="sub-view">
+            <div class="it shipped">Sub self-serve scales across partner network; tier upgrades in-product <span class="st">live</span></div>
+            <div class="it partial">Subs referring GCs upward → early GC PQLs <span class="st">partial</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="lane slg">
+        <div class="lname">SLG + MEDDPICC<span class="tag">sales engine</span></div>
+        <div class="items">
+          <div class="it partial"><b>Start chasing enterprise — but chasing ≠ landing.</b> <span class="st">reality check</span>
+            <div class="note"><b>Note (Jeremy + Brock):</b> giants like <b>D.R. Horton</b> or <b>Big-D</b> will likely require us to <b>refine, harden, and scale the product</b> before we can win them. Q4 = enter the arena and start multi-threaded relationships; don't assume a logo just because we're in the room.</div>
+          </div>
+          <div class="it partial"><b>Build the white-glove motion</b> — dedicated onboarding/implementation, SE support, exec sponsorship — <i>before</i> we pitch enterprise in earnest <span class="st">to build</span></div>
+          <div class="gc-view">
+            <div class="it shipped">Full MEDDPICC discipline on $10–500M GCs: Champion-building, EB access, Decision Criteria/Process, Paper <span class="st">core play</span></div>
+            <div class="it partial">AE + <abbr title="Sales Engineer — technical seller who runs demos and proves the product fits">SE</abbr> pairs; first <abbr title="Customer Success Manager — owns onboarding, adoption, and renewal/expansion after the sale">CSM</abbr> hires for the bigger accounts <span class="st">ramping</span></div>
+          </div>
+          <div class="sub-view">
+            <div class="it partial">Pivot MEDDPICC weight toward GCs while scaling SLG on $10–250M subs <span class="st">begins</span></div>
+          </div>
+          <div class="cadence">📞 <b>Q2 cadence shifts:</b> fewer, larger deals · multi-threaded selling (3+ contacts/account) · longer cycles. Per-rep targets in the <a href="sales-engine.html">Sales Engine</a>.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PHASE 3 ================= -->
+  <div class="phase">
+    <div class="phead">
+      <div class="pn">3</div>
+      <div><div class="pt">The Viral Flywheel</div><div class="pq">Q1 2027 · Jan–Mar · Weeks 27–39</div></div>
+      <div class="goal"><div class="v">$50M ARR</div><div class="l">Phase goal</div></div>
+    </div>
+    <div class="bandrow"><span class="blab">Targets — step up</span><span class="bandchip">GC <b>$500M–$1.5B</b> rev</span><span class="bandchip">Sub <b>$250M–$1B</b> rev</span></div>
+    <div class="lanes">
+      <div class="lane product">
+        <div class="lname">Product<span class="tag">net-new only</span></div>
+        <div class="items">
+          <div class="it shipped" style="opacity:.7">Sub-portal &amp; relationship data already live (see Day-1 band) — Q3 is only what must be <b>newly</b> built <span class="st">context</span></div>
+          <div class="it not"><b>Complete the sub-portal</b> (today the shell is live; these tabs are placeholders) <span class="st">to build</span>
+            <ul class="featb">
+              <li><b>Documents tab → shared plan room</b> (currently "will appear here" placeholder)</li>
+              <li><b>AI Proposal generation</b> in-portal (currently placeholder)</li>
+              <li><b>Bid-submission verification</b> — auto-check a submitted bid for completeness vs. the spec/scope</li>
+              <li><b>Multi-GC unified view</b> — one sub workspace showing competing GC invitations side-by-side (today only de-duped at job creation)</li>
+            </ul>
+          </div>
+          <div class="it not"><b>AI bid leveling</b> — the comparison matrix exists but is manual numbers only <span class="st">to build</span>
+            <ul class="featb">
+              <li>Normalize bids for <b>exclusions/qualifications</b> into adjusted apples-to-apples totals</li>
+              <li>Quantify <b>scope-gap dollar impact</b> per bid; flag coverage holes by division</li>
+            </ul>
+          </div>
+          <div class="it not"><b>Cross-org bid-flow graph</b> — the net-new network capability <span class="st">to build</span>
+            <ul class="featb">
+              <li>Today: per-org doc graph (Neo4j) + CRM encounters. There is <b>no</b> marketplace-wide "who-bids-whom" graph.</li>
+              <li>Build the graph-native model of <b>sub → GC → job</b> bid relationships to power routing, recommendations, and the true network effect.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="lane plg">
+        <div class="lname">PLG<span class="tag">self-serve</span></div>
+        <div class="items">
+          <div class="it shipped" style="opacity:.7">The Mandate + SDR-into-GC-funnels are <b>Day-1</b> plays, not Q3 (see top band) <span class="st">running</span></div>
+          <div class="it partial"><b>Amplify the loop</b> the new builds unlock: completed portal + bid-flow graph make every GC's bid list a higher-converting sub-acquisition funnel <span class="st">scaling</span></div>
+        </div>
+      </div>
+      <div class="lane slg">
+        <div class="lname">SLG + MEDDPICC<span class="tag">sales engine</span></div>
+        <div class="items">
+          <div class="gc-view">
+            <div class="it shipped">MEDDPICC on $500M–$1.5B GCs; <b>land-and-expand</b> across divisions within won accounts <span class="st">core play</span></div>
+            <div class="it partial">CS-led sub expansion inside GC accounts; scaled AE pods <span class="st">ramping</span></div>
+          </div>
+          <div class="sub-view">
+            <div class="it shipped">Convert the $250M–$1B sub base into anchored accounts; GC enterprise pods scale <span class="st">core play</span></div>
+          </div>
+          <div class="cadence">📞 <b>Q3 cadence:</b> expansion motions + bigger logos. Activity model in the <a href="sales-engine.html">Sales Engine</a>.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PHASE 4 ================= -->
+  <div class="phase">
+    <div class="phead">
+      <div class="pn">4</div>
+      <div><div class="pt">The Industry Standard</div><div class="pq">Q2 2027 · Apr–Jun · Weeks 40–52</div></div>
+      <div class="goal"><div class="v">$100M ARR</div><div class="l">Phase goal</div></div>
+    </div>
+    <div class="bandrow"><span class="blab">Targets — the giants</span><span class="bandchip">GC <b>$2B–$3B</b> rev (<abbr title="Engineering News-Record — the trade publication whose 'ENR Top 400' annually ranks the largest U.S. contractors by revenue. Neither Jeremy nor Brock knew this acronym — now defined.">ENR</abbr> Top 400)</span></div>
+    <div class="lanes">
+      <div class="lane product">
+        <div class="lname">Product<span class="tag">what ships</span></div>
+        <div class="items">
+          <div class="it not"><b>RSMeans line-item costing</b> → full Pre-Con OS <span class="st">not started</span>
+            <ul class="featb">
+              <li><abbr title="RSMeans (by Gordian) — the construction industry's standard published database of unit costs (material + labor) used to build line-item cost estimates">RSMeans</abbr> = the standard unit-cost database for estimating. <b>Zero code today</b> — net-new integration to turn scope into priced line items.</li>
+            </ul>
+          </div>
+          <div class="it not"><b>RFI automation</b> — code exists but is disabled <span class="st">re-enable + wire UI</span>
+            <ul class="featb">
+              <li><abbr title="Request For Information — a formal question a contractor sends the design team to clarify ambiguous or missing info in the documents">RFI</abbr> generation agent is built but skipped in the pipeline ("re-enable when RFI UI is wired"). Q4 = wire the UI + turn it on. Same for the disabled Risk-Analysis and Bid-Decision agents.</li>
+            </ul>
+          </div>
+          <div class="it not"><b><abbr title="A security/compliance audit (Type II tests controls over a period of time) that enterprise buyers require before signing">SOC 2 Type II</abbr></b> — a marketing claim today; the real audit/cert must be earned to unlock the giants <span class="st">not started</span></div>
+          <div class="note"><b>Heads-up:</b> Q4 product is mostly <b>scale, security, and future features that aren't fully fleshed out yet</b>. As we learn from Q1–Q3 selling, this list will sharpen — treat it as direction, not spec.</div>
+        </div>
+      </div>
+      <div class="lane plg">
+        <div class="lname">PLG<span class="tag">self-serve</span></div>
+        <div class="items">
+          <div class="it shipped" style="opacity:.7">The viral loop is a <b>Day-1</b> motion — by Q4 it's mature, not new <span class="st">running</span></div>
+          <div class="it partial"><b>Specific PLG to reach $100M:</b> <span class="st">scaling levers</span>
+            <ul class="featb">
+              <li><b>Every GC bid invite = sub onboarding</b> at full volume across the network</li>
+              <li><b>In-product upgrade nudges</b> (Core→Pro, Essentials→Growth) tied to usage thresholds</li>
+              <li><b>Usage-based PQL routing</b> — high-intent self-serve accounts handed to AEs automatically</li>
+              <li><b>Referral loops</b> — invited subs invite their GCs and vice-versa; activation-based incentives</li>
+              <li><b>Land-and-expand seats</b> — more users/divisions per account self-serve</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="lane slg">
+        <div class="lname">SLG + MEDDPICC<span class="tag">sales engine</span></div>
+        <div class="items">
+          <div class="it partial"><b>AI-SDR on the ENR Top 400</b> — automated prospecting at scale, feeding human AEs <span class="st">partial</span></div>
+          <div class="it shipped">Scaled AE org running MEDDPICC at volume; multi-threaded enterprise pursuits; land-and-expand across divisions <span class="st">core play</span></div>
+          <div class="cadence">📞 <b>Daily activities by role (every quarter)</b> — exact SDR / AE / CSM cadences to defend the path to $100M live in the <a href="sales-engine.html">Sales Engine</a>.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= BEYOND PLAN ================= -->
+  <div class="beyond">
+    <h3>✦ Already shipped — ahead of / beyond the original roadmap</h3>
+    <ul>
+      <li><b>MEDDPICC sales engine</b> — sales-orchestrator agents (relationship_researcher, scope_gap_analyst, meeting_briefer), qualification scoring, MAP steps (not in the roadmap at all)</li>
+      <li><b>Company Brain</b>, agent guardrails, brain-grounded citations</li>
+      <li><b>Field-ops</b>, CRM / relationship data (Deal Board, Forecast, Account-360), tribal knowledge, legal playbooks</li>
+    </ul>
+  </div>
+
+  <!-- ================= GLOSSARY ================= -->
+  <div class="gloss" id="glossary">
+    <h3>📖 Glossary — every acronym, defined</h3>
+    <div class="gloss-grid">
+      <div><b>ACV</b> — Annual Contract Value: yearly revenue from one customer.</div>
+      <div><b>AE</b> — Account Executive: the closer who owns the deal end-to-end.</div>
+      <div><b>ARR</b> — Annual Recurring Revenue: total annualized subscription revenue.</div>
+      <div><b>CSI MasterFormat</b> — industry-standard numbering that organizes a project into Divisions (e.g. 04 Masonry) and Sections (e.g. 04 20 00 Unit Masonry).</div>
+      <div><b>CSM</b> — Customer Success Manager: owns onboarding, adoption, and renewal/expansion.</div>
+      <div><b>ENR</b> — Engineering News-Record: trade publication; its "ENR Top 400" ranks the largest U.S. contractors by revenue.</div>
+      <div><b>GC</b> — General Contractor: runs the project, buys out and manages the subs.</div>
+      <div><b>ITB</b> — Invitation To Bid: a GC's request asking subs to submit a bid.</div>
+      <div><b>MAP</b> — Mutual Action Plan: the shared step-by-step plan a rep and buyer agree to drive a deal to close.</div>
+      <div><b>MEDDPICC</b> — Metrics · Economic buyer · Decision criteria · Decision process · Paper process · Identify pain · Champion · Competition. Our deal-qualification discipline.</div>
+      <div><b>MVP</b> — Minimum Viable Product: first version real customers pay for.</div>
+      <div><b>PLG</b> — Product-Led Growth: the product drives signup/activation/expansion (self-serve).</div>
+      <div><b>PQL</b> — Product-Qualified Lead: a self-serve user whose behavior signals buying intent.</div>
+      <div><b>RFI</b> — Request For Information: a formal question to the design team to clarify the documents.</div>
+      <div><b>RSMeans</b> — Gordian's standard published database of unit costs (material + labor) for estimating.</div>
+      <div><b>SDR</b> — Sales Development Rep: prospects and books qualified meetings for AEs.</div>
+      <div><b>SE</b> — Sales Engineer: technical seller who runs demos and proves product fit.</div>
+      <div><b>SLG</b> — Sales-Led Growth: humans drive the deal.</div>
+      <div><b>SOC 2 Type II</b> — a security audit testing controls over time; required by enterprise buyers.</div>
+      <div><b>SOW</b> — Scope of Work: the structured list of what a trade is responsible for on a project.</div>
+      <div><b>Sub</b> — Subcontractor: the specialty trade (electrical, masonry…) that bids to the GC.</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>Perch · CRO workspace · centaur-timeline</span>
+    <span>Preliminary · status = Jeremy + codebase judgment · confirm before external use</span>
+  </div>
+</div>
+
+<script>
+  function setView(v){
+    document.body.setAttribute('data-view', v);
+    document.getElementById('btnGc').classList.toggle('active', v==='gc');
+    document.getElementById('btnSub').classList.toggle('active', v==='sub');
+    try{ localStorage.setItem('perch_timeline_view', v); }catch(e){}
+  }
+  (function(){
+    try{ var v = localStorage.getItem('perch_timeline_view'); if(v) setView(v); }catch(e){}
+  })();
+</script>
+<script src="notes.js"></script>
+  <script src="/nav.js" defer></script>
+</body>
+</html>

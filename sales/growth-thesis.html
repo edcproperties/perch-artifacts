@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perch · Growth Thesis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E8E6DF;
+    --surface:#F5F3EE;
+    --surface-2:#FBFAF6;
+    --ink:#181917;
+    --slate:#5D5F5A;
+    --faint:#8A8B84;
+    --line:#CECBC1;
+    --line-soft:#DEDBD2;
+    --signal:#D2531D;
+    --signal-deep:#A23C12;
+    --sans:'Archivo','Helvetica Neue',Arial,sans-serif;
+    --mono:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+    --maxw:980px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:17px;
+    line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+
+  /* ---- type roles ---- */
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:.72rem;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--signal-deep);
+    font-weight:500;
+  }
+  .label{
+    font-family:var(--mono);
+    font-size:.7rem;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--faint);
+    font-weight:500;
+  }
+  h1{font-weight:800;letter-spacing:-.02em;line-height:1.04;font-size:clamp(2.3rem,5.6vw,4rem)}
+  h2{font-weight:700;letter-spacing:-.01em;line-height:1.12;font-size:clamp(1.5rem,3.2vw,2.1rem)}
+  h3{font-weight:700;font-size:1.06rem;letter-spacing:-.005em}
+  p{color:var(--slate)}
+  strong{color:var(--ink);font-weight:600}
+  .lead{font-size:clamp(1.05rem,1.8vw,1.22rem);color:var(--ink);font-weight:400;line-height:1.5}
+
+  /* ---- structure ---- */
+  header.hero{padding:74px 0 46px;border-bottom:1.5px solid var(--ink)}
+  .hero-top{display:flex;justify-content:space-between;align-items:baseline;gap:18px;flex-wrap:wrap;margin-bottom:44px}
+  .hero h1{max-width:16ch;margin:26px 0 22px}
+  .hero .lead{max-width:62ch}
+  .heromark{display:block;margin-top:40px}
+
+  section{padding:54px 0;border-bottom:1px solid var(--line-soft)}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:30px}
+  .sec-head .num{font-family:var(--mono);font-size:.78rem;color:var(--signal-deep);font-weight:600;padding-top:.25em}
+  .sec-head h2{flex:0 1 auto}
+
+  /* ---- start-here field note ---- */
+  .fieldnote{
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    border-left:3px solid var(--signal);
+    padding:22px 24px;
+    margin-top:34px;
+  }
+  .fieldnote .label{display:block;margin-bottom:10px}
+  .fieldnote p{color:var(--ink);font-size:.99rem}
+
+  /* ---- principles ---- */
+  .principles{display:grid;gap:1px;background:var(--line-soft);border:1px solid var(--line-soft)}
+  .principle{background:var(--paper);padding:22px 24px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start}
+  .principle .tick{color:var(--signal);font-family:var(--mono);font-weight:600;font-size:.95rem;line-height:1.5}
+  .principle h3{margin-bottom:5px}
+  .principle p{font-size:.96rem}
+
+  /* ---- two engines ---- */
+  .engines{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .engine{background:var(--surface);border:1px solid var(--line);padding:26px 24px}
+  .engine .label{display:block;margin-bottom:14px}
+  .engine h3{font-size:1.18rem;margin-bottom:8px}
+  .engine p{font-size:.95rem}
+  .engine .out{margin-top:16px;padding-top:14px;border-top:1px dashed var(--line);font-family:var(--mono);font-size:.78rem;color:var(--ink);letter-spacing:.02em}
+  .engine .out span{color:var(--signal-deep)}
+
+  /* ---- program steps ---- */
+  .steps{display:grid;gap:1px;background:var(--line-soft);border:1px solid var(--line-soft);margin-bottom:34px}
+  .step{background:var(--surface-2);padding:20px 24px;display:grid;grid-template-columns:46px 1fr;gap:18px;align-items:start}
+  .step .n{font-family:var(--mono);font-weight:600;color:var(--signal);font-size:1.05rem}
+  .step h3{margin-bottom:3px}
+  .step p{font-size:.95rem}
+
+  /* ---- ladder ---- */
+  .ladder{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line)}
+  .rung{padding:22px 22px;border-right:1px solid var(--line);position:relative;background:var(--surface)}
+  .rung:last-child{border-right:none}
+  .rung .stage{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);display:block;margin-bottom:8px}
+  .rung h3{font-size:1.05rem;margin-bottom:6px}
+  .rung p{font-size:.9rem;line-height:1.5}
+  .rung.live{background:var(--surface-2)}
+  .rung.live .stage{color:var(--signal-deep)}
+  .rung .dot{width:9px;height:9px;border-radius:50%;background:var(--line);position:absolute;top:24px;right:20px}
+  .rung.live .dot{background:var(--signal)}
+
+  /* ---- case file ---- */
+  .casefile{border:1.5px solid var(--ink);background:var(--surface-2)}
+  .casefile .cf-head{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid var(--line);gap:12px;flex-wrap:wrap}
+  .casefile .cf-head h3{font-size:1.15rem}
+  .casefile .cf-head .tag{font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);border:1px solid var(--line);padding:4px 9px}
+  .cf-row{display:grid;grid-template-columns:130px 1fr;gap:20px;padding:18px 24px;border-bottom:1px solid var(--line-soft)}
+  .cf-row:last-child{border-bottom:none}
+  .cf-row .k{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);padding-top:2px}
+  .cf-row.invert{background:var(--paper)}
+  .cf-row.invert .k{color:var(--signal-deep)}
+  .cf-row p{font-size:.96rem;color:var(--ink)}
+  .cf-row.invert p strong{color:var(--signal-deep)}
+
+  /* ---- metric callout ---- */
+  .metric{background:var(--ink);color:var(--surface);padding:34px 30px}
+  .metric .label{color:#B9B6AC}
+  .metric h2{color:var(--surface-2);margin:14px 0 18px;max-width:24ch}
+  .metric .dials{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px;border-top:1px solid #3a3b37;padding-top:22px}
+  .metric .dial .dl{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--signal);margin-bottom:6px}
+  .metric .dial p{color:#C8C6BC;font-size:.92rem}
+  .metric .ptr{margin-top:24px;font-family:var(--mono);font-size:.8rem;color:#9b9890;letter-spacing:.02em}
+
+  /* ---- next ---- */
+  .next{display:grid;gap:14px;margin-top:8px}
+  .nextitem{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;padding:16px 0;border-bottom:1px solid var(--line-soft)}
+  .nextitem:last-child{border-bottom:none}
+  .nextitem .mk{font-family:var(--mono);color:var(--signal);font-weight:600;font-size:.95rem}
+  .nextitem p{color:var(--ink);font-size:.98rem}
+  .nextitem p span{color:var(--slate)}
+
+  footer{padding:40px 0 60px}
+  footer .frow{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center}
+  footer .label{color:var(--faint)}
+
+  /* ---- svg drafting marks ---- */
+  .draft .edge{stroke:var(--line);stroke-width:1;fill:none}
+  .draft .edge-live{stroke:var(--signal);stroke-width:1.4;fill:none}
+  .draft .node{fill:var(--surface-2);stroke:var(--ink);stroke-width:1.4}
+  .draft .node-gc{fill:var(--surface-2);stroke:var(--ink);stroke-width:1.6}
+  .draft .node-new{fill:var(--paper);stroke:var(--signal);stroke-width:1.6}
+  .draft text{font-family:var(--mono);fill:var(--slate);font-size:9px;letter-spacing:.08em}
+  .draft .t-live{fill:var(--signal-deep)}
+  .draft .dim{stroke:var(--line);stroke-width:.75}
+
+  /* ---- reveal ---- */
+  .rv{opacity:0;transform:translateY(14px);transition:opacity .7s ease,transform .7s ease}
+  .rv.in{opacity:1;transform:none}
+
+  @media (max-width:720px){
+    body{font-size:16px}
+    .engines{grid-template-columns:1fr}
+    .ladder{grid-template-columns:1fr}
+    .rung{border-right:none;border-bottom:1px solid var(--line)}
+    .rung:last-child{border-bottom:none}
+    .metric .dials{grid-template-columns:1fr}
+    .cf-row{grid-template-columns:1fr;gap:6px}
+    .step{grid-template-columns:34px 1fr;gap:12px}
+    .principle{grid-template-columns:auto 1fr;gap:12px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .rv{transition:none;opacity:1;transform:none}
+    html{scroll-behavior:auto}
+    .draw{stroke-dasharray:none!important;stroke-dashoffset:0!important}
+  }
+  a:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-top">
+      <span class="eyebrow">Perch · Growth Thesis</span>
+      <span class="label">Internal · v2 draft</span>
+    </div>
+    <h1>How we get from a few partners to the first hundred.</h1>
+    <p class="lead">We don't grow a trust-driven industry by spraying ads at it. We earn a few deep partnerships, build the product alongside them, then let the bid surface turn every customer into a channel.</p>
+
+    <svg class="draft heromark" viewBox="0 0 980 250" width="100%" height="auto" role="img" aria-label="Plan view of the growth network: one general contractor's bid reaches many subcontractors, and some subs carry Perch onward to a new general contractor.">
+      <!-- dimension baseline -->
+      <line class="dim" x1="40" y1="222" x2="940" y2="222"/>
+      <line class="dim" x1="40" y1="216" x2="40" y2="228"/>
+      <line class="dim" x1="940" y1="216" x2="940" y2="228"/>
+      <text x="40" y="242">PLAN VIEW · THE BID SURFACE AS DISTRIBUTION</text>
+
+      <!-- GC node -->
+      <g>
+        <rect class="node-gc" x="78" y="98" width="34" height="34"/>
+        <text x="74" y="150">GC · 01</text>
+      </g>
+      <!-- fan of subs -->
+      <g class="draw">
+        <line class="edge" x1="112" y1="115" x2="430" y2="40"/>
+        <line class="edge" x1="112" y1="115" x2="430" y2="78"/>
+        <line class="edge" x1="112" y1="115" x2="430" y2="115"/>
+        <line class="edge" x1="112" y1="115" x2="430" y2="152"/>
+        <line class="edge" x1="112" y1="115" x2="430" y2="190"/>
+        <line class="edge-live" x1="112" y1="115" x2="430" y2="115"/>
+      </g>
+      <g>
+        <circle class="node" cx="438" cy="40" r="7"/>
+        <circle class="node" cx="438" cy="78" r="7"/>
+        <circle class="node-new" cx="438" cy="115" r="8"/>
+        <circle class="node" cx="438" cy="152" r="7"/>
+        <circle class="node" cx="438" cy="190" r="7"/>
+        <text x="462" y="44">SUB</text>
+        <text x="462" y="82">SUB</text>
+        <text class="t-live" x="462" y="119">SUB · activates</text>
+        <text x="462" y="156">SUB</text>
+        <text x="462" y="194">SUB</text>
+      </g>
+      <!-- loop onward to a new GC -->
+      <g class="draw">
+        <path class="edge-live" d="M446 115 C 600 115, 640 60, 800 60"/>
+      </g>
+      <rect class="node-new" x="804" y="44" width="32" height="32"/>
+      <text class="t-live" x="800" y="96">NEW GC</text>
+      <text x="600" y="46" class="t-live">LOOP · sub carries Perch on</text>
+    </svg>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="fieldnote rv">
+    <span class="label">Start here · for anyone joining mid-stream</span>
+    <p>Perch is software for commercial construction: the system a general contractor uses to send a bid out to its subcontractors. This page is our plan for reaching the first hundred customers, and why it should compound after that.</p>
+  </div>
+
+  <section class="rv">
+    <div class="sec-head"><span class="num">A</span><h2>First principles</h2></div>
+    <div class="principles">
+      <div class="principle"><span class="tick">+</span><div><h3>Trust doesn't scale early, so don't try.</h3><p>In a conservative, reference-driven industry, you win a few deeply before you win many. Every fast-growing vertical AI company did exactly this.</p></div></div>
+      <div class="principle"><span class="tick">+</span><div><h3>First customers build the product: they don't buy a finished one.</h3><p>Co-development beats guessing. The fastest path to fit is sitting inside the customer's workflow and shipping against what you see.</p></div></div>
+      <div class="principle"><span class="tick">+</span><div><h3>In construction, your customers are your distribution.</h3><p>Every bid a GC sends is an impression of Perch in front of hundreds of subs. The product itself is the channel.</p></div></div>
+      <div class="principle"><span class="tick">+</span><div><h3>A loop only works if the recipient transacts inside the product.</h3><p>If a sub can respond to a bid outside Perch, the loop leaks. The strongest networks make using the product the only way through.</p></div></div>
+      <div class="principle"><span class="tick">+</span><div><h3>Never tax the people who spread you.</h3><p>The side that fuels virality should feel served, not billed. Charge the side with budget; subsidize the side that carries you to the next account.</p></div></div>
+    </div>
+  </section>
+
+  <section class="rv">
+    <div class="sec-head"><span class="num">B</span><h2>Two engines</h2></div>
+    <div class="engines">
+      <div class="engine">
+        <span class="label">Engine 01 · builds the product + the proof</span>
+        <h3>Perch Partner Program</h3>
+        <p>A small set of hand-picked GCs co-build the product with us in exchange for shaping it around their work, and become our first reference logos.</p>
+        <div class="out">OUTPUT → <span>a product that fits + names we can point to</span></div>
+      </div>
+      <div class="engine">
+        <span class="label">Engine 02 · builds the scale</span>
+        <h3>The Bid-Surface Loop</h3>
+        <p>Each GC's bids seed subs onto Perch. Happy subs carry Perch to the next GC when they bid elsewhere. The network pulls in the next customer.</p>
+        <div class="out">OUTPUT → <span>compounding, low-cost growth</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="rv">
+    <div class="sec-head"><span class="num">C</span><h2>The Perch Partner Program</h2></div>
+    <p style="max-width:64ch;margin-bottom:26px">This is what makes the Built Exteriors arrangement repeatable with a GC we don't already know. With a friend, the relationship carries the trust. With a stranger, the <strong>structure</strong> carries it.</p>
+    <div class="steps">
+      <div class="step"><span class="n">1</span><div><h3>Pick</h3><p>3–5 GCs who <em>bleed</em> from the problem, not "this looks cool." Pain over friendliness. The selection is the whole game.</p></div></div>
+      <div class="step"><span class="n">2</span><div><h3>Ask</h3><p>Payment, system access, a weekly working session, a decision-maker in the room. The commitment is what filters out tourists.</p></div></div>
+      <div class="step"><span class="n">3</span><div><h3>Give</h3><p>Dedicated build time, direct founder access, and features shaped to their workflow that generalize back to the platform.</p></div></div>
+      <div class="step"><span class="n">4</span><div><h3>Shape</h3><p>Timebox it (60–90 days), one shared goal, clear lanes: we own the build; they own access, feedback, and the decision.</p></div></div>
+      <div class="step"><span class="n">5</span><div><h3>Convert</h3><p>It ends in a paid contract, a reference, and a case study, written in from day one, not hoped for at the end.</p></div></div>
+    </div>
+
+    <span class="label" style="display:block;margin-bottom:14px">Where we are · the credibility ladder</span>
+    <div class="ladder">
+      <div class="rung live"><span class="dot"></span><span class="stage">Partner 01 · live</span><h3>Built Exteriors</h3><p>Founder embedded, co-developing, $15k/mo. Proves the model works.</p></div>
+      <div class="rung"><span class="dot"></span><span class="stage">Partner 02 · next</span><h3>Zwick</h3><p>Mid-size UT GC via Kris &amp; Brock. Proves it works beyond a friend, and gives us a cold-ish reference.</p></div>
+      <div class="rung"><span class="dot"></span><span class="stage">Accelerant · target</span><h3>A marquee GC</h3><p>Bigger GC = more subs invited = a bigger viral seed. Land one once the program is proven.</p></div>
+    </div>
+  </section>
+
+  <section class="rv">
+    <div class="sec-head"><span class="num">D</span><h2>Case file: Textura</h2></div>
+    <p style="max-width:64ch;margin-bottom:26px">A GC↔sub network in construction, built before us. The prize is real.</p>
+    <div class="casefile">
+      <div class="cf-head">
+        <h3>Construction payment network · est. 2006</h3>
+        <span class="tag">Acquired by Oracle · $663M</span>
+      </div>
+      <div class="cf-row"><span class="k">Proves</span><p>A shared GC↔sub network in construction can become enormous: over <strong>$1 trillion</strong> in payments processed, 800+ GCs, 200,000+ subs.</p></div>
+      <div class="cf-row"><span class="k">How it grew</span><p>GCs <strong>mandated</strong> their subs onto the platform, and subs <strong>had to use it to get paid</strong>. Required-to-transact drove near-total adoption.</p></div>
+    </div>
+  </section>
+
+  <section class="rv">
+    <div class="sec-head"><span class="num">E</span><h2>The reputation layer</h2></div>
+    <p style="max-width:64ch;margin-bottom:26px">The lever that turns the loop's cold 1% into something that compounds, and the moat underneath everything. The Carfax move: make the <strong>absence</strong> of a track record the red flag. A sub without a Perch history looks risky; a GC can't <em>not</em> check.</p>
+    <div class="engines">
+      <div class="engine">
+        <span class="label">Lifts Loop A · subs activate</span>
+        <h3>Claim, don't build</h3>
+        <p>Pre-fill a sub's profile from activity we already see, so signing on means claiming something they own, and GCs come to expect a Perch record on everyone.</p>
+        <div class="out">EFFECT → <span>higher invite-to-activation</span></div>
+      </div>
+      <div class="engine">
+        <span class="label">Lifts Loop B · subs recruit GCs</span>
+        <h3>Flaunt the record</h3>
+        <p>Verified wins are worth showing off, so subs bid through Perch and pull the new GC in to see the score. Reputation only pays where it's visible.</p>
+        <div class="out">EFFECT → <span>subs carry us to new GCs</span></div>
+      </div>
+    </div>
+    <p style="max-width:64ch;margin-top:22px">It's one bet wearing three faces: <strong>required-to-transact</strong> makes the record true, the true record is <strong>portable value</strong> the sub owns, and that portable value is what makes subs <strong>carry Perch to new GCs</strong>. The deepest verified track record on subs is also the moat a rival can't copy and a GC won't leave.</p>
+  </section>
+
+  <section class="rv" style="border-bottom:none">
+    <div class="sec-head"><span class="num">F</span><h2>The metric that matters</h2></div>
+    <div class="metric">
+      <span class="label">North star</span>
+      <h2>Net-new activated accounts sourced from our existing customers' bid activity.</h2>
+      <p style="color:#C8C6BC;max-width:60ch">This is the loop working. Today we have no formal way to see it, so the first job is making it visible.</p>
+      <div class="dials">
+        <div class="dial"><div class="dl">Dial 01 · K-factor</div><p>Do customers beget customers? How many new accounts each existing one generates.</p></div>
+        <div class="dial"><div class="dl">Dial 02 · Cycle time</div><p>The loop turns in weeks, not months. Loop B is paced by bid frequency. So the real lever is conversion, not the calendar.</p></div>
+      </div>
+      <div class="ptr">→ Full model + calculator: see the companion tool, <a href="bid-loop.html" style="color:var(--signal-deep)">The Bid-Surface Loop</a>.</div>
+    </div>
+  </section>
+
+  <section class="rv">
+    <div class="sec-head"><span class="num">G</span><h2>Now / next</h2></div>
+    <div class="next">
+      <div class="nextitem"><span class="mk">→</span><p>Instrument the bid surface. <span>Tag every account at birth: which GC invited it, which sub referred it. We can't manage a loop we can't see.</span></p></div>
+      <div class="nextitem"><span class="mk">→</span><p>Run the program with Zwick. <span>The real test of whether the motion survives outside a friendship.</span></p></div>
+      <div class="nextitem"><span class="mk">→</span><p>Design the sub experience to be required-to-transact and portable. <span>Required, so the loop doesn't leak. Portable, so subs carry us to new GCs.</span></p></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap frow">
+    <span class="label">Perch · Growth Thesis</span>
+    <span class="label">For: Brock · Mackenzie · Braden</span>
+  </div>
+</footer>
+
+<script>
+  // scroll reveal
+  const rv=document.querySelectorAll('.rv');
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+    rv.forEach(el=>io.observe(el));
+  } else { rv.forEach(el=>el.classList.add('in')); }
+
+  // drafting draw-in for hero lines (reduced-motion safe via CSS)
+  if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    document.querySelectorAll('.draw').forEach(g=>{
+      g.querySelectorAll('line,path').forEach((el,i)=>{
+        const len=el.getTotalLength?el.getTotalLength():400;
+        el.style.strokeDasharray=len;el.style.strokeDashoffset=len;
+        el.animate([{strokeDashoffset:len},{strokeDashoffset:0}],{duration:900,delay:200+i*90,fill:'forwards',easing:'ease-out'});
+      });
+    });
+  }
+</script>
+<script src="/nav.js" defer></script>
+</body>
+</html>

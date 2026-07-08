@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Call Cockpit → Tom · Capabilities</title>
+<style>
+:root{
+  --bg:#0a0d13; --panel:#121722; --panel2:#161c29; --edge:#242d3e; --edge2:#2f3a4f;
+  --ink:#e7edf5; --ink2:#9fb0c6; --ink3:#6b7a91;
+  --accent:#5b9dff; --prep:#5b9dff; --handle:#3fb98a; --gold:#e0a24e;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:radial-gradient(1200px 600px at 20% -10%, #131a28 0%, var(--bg) 55%) no-repeat, var(--bg);
+  color:var(--ink);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;min-height:100vh}
+.serif{font-family:Georgia,"Times New Roman",serif}
+.wrap{max-width:1080px;margin:0 auto;padding:56px 32px 80px}
+
+.eyebrow{font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:var(--ink3);font-weight:700}
+h1{font-size:40px;line-height:1.05;margin:10px 0 0;font-weight:600;letter-spacing:-.3px}
+h1 .arrow{color:var(--accent)}
+.lede{color:var(--ink2);font-size:16px;max-width:760px;margin:16px 0 0}
+.lede b{color:var(--ink)}
+.rule{height:1px;background:linear-gradient(90deg,var(--edge2),transparent);margin:34px 0 6px}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:26px}
+@media(max-width:820px){.cols{grid-template-columns:1fr}}
+.card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--edge);border-radius:16px;padding:24px 24px 26px}
+.card.prep{border-top:3px solid var(--prep)}
+.card.handle{border-top:3px solid var(--handle)}
+.tag{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;
+  padding:5px 11px;border-radius:20px}
+.tag.prep{background:rgba(91,157,255,.14);color:var(--prep);border:1px solid rgba(91,157,255,.35)}
+.tag.handle{background:rgba(63,185,138,.14);color:var(--handle);border:1px solid rgba(63,185,138,.35)}
+.card h2{font-size:22px;margin:14px 0 2px;font-weight:600}
+.card .sub{color:var(--ink3);font-size:13px;margin-bottom:14px}
+ul{list-style:none;margin:0;padding:0}
+li{position:relative;padding:9px 0 9px 26px;border-top:1px solid rgba(255,255,255,.04);font-size:14.5px;color:var(--ink)}
+li:first-of-type{border-top:0}
+li:before{content:"";position:absolute;left:4px;top:16px;width:7px;height:7px;border-radius:50%}
+.prep li:before{background:var(--prep)}
+.handle li:before{background:var(--handle)}
+li b{font-weight:700}
+.count{float:right;color:var(--ink3);font-size:12px;font-weight:600}
+
+.note{margin-top:30px;background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:20px 22px}
+.note h3{margin:0 0 10px;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink3);font-weight:700}
+.note p{margin:8px 0;color:var(--ink2);font-size:13.5px}
+.note b{color:var(--ink)}
+.foot{margin-top:26px;color:var(--ink3);font-size:12px}
+.foot a{color:var(--accent);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Perch · Product framing</div>
+  <h1 class="serif">Call Cockpit <span class="arrow">→</span> Tom</h1>
+  <p class="lede">The standalone call cockpit, decomposed into two capability sets for <b>Tom</b> to absorb inside Perch. <b>Call Prep</b> is the research &amp; understanding Tom does <i>before and during</i> a call; <b>Call Handling</b> is how Tom <i>tracks, notes, and classifies</i> it. Each line is a capability — what Tom does, stated plainly.</p>
+  <div class="rule"></div>
+
+  <div class="cols">
+    <div class="card prep">
+      <span class="tag prep">● Call Prep</span>
+      <h2>Research &amp; understand the target <span class="count">12</span></h2>
+      <div class="sub">Before &amp; during the call — the left rail + profile.</div>
+      <ul>
+        <li>Rank the call list by a composite <b>Perch Score</b> — Procore activity, typical job size, locality, ICP fit, and contactability.</li>
+        <li>Judge <b>first-principles fit</b> — does this company actually bid &amp; scope commercial construction (would it ever get value from, or buy, Perch)? Tag Strong / Moderate / not-a-fit with a reason.</li>
+        <li><b>Enrich from the open web</b> — verify the real website, LinkedIn, Facebook, Instagram, founding year, employee count, and specialties, with a confidence rating.</li>
+        <li>Write a <b>grounded TL;DR</b> — a source-verified, 2–3 sentence summary of what they build, their scale, and notable work. Never invented.</li>
+        <li><b>Size the company</b> from real signals (employees, revenue, scale cues), not misleading proxies like software-usage counts.</li>
+        <li>Surface the <b>Procore signal</b> — total &amp; active projects, average job value, estimated volume, trades, and market sectors.</li>
+        <li>Assemble a <b>single call card</b> — profile, click-to-call phone, enrichment, stats, and fit reason in one view.</li>
+        <li>Offer <b>one-click research launchers</b> — website, socials, Google, Maps, and the Procore profile.</li>
+        <li><b>Auto-route the right script</b> by contractor type (GC vs. sub) and size (small / medium / large), with instant override.</li>
+        <li><b>Generate the discovery script</b> — opener variants, the three Mom-Test questions + follow-ups, size-tailored asks &amp; "listen-for" cues, the matched GTM wedge, a one-question fallback, and an objection-handling library.</li>
+        <li><b>Flag data-quality catches</b> found while enriching — rebrands, misleading trade tags, wrong-entity matches, out-of-area HQs.</li>
+        <li><b>Search &amp; filter the queue</b> by name, trade, ICP, size, fit, and call status to work the right segment.</li>
+      </ul>
+    </div>
+
+    <div class="card handle">
+      <span class="tag handle">● Call Handling</span>
+      <h2>Track, note &amp; classify <span class="count">8</span></h2>
+      <div class="sub">During &amp; after the call — the right rail.</div>
+      <ul>
+        <li><b>Classify the outcome</b> into a standard disposition: productive, non-productive, gatekeeper, left voicemail, wrong person, advised-to-email, no answer, callback set, not a fit, or do-not-call.</li>
+        <li><b>Capture structured discovery notes</b> — contact &amp; title, persona, current tools, objection raised, pain discovered, the question that landed, the verbatim "golden quote," next step, the GTM wedge that resonated, an interest rating, and free-form notes.</li>
+        <li>Keep a <b>per-company call history</b> — a timestamped, reverse-chronological record of every touch.</li>
+        <li>Show <b>live pipeline counters</b> — companies dialed, total calls, productive calls, and callbacks set.</li>
+        <li><b>Persist automatically</b> — every outcome, note, and script override saved per rep, no login.</li>
+        <li><b>Export the call log</b> to CSV (all calls + structured fields) for the CRM or analysis.</li>
+        <li><b>Enforce a shared vocabulary</b> — consistent personas, tools, wedges, and outcomes so notes stay clean and queryable across the team.</li>
+        <li>Turn every logged call into <b>structured, queryable discovery data</b> (persona × trade × objection × pain × quote × wedge) that sharpens scripts and messaging over time.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="note">
+    <h3>Note for the build</h3>
+    <p><b>Call Prep is the heavy lift.</b> In the cockpit these run as <i>offline</i> pipelines — scoring + parallel web-research agents, precomputed into the file. Inside Perch, Tom performs them <b>live, on demand</b>. That's the real agentic work.</p>
+    <p><b>Call Handling is mostly conventional.</b> Live capture, persistence, counters, export — standard product work; the uplift is doing it in Perch on a shared backend instead of per-browser storage.</p>
+  </div>
+
+  <div class="foot">Source of truth: the working app at <a href="https://perch-call-cockpit.pages.dev">perch-call-cockpit.pages.dev</a> (75 fit-verified contractors). Green-lit capabilities become the Tom skill spec.</div>
+</div>
+</body>
+</html>

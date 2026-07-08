@@ -3,641 +3,108 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Perch — Competitive Landscape</title>
+<title>Perch · CRO Notebook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0c0e12;
-    --panel: #14171d;
-    --panel-2: #1a1e26;
-    --panel-3: #1f242e;
-    --border: #262b35;
-    --border-soft: #20242d;
-    --ink: #e7eaf0;
-    --ink-body: #aab2c0;
-    --ink-sub: #6f7785;
-    --blue: #78bce6;
-    --blue-dim: rgba(120, 188, 230, 0.14);
-    --red: #f87171;
-    --red-dim: rgba(248, 113, 113, 0.13);
-    --amber: #fbbf24;
-    --amber-dim: rgba(251, 191, 36, 0.13);
-    --green: #4ade80;
-    --green-dim: rgba(74, 222, 128, 0.13);
+  :root{
+    --paper:#E8E6DF; --surface:#F5F3EE; --surface-2:#FBFAF6;
+    --ink:#181917; --slate:#5D5F5A; --faint:#8A8B84;
+    --line:#CECBC1; --line-soft:#DEDBD2;
+    --signal:#D2531D; --signal-deep:#A23C12; --signal-dim:rgba(210,83,29,.10);
+    --sans:'Archivo','Helvetica Neue',Arial,sans-serif;
+    --mono:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: radial-gradient(1200px 620px at 50% -10%, rgba(120,188,230,0.06), transparent 60%), var(--bg);
-    color: var(--ink);
-    min-height: 100vh;
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-  }
-  .wrap { max-width: 1180px; margin: 0 auto; padding: 44px 24px 110px; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;min-height:100vh}
+  .wrap{max-width:860px;margin:0 auto;padding:46px 24px 90px}
+  .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--signal-deep);font-weight:500}
+  h1{font-weight:800;letter-spacing:-.02em;font-size:clamp(2.2rem,5vw,3.2rem);line-height:1.04;margin:18px 0 12px}
+  h1 .dot{color:var(--signal)}
+  .lead{color:var(--slate);font-size:15.5px;max-width:680px;margin-bottom:8px;line-height:1.55}
+  .lead b{color:var(--ink)}
+  .crew{font-family:var(--mono);color:var(--faint);font-size:12px;letter-spacing:.02em;margin-bottom:34px}
+  .crew b{color:var(--slate)}
 
-  /* Header */
-  header.top { margin-bottom: 26px; }
-  .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-  .brand .mark {
-    width: 30px; height: 30px; border-radius: 8px;
-    background: linear-gradient(135deg, var(--blue), #4a90c4);
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 800; color: #0c0e12; font-size: 18px;
-  }
-  .brand .name { font-weight: 700; letter-spacing: -0.01em; font-size: 15px; color: var(--ink); }
-  .brand .name span { color: var(--ink-sub); font-weight: 500; }
-  h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 10px; }
-  .sub { color: var(--ink-body); font-size: 15px; max-width: 760px; }
-  .sub b { color: var(--ink); font-weight: 650; }
+  .cards{display:flex;flex-direction:column;gap:15px}
+  .card{background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:22px 24px;transition:border-color .16s}
+  .card:hover{border-color:var(--faint)}
+  .ch{display:flex;align-items:baseline;gap:11px;margin-bottom:4px;flex-wrap:wrap}
+  .ch a.title{text-decoration:none}
+  .ch h2{font-size:19px;font-weight:700;color:var(--ink);display:inline}
+  .card:hover .ch h2{color:var(--signal-deep)}
+  .badge{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.08em;padding:3px 8px;border-radius:5px;text-transform:uppercase;border:1px solid var(--line);color:var(--faint)}
+  .badge.live{color:var(--signal-deep);background:var(--signal-dim);border-color:rgba(210,83,29,.3)}
+  .card p{font-size:14px;color:var(--slate);margin:4px 0 14px;line-height:1.5}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  a.chip{text-decoration:none;font-size:12.5px;color:var(--slate);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 11px;transition:all .14s;white-space:nowrap}
+  a.chip:hover{color:var(--ink);border-color:var(--signal);background:var(--signal-dim)}
+  a.chip.lead{color:var(--ink);border-color:rgba(210,83,29,.4)}
 
-  /* Stat band */
-  .stat-band {
-    margin-top: 26px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
-  }
-  .stat-card {
-    background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
-    padding: 16px 18px;
-  }
-  .stat-card .v { font-size: 27px; font-weight: 750; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-  .stat-card .l { font-size: 12.5px; color: var(--ink-sub); margin-top: 3px; }
-  .stat-card.hi .v { color: var(--red); }
-
-  /* Toolbar */
-  .toolbar {
-    display: flex; flex-wrap: wrap; align-items: center; gap: 18px;
-    margin: 30px 0 6px; padding-bottom: 2px;
-  }
-  .fgroup { display: flex; align-items: center; gap: 7px; }
-  .fgroup .glabel { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-sub); margin-right: 2px; }
-  .filter {
-    border: 1px solid var(--border); background: var(--panel); color: var(--ink-body);
-    padding: 7px 13px; border-radius: 9px; font-size: 13px; font-weight: 600; cursor: pointer;
-    transition: all .15s ease; display: inline-flex; align-items: center; gap: 6px;
-  }
-  .filter:hover { color: var(--ink); border-color: #333a46; }
-  .filter.active { background: var(--blue-dim); border-color: rgba(120,188,230,0.42); color: var(--blue); }
-  .filter .pip { width: 8px; height: 8px; border-radius: 999px; display: inline-block; }
-  .pip.high { background: var(--red); } .pip.med { background: var(--amber); } .pip.low { background: var(--green); }
-  .spacer { flex: 1; }
-  .legend-note { font-size: 12px; color: var(--ink-sub); }
-
-  /* Grid of categories */
-  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 18px; }
-  @media (max-width: 920px) { .grid { grid-template-columns: 1fr; } .stat-band { grid-template-columns: repeat(2,1fr); } .wrap { padding: 32px 16px 90px; } }
-
-  .cat {
-    background: var(--panel); border: 1px solid var(--border-soft); border-radius: 16px;
-    padding: 20px 20px 18px; display: flex; flex-direction: column;
-    transition: border-color .2s ease, box-shadow .2s ease;
-  }
-  .cat:hover { border-color: #313845; }
-  .cat.t-high { border-left: 3px solid var(--red); }
-  .cat.t-med { border-left: 3px solid var(--amber); }
-  .cat.t-low { border-left: 3px solid var(--green); }
-
-  .cat-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-  .cat-title { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
-  .cat-tags { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
-  .tag {
-    font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
-    padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border);
-  }
-  .tag.core { color: var(--blue); background: var(--blue-dim); border-color: rgba(120,188,230,0.3); }
-  .tag.edge { color: var(--ink-sub); background: var(--panel-2); }
-  .threat {
-    flex-shrink: 0; font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 999px;
-    display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
-  }
-  .threat.high { color: var(--red); background: var(--red-dim); border: 1px solid rgba(248,113,113,0.32); }
-  .threat.med { color: var(--amber); background: var(--amber-dim); border: 1px solid rgba(251,191,36,0.32); }
-  .threat.low { color: var(--green); background: var(--green-dim); border: 1px solid rgba(74,222,128,0.32); }
-  .threat .pip { width: 7px; height: 7px; border-radius: 999px; }
-  .threat.high .pip { background: var(--red); } .threat.med .pip { background: var(--amber); } .threat.low .pip { background: var(--green); }
-
-  .what { font-size: 13.5px; color: var(--ink-body); margin-top: 12px; }
-  .perch-row { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-  .perch-row .pl { font-size: 11px; color: var(--ink-sub); font-weight: 600; margin-right: 2px; }
-  .chip {
-    font-size: 11.5px; color: var(--ink-body); background: var(--panel-2);
-    border: 1px solid var(--border); border-radius: 7px; padding: 3px 8px;
-  }
-
-  /* Logo grid */
-  .logos { margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
-  .logo-tile {
-    position: relative;
-    background: #f4f6fa; border: 1px solid var(--border); border-radius: 10px;
-    padding: 10px 8px 8px; cursor: pointer; text-align: center;
-    transition: transform .14s ease, box-shadow .14s ease, background .14s ease;
-    display: flex; flex-direction: column; align-items: center; gap: 6px;
-  }
-  .logo-tile.has-note { border-color: rgba(120,188,230,0.7); }
-  .note-dot { display: none; position: absolute; top: 6px; right: 6px; width: 9px; height: 9px; border-radius: 999px; background: var(--blue); box-shadow: 0 0 0 2px #f4f6fa; }
-  .logo-tile.has-note .note-dot { display: block; }
-  .logo-tile:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.35); background: #fff; }
-  .logo-img-box { height: 34px; display: flex; align-items: center; justify-content: center; width: 100%; }
-  .logo-img-box img { max-height: 34px; max-width: 100%; object-fit: contain; }
-  .logo-wordmark {
-    display: none; align-items: center; justify-content: center; height: 34px;
-    font-weight: 800; font-size: 14px; color: #2a2f3a; letter-spacing: -0.02em; text-align: center; line-height: 1.05;
-  }
-  .logo-name { font-size: 10.5px; color: #4a5160; font-weight: 600; line-height: 1.15; }
-
-  .flank {
-    margin-top: 16px; padding: 11px 13px; border-radius: 10px;
-    background: var(--panel-2); border: 1px solid var(--border-soft);
-    font-size: 12.5px; color: var(--ink-body); display: flex; gap: 9px; align-items: flex-start;
-  }
-  .flank .fi { color: var(--red); flex-shrink: 0; font-size: 13px; line-height: 1.5; }
-  .flank.med .fi { color: var(--amber); } .flank.low .fi { color: var(--green); }
-  .flank b { color: var(--ink); font-weight: 650; }
-
-  .note-wrap { margin-top: 12px; }
-  .note-wrap label { font-size: 11px; color: var(--ink-sub); font-weight: 600; display: block; margin-bottom: 5px; }
-  .note {
-    width: 100%; background: var(--panel-3); border: 1px solid var(--border); border-radius: 9px;
-    color: var(--ink); font-size: 12.5px; font-family: inherit; padding: 9px 11px; resize: vertical; min-height: 38px;
-    transition: border-color .15s ease;
-  }
-  .note:focus { outline: none; border-color: rgba(120,188,230,0.45); }
-  .note::placeholder { color: var(--ink-sub); }
-
-  .sync { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 5px 11px; border-radius: 999px; border: 1px solid var(--border); margin-top: 16px; transition: all .2s ease; }
-  .sync.cloud { color: var(--green); background: var(--green-dim); border-color: rgba(74,222,128,0.3); }
-  .sync.saving { color: var(--blue); background: var(--blue-dim); border-color: rgba(120,188,230,0.3); }
-  .sync.local { color: var(--ink-sub); background: var(--panel-2); }
-
-  .empty { text-align: center; color: var(--ink-sub); padding: 60px 0; font-size: 14px; grid-column: 1 / -1; }
-
-  /* Modal */
-  .overlay {
-    position: fixed; inset: 0; background: rgba(6,8,11,0.72); backdrop-filter: blur(3px);
-    display: none; align-items: center; justify-content: center; padding: 24px; z-index: 50;
-  }
-  .overlay.show { display: flex; }
-  .modal {
-    background: var(--panel); border: 1px solid var(--border); border-radius: 16px;
-    max-width: 460px; width: 100%; padding: 24px; box-shadow: 0 24px 70px rgba(0,0,0,0.6);
-  }
-  .modal-top { display: flex; align-items: center; gap: 14px; }
-  .modal-logo {
-    width: 56px; height: 56px; border-radius: 12px; background: #f4f6fa; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center; padding: 9px;
-  }
-  .modal-logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
-  .modal-logo .wm { font-weight: 800; color: #2a2f3a; font-size: 15px; }
-  .modal h3 { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; }
-  .modal .m-cat { font-size: 12px; color: var(--blue); font-weight: 600; margin-top: 2px; }
-  .modal .m-what { font-size: 14px; color: var(--ink-body); margin-top: 16px; }
-  .modal .m-angle-l { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-sub); font-weight: 700; margin-top: 18px; }
-  .modal .m-angle { font-size: 13.5px; color: var(--ink); margin-top: 6px; background: var(--red-dim); border: 1px solid rgba(248,113,113,0.25); border-radius: 9px; padding: 10px 12px; }
-  .modal .m-note-l { display: flex; align-items: center; justify-content: space-between; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-sub); font-weight: 700; margin-top: 18px; }
-  .modal .m-note-l .m-saved { text-transform: none; letter-spacing: 0; font-weight: 600; color: var(--green); opacity: 0; transition: opacity .2s ease; }
-  .modal .m-note-l .m-saved.show { opacity: 1; }
-  .modal .m-note { width: 100%; margin-top: 7px; background: var(--panel-3); border: 1px solid var(--border); border-radius: 9px; color: var(--ink); font-size: 13.5px; font-family: inherit; padding: 10px 12px; resize: vertical; min-height: 70px; transition: border-color .15s ease; }
-  .modal .m-note:focus { outline: none; border-color: rgba(120,188,230,0.45); }
-  .modal .m-note::placeholder { color: var(--ink-sub); }
-  .modal .m-actions { display: flex; gap: 9px; margin-top: 18px; }
-  .btn {
-    border: 1px solid var(--border); background: var(--panel-2); color: var(--ink-body);
-    padding: 9px 15px; border-radius: 9px; font-size: 13px; font-weight: 650; cursor: pointer;
-    text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all .14s ease;
-  }
-  .btn:hover { color: var(--ink); border-color: #3a414e; }
-  .btn.primary { background: var(--blue-dim); border-color: rgba(120,188,230,0.4); color: var(--blue); }
-
-  footer.foot { margin-top: 48px; text-align: center; color: var(--ink-sub); font-size: 12px; line-height: 1.7; }
-  footer.foot b { color: var(--ink-body); }
+  .foot{margin-top:44px;padding-top:18px;border-top:1px solid var(--line-soft);font-family:var(--mono);font-size:11px;color:var(--faint);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header class="top">
-    <div class="brand">
-      <div class="mark">P</div>
-      <div class="name">Perch <span>· Competitive Landscape</span></div>
-    </div>
-    <h1>Where Perch competes — and where we could get flanked</h1>
-    <p class="sub">Perch is a complete operating system for commercial construction, so our perimeter is huge. This maps our core functions into <b>product categories</b>, groups the <b>3–5 strongest competitors</b> in each, and rates how exposed we are to being <b>flanked</b> there. Tap any logo for its angle of attack and to jot private notes on that competitor; each category takes notes too. Everything saves automatically.</p>
+  <span class="eyebrow">Perch · CRO Notebook</span>
+  <h1>The cockpit<span class="dot">.</span></h1>
+  <p class="lead">Everything go-to-market in one place: competitive positioning, the sales playbook, and the end-to-end customer journey. <b>Internal, pre-launch working drafts</b>; confirm figures before anything goes external.</p>
+  <p class="crew">Crew: <b>Brock</b> · <b>Kenz</b> · <b>Brayden</b> · <b>Jeremy</b> &nbsp; · &nbsp; nav bar up top jumps between sections from any page.</p>
 
-    <div id="syncStatus" class="sync local">● Saved on this device only</div>
+  <div class="cards">
 
-    <div class="stat-band" id="statBand"></div>
-  </header>
+    <div class="card">
+      <div class="ch"><a class="title" href="/competitive/"><h2>Competitive Landscape</h2></a><span class="badge live">live</span></div>
+      <p>Our perimeter mapped: core functions become product categories, the 3 to 5 strongest competitors in each, and how exposed we are to being flanked there. Tap any logo for its angle of attack and to jot private notes.</p>
+      <div class="chips"><a class="chip lead" href="/competitive/">Open the landscape →</a></div>
+    </div>
 
-  <div class="toolbar">
-    <div class="fgroup">
-      <span class="glabel">Threat</span>
-      <button class="filter active" data-dim="threat" data-val="all">All</button>
-      <button class="filter" data-dim="threat" data-val="high"><span class="pip high"></span>High</button>
-      <button class="filter" data-dim="threat" data-val="med"><span class="pip med"></span>Medium</button>
-      <button class="filter" data-dim="threat" data-val="low"><span class="pip low"></span>Low</button>
+    <div class="card">
+      <div class="ch"><a class="title" href="/sales/"><h2>Sales &amp; GTM</h2></a><span class="badge live">playbook</span></div>
+      <p>How we earn the first hundred and compound after: the growth thesis, the role-model evidence behind it, the Perch Partner Program, and the bid-surface loop that turns every customer into a channel.</p>
+      <div class="chips">
+        <a class="chip lead" href="/sales/">Open →</a>
+        <a class="chip" href="/sales/growth-thesis.html">Growth Thesis</a>
+        <a class="chip" href="/sales/role-models.html">Role Models</a>
+        <a class="chip" href="/sales/partner-program.html">Partner Program</a>
+        <a class="chip" href="/sales/bid-loop.html">Bid-Surface Loop</a>
+      </div>
     </div>
-    <div class="fgroup">
-      <span class="glabel">Position</span>
-      <button class="filter active" data-dim="pos" data-val="all">All</button>
-      <button class="filter" data-dim="pos" data-val="core">Core battleground</button>
-      <button class="filter" data-dim="pos" data-val="edge">Edge / add-on</button>
+
+    <div class="card">
+      <div class="ch"><a class="title" href="/onboarding/"><h2>Onboarding &amp; Customer Journey</h2></a><span class="badge live">in progress</span></div>
+      <p>How a stranger becomes an activated customer: the routing decision tree, the buildable technical mapping, the journey matrix across every customer type, the 34-trade library, two worked walkthroughs, and the flow shown live.</p>
+      <div class="chips">
+        <a class="chip lead" href="/onboarding/">Open →</a>
+        <a class="chip" href="/onboarding/decision-tree.html">Decision Tree</a>
+        <a class="chip" href="/onboarding/tech-mapping.html">Technical Mapping</a>
+        <a class="chip" href="/onboarding/journey-map.html">Journey Map</a>
+        <a class="chip" href="/onboarding/trade-library.html">Trade Library</a>
+        <a class="chip" href="/onboarding/walkthrough-squires.html">Walkthrough · Squires</a>
+        <a class="chip" href="/onboarding/walkthrough-cve.html">Walkthrough · CVE</a>
+        <a class="chip" href="/onboarding/flow-diagram.html">Flow Diagram</a>
+        <a class="chip" href="/onboarding/flow-scenario.html">Flow in Action</a>
+        <a class="chip" href="/onboarding/test-clients.html">Test Clients</a>
+      </div>
     </div>
-    <div class="spacer"></div>
-    <span class="legend-note">Threat = risk of a focused rival peeling this off</span>
+
+    <div class="card">
+      <div class="ch"><a class="title" href="/strategy/canonical-objects-v2.html"><h2>Data Model &amp; Canon</h2></a><span class="badge live">live</span></div>
+      <p>Which objects deserve one record per real-world thing, answered from the code: the eleven canonical objects, the three parallel matchers already running, and the three landmines that would silently fuse different firms. The v2 read tracks how the schema moved as the model became the code.</p>
+      <div class="chips">
+        <a class="chip lead" href="/strategy/canonical-objects-v2.html">The Perch Canon · v2 →</a>
+        <a class="chip" href="/strategy/canonical-objects.html">Canon · baseline</a>
+      </div>
+    </div>
+
   </div>
 
-  <div class="grid" id="grid"></div>
-
-  <footer class="foot">
-    Perch competitive landscape · <b id="footCats">0</b> categories · <b id="footComps">0</b> competitor positions · logos are property of their respective owners<br/>
-    Competitor sets validated against 2026 market research · category map grounded in the Perch codebase
-  </footer>
+  <div class="foot">
+    <span>Perch · CRO cockpit · internal</span>
+    <span>Pre-launch · confirm figures before external use</span>
+  </div>
 </div>
-
-<div class="overlay" id="overlay">
-  <div class="modal" id="modal"></div>
-</div>
-
-<script>
-const LOGO_DIR = "perch-competitive-logos";
-
-// position: core = central to Perch's bet/strength; edge = peripheral add-on
-// threat: high | med | low  (risk of being flanked here)
-const CATEGORIES = [
-  {
-    id: "ai-copilot",
-    name: "AI Construction Copilot / Agentic Platform",
-    position: "core", threat: "high",
-    what: "AI agents that read the docs, do the work, and surface human actions — Perch's central wedge (agent chat, Workbench, Company Brain, voice/SMS).",
-    perch: ["Agent chat", "Workbench", "Company Brain", "Voice / SMS"],
-    flank: "Well-funded AI-natives are racing to own the \u201cagent layer\u201d across docs, RFIs, risk and estimating \u2014 our exact wedge, with sharper single-purpose tools.",
-    competitors: [
-      { name: "Document Crunch", slug: "documentcrunch", url: "https://documentcrunch.com", what: "Construction-native contract & spec risk AI, now a Trimble company. Agentic \u201cProject Assist\u201d answers across contracts, specs, submittals and RFIs.", angle: "Directly contests our legal + document agents with deep funding and Trimble distribution." },
-      { name: "Trunk Tools", slug: "trunktools", url: "https://trunktools.com", what: "Agentic AI assistants for superintendents \u2014 TrunkBid leveling, submittal/RFI automation, ask-your-documents.", angle: "Well-funded; expanding from the field into precon \u2014 the same \u2018agent does the work\u2019 promise we make." },
-      { name: "Quotr.ai", slug: "quotr", url: "https://quotr.ai", what: "AI flow that goes blueprint \u2192 priced estimate \u2192 sourcing with an agent in the loop.", angle: "Collapses takeoff + estimate + scope into one AI flow, overlapping our scope and estimate agents." },
-      { name: "Bobyard", slug: "bobyard", url: "https://bobyard.com", what: "AI takeoff + estimating copilot that auto-counts and measures directly from plans.", angle: "AI-native point solution chipping away at our takeoff/estimate value with a tight focus." }
-    ]
-  },
-  {
-    id: "precon-bid",
-    name: "Preconstruction / Bid Management & Bid Boards",
-    position: "core", threat: "high",
-    what: "The GC\u2194sub bid pipeline: invitations to bid, plan rooms, prequalification, sub coverage and bid leveling.",
-    perch: ["Jobs pipeline", "Lead generation", "Email intelligence", "GC bid leveling"],
-    flank: "Incumbents own the sub network and the ITB rail at massive scale; Autodesk-backed BuildingConnected is adding AI bid leveling on top.",
-    competitors: [
-      { name: "BuildingConnected", slug: "buildingconnected", url: "https://construction.autodesk.com/products/buildingconnected/", what: "Autodesk's bid management network \u2014 1M+ pros, Bid Board Pro, TradeTapp risk, AI bid leveling.", angle: "Owns the ITB network + Autodesk distribution; the default GC\u2194sub bidding rail." },
-      { name: "ConstructConnect", slug: "constructconnect", url: "https://www.constructconnect.com", what: "iSqFt + SmartBid + BidClerk \u2014 the largest North American sub directory, plan rooms, prequal and takeoff.", angle: "Scale aggregator that owns project leads and subcontractor coverage." },
-      { name: "PlanHub", slug: "planhub", url: "https://planhub.com", what: "Free-to-post GC\u2194sub bid board popular with small-to-mid firms.", angle: "Low-friction, cheap on-ramp that undercuts on price and simplicity." },
-      { name: "Pantera Tools", slug: "panteratools", url: "https://www.panteratools.com", what: "White-label bid management \u2014 GCs run their own branded sub portals.", angle: "Branded ITB workflow for GCs who want to own their front door." }
-    ]
-  },
-  {
-    id: "estimating-takeoff",
-    name: "Estimating & Takeoff",
-    position: "core", threat: "high",
-    what: "Pulling quantities from plans and turning them into priced scope and bids.",
-    perch: ["Auto takeoff", "Exterior estimate", "Scope-to-bid"],
-    flank: "Togal and STACK already ship fast AI takeoff estimators trust \u2014 they could extend down-funnel into scope and bid generation.",
-    competitors: [
-      { name: "Togal.ai", slug: "togal", url: "https://togal.ai", what: "Industry-standard AI takeoff \u2014 auto-detects and measures from plans (98% claimed accuracy) with TogalGPT chat.", angle: "Trusted by estimators; well-positioned to extend down-funnel into scope and bid." },
-      { name: "STACK", slug: "stack", url: "https://www.stackct.com", what: "Leading cloud takeoff + estimating for GCs and subs with real-time collaboration.", angle: "Entrenched team workflow plus growing AI auto-counts." },
-      { name: "PlanSwift", slug: "planswift", url: "https://www.planswift.com", what: "Trimble's desktop takeoff workhorse with deep assembly templates.", angle: "Cheap one-time license, sticky for legacy estimators." },
-      { name: "Bluebeam", slug: "bluebeam", url: "https://www.bluebeam.com", what: "Revu \u2014 the AEC PDF markup + measurement standard, 1M+ users.", angle: "Where plans already live; bolt-on measurement keeps estimators in-app." },
-      { name: "Kreo", slug: "kreo", url: "https://www.kreo.net", what: "AI takeoff + estimating with Caddie AI; strong on volumes and earthwork.", angle: "Lower price-point AI challenger." }
-    ]
-  },
-  {
-    id: "doc-intelligence",
-    name: "Document Intelligence / Plan Management",
-    position: "core", threat: "med",
-    what: "Storing, viewing and reasoning over the plan set, specs, addenda and project documents.",
-    perch: ["Document pipeline", "Plan viewer", "Conflict detection", "Vector + graph index"],
-    flank: "Incumbent plan rooms (Bluebeam, ACC) can bolt AI onto the documents everyone already stores there \u2014 no migration required.",
-    competitors: [
-      { name: "Bluebeam", slug: "bluebeam", url: "https://www.bluebeam.com", what: "The AEC plan markup and document-control standard.", angle: "Incumbent plan room everyone already opens daily." },
-      { name: "Autodesk Docs / ACC", slug: "autodesk", url: "https://construction.autodesk.com", what: "Autodesk Construction Cloud document management + Autodesk AI, BIM-to-field.", angle: "Design-to-build document gravity plus a native Revit pipeline." },
-      { name: "Procore", slug: "procore", url: "https://www.procore.com", what: "Most-deployed PM platform with central document/drawing management + Copilot.", angle: "Documents ride along with the PM system of record." },
-      { name: "Nomic", slug: "nomic", url: "https://www.nomic.ai", what: "AI drawing review and code/spec compliance for AEC.", angle: "Focused AI document-intelligence point solution." }
-    ]
-  },
-  {
-    id: "pm-erp",
-    name: "Project Management / ERP",
-    position: "core", threat: "high",
-    what: "The system of record for running projects end-to-end: RFIs, submittals, financials, field execution \u2014 the \u2018complete OS\u2019 overlap.",
-    perch: ["Job detail workspace", "RFIs", "Budgets", "Field execution"],
-    flank: "Procore is the gravity well \u2014 our \u2018complete OS\u2019 claim collides head-on with the most-deployed PM platform, and it's shipping AI fast.",
-    competitors: [
-      { name: "Procore", slug: "procore", url: "https://www.procore.com", what: "The commercial GC category leader (NYSE:PCOR) \u2014 RFIs, submittals, financials, field and Copilot.", angle: "The gravity well; our \u2018complete OS\u2019 claim collides head-on and it's adding AI fast." },
-      { name: "Autodesk Build", slug: "autodesk", url: "https://construction.autodesk.com/products/autodesk-build/", what: "ACC's project management with the deepest BIM/design-to-build flow.", angle: "Owns design-build and Autodesk-native firms." },
-      { name: "CMiC", slug: "cmic", url: "https://cmicglobal.com", what: "Construction ERP \u2014 financials, job cost and accounting for large GCs.", angle: "Financial system-of-record stickiness that's hard to displace." },
-      { name: "Fieldwire", slug: "fieldwire", url: "https://www.fieldwire.com", what: "Hilti-owned field-first PM \u2014 tasks, plans and punch on mobile.", angle: "Beloved field UX that lands with crews underneath the GC platform." }
-    ]
-  },
-  {
-    id: "field-time",
-    name: "Field Operations & Time Tracking",
-    position: "edge", threat: "med",
-    what: "The field layer: clock in/out, daily reports, crews, scheduling and payroll export.",
-    perch: ["Time tracking", "Daily reports", "Crew approval", "Payroll export"],
-    flank: "Cheap, entrenched clock-in apps own the foreman's phone \u2014 an easy wedge under us on price, exactly the \u2018clocking in and out\u2019 attack.",
-    competitors: [
-      { name: "busybusy", slug: "busybusy", url: "https://busybusy.com", what: "GPS time tracking + job costing with equipment tagging; popular with heavy/civil.", angle: "Cheap and entrenched on the foreman's phone \u2014 an easy wedge under us on clock-in." },
-      { name: "Workyard", slug: "workyard", url: "https://www.workyard.com", what: "High-accuracy GPS time clock + scheduling with certified payroll.", angle: "Precision GPS and payroll sync; a price-led land grab." },
-      { name: "ExakTime", slug: "exaktime", url: "https://www.exaktime.com", what: "Rugged hardware + mobile clocks for large or remote sites.", angle: "Hardware foothold where phones aren't practical." },
-      { name: "Raken", slug: "raken", url: "https://www.rakenapp.com", what: "Field management \u2014 daily reports, time, safety and quality in one app.", angle: "Simple field app bundling time + daily + safety that subs adopt fast." },
-      { name: "ClockShark", slug: "clockshark", url: "https://www.clockshark.com", what: "Time tracking + scheduling for construction and field-service crews.", angle: "SMB-friendly, cheap, with sticky payroll integrations." }
-    ]
-  },
-  {
-    id: "safety",
-    name: "Safety & Compliance",
-    position: "edge", threat: "low",
-    what: "Jobsite safety: inspections, observations, toolbox talks, certifications and OSHA records.",
-    perch: ["Safety observations", "Certifications", "Equipment inspections"],
-    flank: "SafetyCulture's free template library lands in the field before we do, but it's a documentation layer, not a wedge into our core.",
-    competitors: [
-      { name: "SafetyCulture", slug: "safetyculture", url: "https://safetyculture.com", what: "iAuditor \u2014 75k+ inspection templates, mobile-first, 1M+ workers.", angle: "Free tier + template library lands in the field before we do." },
-      { name: "Safesite", slug: "safesite", url: "https://safesitehq.com", what: "Free safety app \u2014 inspections, hazards, incidents and OSHA compliance.", angle: "Genuinely free on-ramp for small subs." },
-      { name: "HammerTech", slug: "hammertech", url: "https://www.hammertech.com", what: "Enterprise jobsite safety + compliance, GC-grade.", angle: "Field-depth safety GCs integrate alongside their PM platform." },
-      { name: "Procore Safety", slug: "procore", url: "https://www.procore.com", what: "Safety module inside the Procore PM suite.", angle: "One-login consolidation for firms already on Procore." }
-    ]
-  },
-  {
-    id: "fleet",
-    name: "Fleet & Equipment Management",
-    position: "edge", threat: "low",
-    what: "Tracking owned and rented assets: equipment, vehicles, telematics and maintenance.",
-    perch: ["Fleet tracking", "Equipment inspections", "Telematics"],
-    flank: "Hardware-anchored telematics own the asset layer and get very sticky once installed \u2014 a hard, capital-heavy beachhead to attack.",
-    competitors: [
-      { name: "Tenna", slug: "tenna", url: "https://tenna.com", what: "Construction-built mixed-fleet tracking, now John Deere-owned.", angle: "Purpose-built asset layer + OEM muscle; sticky once installed." },
-      { name: "Samsara", slug: "samsara", url: "https://www.samsara.com", what: "AI dashcams + telematics for mixed vehicle/equipment fleets.", angle: "Hardware-anchored and hard to rip out." },
-      { name: "HCSS", slug: "hcss", url: "https://www.hcss.com", what: "Heavy-civil equipment + telematics tied to HeavyJob and estimating.", angle: "Deep heavy-civil workflow plus maintenance-shop depth." },
-      { name: "Fleetio", slug: "fleetio", url: "https://www.fleetio.com", what: "Maintenance-first fleet management software layer.", angle: "Software-only maintenance system of record on top of any GPS hardware." }
-    ]
-  },
-  {
-    id: "legal-clm",
-    name: "Contract Lifecycle & Legal AI",
-    position: "core", threat: "med",
-    what: "Reviewing, redlining, signing and tracking contracts and the commitments inside them.",
-    perch: ["Legal playbooks", "Contract review", "E-signatures", "Commitment tracking"],
-    flank: "Document Crunch is construction-native contract risk AI with Trimble behind it \u2014 it directly contests our legal agent.",
-    competitors: [
-      { name: "Document Crunch", slug: "documentcrunch", url: "https://documentcrunch.com", what: "Construction contract/spec risk AI (Trimble) with playbooks + Project Assist.", angle: "Construction-native and well-funded \u2014 directly contests our legal agent." },
-      { name: "DocuSign", slug: "docusign", url: "https://www.docusign.com", what: "The e-signature + CLM standard.", angle: "Owns signature and contract-workflow muscle memory." },
-      { name: "Ironclad", slug: "ironclad", url: "https://ironcladapp.com", what: "Leading AI contract lifecycle management.", angle: "Horizontal CLM moving AI-first for enterprise legal teams." },
-      { name: "LinkSquares", slug: "linksquares", url: "https://www.linksquares.com", what: "AI contract management + analytics.", angle: "AI CLM challenger for in-house legal teams." }
-    ]
-  },
-  {
-    id: "crm-bd",
-    name: "Construction CRM & Business Development",
-    position: "edge", threat: "low",
-    what: "Managing the bid-to-build sales cycle: leads, pursuits, follow-up and win/loss.",
-    perch: ["Network / CRM", "Analytics", "Automated outreach"],
-    flank: "Followup CRM owns precon sales discipline cheaply, and good-enough horizontal CRMs are already in many firms \u2014 but none reason over the work like we do.",
-    competitors: [
-      { name: "Followup CRM", slug: "followupcrm", url: "https://followupcrm.com", what: "Purpose-built precon sales / bid follow-up discipline for GCs and subs.", angle: "Cheap, focused \u2018win more bids\u2019 tool that owns the sales-discipline job." },
-      { name: "Unanet / Cosential", slug: "unanet", url: "https://unanet.com", what: "AEC-native CRM \u2014 pursuits, go/no-go, proposals (SF330).", angle: "Category-native CRM for AEC pursuits and relationships." },
-      { name: "Salesforce", slug: "salesforce", url: "https://www.salesforce.com", what: "Configurable enterprise CRM.", angle: "Good-enough horizontal default many firms already own." },
-      { name: "HubSpot", slug: "hubspot", url: "https://www.hubspot.com", what: "Easy CRM + marketing automation.", angle: "Low-friction SMB default with a free tier." },
-      { name: "Pipedrive", slug: "pipedrive", url: "https://www.pipedrive.com", what: "Visual pipeline CRM for SMBs.", angle: "Cheap, simple Kanban pipeline." }
-    ]
-  },
-  {
-    id: "residential",
-    name: "Homeowner / Residential & Marketplace",
-    position: "edge", threat: "low",
-    what: "The consumer vertical: residential project management, contractor marketplace and homeowner milestones.",
-    perch: ["Home projects", "Contractor marketplace", "Milestone calendar"],
-    flank: "Houzz and Angi own consumer demand-gen; marketplace network effects are hard to dislodge \u2014 but this is a side vertical for us.",
-    competitors: [
-      { name: "Houzz Pro", slug: "houzz", url: "https://www.houzz.com/pro", what: "Design-build PM + the 65M-user Houzz marketplace lead funnel and 3D tools.", angle: "Owns consumer demand-gen with marketplace network effects." },
-      { name: "Buildertrend", slug: "buildertrend", url: "https://buildertrend.com", what: "Residential PM leader \u2014 client portal, selections, scheduling, takeoff.", angle: "Dominant residential workflow with a polished client portal." },
-      { name: "Angi", slug: "angi", url: "https://www.angi.com", what: "Homeowner\u2194pro marketplace for leads and quotes.", angle: "Owns homeowner intent at the very top of the funnel." },
-      { name: "JobTread", slug: "jobtread", url: "https://www.jobtread.com", what: "Budget-first all-in-one PM for GCs and remodelers.", angle: "Transparent pricing, all-in-one, gaining share fast." }
-    ]
-  }
-];
-
-const THREAT_LABEL = { high: "High threat", med: "Medium threat", low: "Low threat" };
-const NOTE_KEY = "perch-competitive-notes-v1";
-const NOTES_API = "/api/notes";
-let notes = {};
-try { notes = JSON.parse(localStorage.getItem(NOTE_KEY)) || {}; } catch (e) { notes = {}; }
-let cloudOK = false;             // server-side persistence available?
-const saveTimers = {};           // debounce timers per category
-
-function setSyncStatus(state) {
-  const el = document.getElementById("syncStatus");
-  if (!el) return;
-  const map = {
-    cloud:  "\u25CF Synced to cloud",
-    saving: "\u25CF Saving\u2026",
-    local:  "\u25CF Saved on this device only",
-  };
-  el.textContent = map[state] || map.local;
-  el.className = "sync " + (map[state] ? state : "local");
-}
-
-async function saveNoteToCloud(id, value) {
-  try {
-    const r = await fetch(NOTES_API, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ id, value }),
-    });
-    if (!r.ok) throw new Error("bad status");
-    setSyncStatus("cloud");
-  } catch (e) {
-    cloudOK = false;
-    setSyncStatus("local");
-  }
-}
-
-async function loadCloudNotes() {
-  try {
-    const r = await fetch(NOTES_API, { cache: "no-store" });
-    if (!r.ok) throw new Error("bad status");
-    const server = await r.json();
-    cloudOK = true;
-    notes = { ...notes, ...server };               // server wins on overlap
-    localStorage.setItem(NOTE_KEY, JSON.stringify(notes));
-    document.querySelectorAll(".note").forEach(t => {
-      const v = notes[t.dataset.cat];
-      if (typeof v === "string" && document.activeElement !== t) t.value = v;
-    });
-    refreshNoteDots();
-    setSyncStatus("cloud");
-  } catch (e) {
-    cloudOK = false;                                // file:// or no backend -> local-only
-    setSyncStatus("local");
-  }
-}
-
-// Notes are keyed: "<categoryId>" for the category note, "<categoryId>::<slug>" per competitor.
-function noteKeyFor(catId, slug) { return catId + "::" + slug; }
-
-function persistNote(key, value) {
-  if (value === "" || value == null) delete notes[key]; else notes[key] = value;
-  localStorage.setItem(NOTE_KEY, JSON.stringify(notes));   // instant local cache
-  if (cloudOK) {
-    setSyncStatus("saving");
-    clearTimeout(saveTimers[key]);
-    saveTimers[key] = setTimeout(() => saveNoteToCloud(key, value), 500);
-  }
-}
-
-function refreshNoteDots() {
-  document.querySelectorAll(".logo-tile").forEach(tile => {
-    const key = tile.dataset.notekey;
-    const has = key && typeof notes[key] === "string" && notes[key].trim() !== "";
-    tile.classList.toggle("has-note", !!has);
-  });
-}
-
-let activeThreat = "all";
-let activePos = "all";
-
-// ---- Stat band ----
-function buildStats() {
-  const cats = CATEGORIES.length;
-  const compPositions = CATEGORIES.reduce((n, c) => n + c.competitors.length, 0);
-  const uniq = new Set();
-  CATEGORIES.forEach(c => c.competitors.forEach(k => uniq.add(k.name.replace(/ Safety$/, ""))));
-  const high = CATEGORIES.filter(c => c.threat === "high").length;
-  const band = document.getElementById("statBand");
-  band.innerHTML = `
-    <div class="stat-card"><div class="v">${cats}</div><div class="l">Product categories</div></div>
-    <div class="stat-card"><div class="v">${uniq.size}</div><div class="l">Named competitors</div></div>
-    <div class="stat-card"><div class="v">${compPositions}</div><div class="l">Competitive positions</div></div>
-    <div class="stat-card hi"><div class="v">${high}</div><div class="l">High-threat zones</div></div>
-  `;
-  document.getElementById("footCats").textContent = cats;
-  document.getElementById("footComps").textContent = compPositions;
-}
-
-// ---- Logo tile ----
-function logoTile(k) {
-  const wm = k.name.split(/[\s.]/)[0];
-  const nk = noteKeyFor(k._cid, k.slug);
-  return `
-    <div class="logo-tile" data-notekey="${nk}" onclick="openModal('${k._cid}','${k.slug}')">
-      <span class="note-dot" title="You have notes on this competitor"></span>
-      <div class="logo-img-box">
-        <img src="${LOGO_DIR}/${k.slug}.png" alt="${k.name}" onerror="this.style.display='none';this.parentElement.nextElementSibling.style.display='flex';this.parentElement.style.display='none'">
-      </div>
-      <div class="logo-wordmark">${wm}</div>
-      <div class="logo-name">${k.name}</div>
-    </div>`;
-}
-
-// ---- Render grid ----
-function render() {
-  const grid = document.getElementById("grid");
-  grid.innerHTML = "";
-  let shown = 0;
-
-  CATEGORIES.forEach(cat => {
-    if (activeThreat !== "all" && cat.threat !== activeThreat) return;
-    if (activePos !== "all" && cat.position !== activePos) return;
-    shown++;
-
-    cat.competitors.forEach(k => k._cid = cat.id);
-
-    const el = document.createElement("div");
-    el.className = `cat t-${cat.threat}`;
-    el.innerHTML = `
-      <div class="cat-head">
-        <div>
-          <div class="cat-title">${cat.name}</div>
-          <div class="cat-tags">
-            <span class="tag ${cat.position}">${cat.position === "core" ? "Core battleground" : "Edge / add-on"}</span>
-          </div>
-        </div>
-        <span class="threat ${cat.threat}"><span class="pip"></span>${THREAT_LABEL[cat.threat]}</span>
-      </div>
-      <div class="what">${cat.what}</div>
-      <div class="perch-row"><span class="pl">Perch:</span>${cat.perch.map(p => `<span class="chip">${p}</span>`).join("")}</div>
-      <div class="logos">${cat.competitors.map(logoTile).join("")}</div>
-      <div class="flank ${cat.threat}"><span class="fi">\u25B2</span><div><b>How they flank us:</b> ${cat.flank}</div></div>
-      <div class="note-wrap">
-        <label>Our position / notes</label>
-        <textarea class="note" data-cat="${cat.id}" placeholder="Add your read on this category\u2026">${notes[cat.id] ? escapeHtml(notes[cat.id]) : ""}</textarea>
-      </div>
-    `;
-    grid.appendChild(el);
-  });
-
-  if (!shown) grid.innerHTML = `<div class="empty">No categories match these filters.</div>`;
-
-  grid.querySelectorAll(".note").forEach(t => {
-    t.addEventListener("input", () => persistNote(t.dataset.cat, t.value));
-  });
-
-  refreshNoteDots();
-}
-
-function escapeHtml(s) { return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
-
-// ---- Modal ----
-function openModal(catId, slug) {
-  const cat = CATEGORIES.find(c => c.id === catId);
-  const k = cat.competitors.find(c => c.slug === slug);
-  const wm = k.name.split(/[\s.]/)[0];
-  const nk = noteKeyFor(catId, slug);
-  const modal = document.getElementById("modal");
-  modal.innerHTML = `
-    <div class="modal-top">
-      <div class="modal-logo">
-        <img src="${LOGO_DIR}/${k.slug}.png" alt="${k.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-        <span class="wm" style="display:none">${wm}</span>
-      </div>
-      <div>
-        <h3>${k.name}</h3>
-        <div class="m-cat">${cat.name}</div>
-      </div>
-    </div>
-    <div class="m-what">${k.what}</div>
-    <div class="m-angle-l">Angle of attack on Perch</div>
-    <div class="m-angle">${k.angle}</div>
-    <div class="m-note-l">Your notes <span class="m-saved" id="modalSaved">Saved</span></div>
-    <textarea class="m-note" id="modalNote" placeholder="Private notes on ${k.name} in ${cat.name}\u2026">${notes[nk] ? escapeHtml(notes[nk]) : ""}</textarea>
-    <div class="m-actions">
-      <a class="btn primary" href="${k.url}" target="_blank" rel="noopener">Visit site \u2197</a>
-      <button class="btn" onclick="closeModal()">Close</button>
-    </div>
-  `;
-  document.getElementById("overlay").classList.add("show");
-
-  const mn = document.getElementById("modalNote");
-  const saved = document.getElementById("modalSaved");
-  mn.addEventListener("input", () => {
-    persistNote(nk, mn.value);
-    refreshNoteDots();
-    saved.classList.add("show");
-    clearTimeout(mn._savedTimer);
-    mn._savedTimer = setTimeout(() => saved.classList.remove("show"), 1200);
-  });
-}
-function closeModal() { document.getElementById("overlay").classList.remove("show"); }
-document.getElementById("overlay").addEventListener("click", e => { if (e.target.id === "overlay") closeModal(); });
-document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
-
-// ---- Filters ----
-document.querySelectorAll(".filter").forEach(f => {
-  f.addEventListener("click", () => {
-    const dim = f.dataset.dim, val = f.dataset.val;
-    if (dim === "threat") activeThreat = val; else activePos = val;
-    document.querySelectorAll(`.filter[data-dim="${dim}"]`).forEach(b => b.classList.toggle("active", b.dataset.val === val));
-    render();
-  });
-});
-
-buildStats();
-render();
-loadCloudNotes();
-</script>
+<script src="/nav.js" defer></script>
 </body>
 </html>

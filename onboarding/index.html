@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Perch · Onboarding & Customer Journey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E8E6DF;--surface:#F5F3EE;--surface-2:#FBFAF6;
+    --ink:#181917;--slate:#5D5F5A;--faint:#8A8B84;
+    --line:#CECBC1;--line-soft:#DEDBD2;
+    --signal:#D2531D;--signal-deep:#A23C12;
+    --blue:#3E6E8E;--green:#5E7E52;--amber:#9A7B1F;
+    --sans:'Archivo','Helvetica Neue',Arial,sans-serif;
+    --mono:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+    --maxw:840px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--signal-deep);font-weight:500}
+  .label{font-family:var(--mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);font-weight:500}
+  h1{font-weight:800;letter-spacing:-.02em;line-height:1.05;font-size:clamp(2rem,5vw,3.2rem)}
+  p{color:var(--slate)}
+  strong{color:var(--ink);font-weight:600}
+  .lead{font-size:clamp(1.02rem,1.7vw,1.16rem);color:var(--ink);font-weight:400;line-height:1.5}
+  code{font-family:var(--mono);font-size:.88em;color:var(--signal-deep)}
+
+  header.hero{padding:64px 0 40px;border-bottom:1.5px solid var(--ink)}
+  .hero-top{display:flex;justify-content:space-between;align-items:baseline;gap:18px;flex-wrap:wrap;margin-bottom:40px}
+  .hero h1{max-width:18ch;margin:24px 0 20px}
+  .hero .lead{max-width:62ch}
+  .fieldnote{background:var(--surface-2);border:1px solid var(--line);border-left:3px solid var(--signal);padding:20px 22px;margin-top:30px}
+  .fieldnote .label{display:block;margin-bottom:9px}
+  .fieldnote p{color:var(--ink);font-size:.97rem}
+
+  .cards{padding:44px 0 10px;display:grid;gap:0;border-top:1px solid var(--line-soft)}
+  a.card{display:grid;grid-template-columns:1fr auto;gap:8px 16px;text-decoration:none;background:transparent;border-bottom:1px solid var(--line-soft);padding:22px 4px;transition:padding-left .16s,background .16s}
+  a.card:hover{background:var(--surface-2);padding-left:14px}
+  .ct{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+  .ct h2{font-size:1.18rem;font-weight:700;letter-spacing:-.01em;color:var(--ink)}
+  .badge{font-family:var(--mono);font-size:.6rem;font-weight:600;letter-spacing:.1em;padding:3px 8px;text-transform:uppercase;border:1px solid}
+  .badge.live{color:var(--green);background:rgba(94,126,82,.1);border-color:rgba(94,126,82,.32)}
+  .badge.draft{color:var(--blue);background:rgba(62,110,142,.1);border-color:rgba(62,110,142,.32)}
+  .badge.plan{color:var(--amber);background:rgba(154,123,31,.1);border-color:rgba(154,123,31,.32)}
+  a.card p{grid-column:1/2;font-size:.93rem;line-height:1.55;color:var(--slate);max-width:64ch}
+  a.card p code{font-size:.85em}
+  .arrow{grid-row:1/2;grid-column:2/3;color:var(--faint);font-family:var(--mono);font-size:1.1rem;align-self:center;transition:color .16s,transform .16s}
+  a.card:hover .arrow{color:var(--signal);transform:translateX(3px)}
+
+  section.stand{padding:48px 0 20px}
+  .stand .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:22px}
+  .stand .sec-head .num{font-family:var(--mono);font-size:.78rem;color:var(--signal-deep);font-weight:600}
+  .stand h3{font-size:1.4rem;font-weight:700;letter-spacing:-.01em}
+  .decisions{display:grid;gap:1px;background:var(--line-soft);border:1px solid var(--line-soft)}
+  .dec{background:var(--surface-2);padding:16px 20px;display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:baseline}
+  .dec .dn{font-family:var(--mono);font-size:.74rem;color:var(--signal-deep);font-weight:600;padding-top:2px}
+  .dec p{font-size:.93rem;color:var(--ink)}
+  .dec p .q{color:var(--slate)}
+
+  footer{padding:38px 0 64px;margin-top:30px;border-top:1px solid var(--line-soft)}
+  footer .frow{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center}
+  footer .label{color:var(--faint)}
+
+  .rv{opacity:0;transform:translateY(12px);transition:opacity .6s ease,transform .6s ease}
+  .rv.in{opacity:1;transform:none}
+  @media (max-width:640px){
+    body{font-size:15px}
+    a.card{grid-template-columns:1fr}
+    .arrow{display:none}
+    .dec{grid-template-columns:1fr;gap:5px}
+  }
+  @media (prefers-reduced-motion:reduce){.rv{transition:none;opacity:1;transform:none}html{scroll-behavior:auto}}
+  a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-top">
+      <span class="eyebrow">Perch · Onboarding</span>
+      <span class="label">Internal · pre-launch drafts</span>
+    </div>
+    <h1>From finds us to in the product.</h1>
+    <p class="lead">The workstream behind end-to-end onboarding test runs: how a real customer travels from the moment they find us to the moment they're working inside Perch.</p>
+    <div class="fieldnote">
+      <span class="label">Start here</span>
+      <p>Pre-launch working drafts, with real companies named. The bands and statuses below are not final. Confirm before any external use.</p>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="cards">
+    <a class="card rv" href="decision-tree.html">
+      <div class="ct"><h2>Onboarding Decision Tree</h2><span class="badge live">the routing brain</span></div>
+      <span class="arrow">&rarr;</span>
+      <p>The synthesis. The three walkthroughs collapse into one branching logic, from someone arriving down to the exact next question and the close. Eight gates (G0 to G7: identity, enrich, type, track, role, trade, next question, close), the four routes (cold or warm, self-serve or white-glove) traced through them, and the same tree rendered as a spec, the programmable backbone for the technical mapping. Built so we only ever ask what enrichment couldn't infer.</p>
+    </a>
+    <a class="card rv" href="tech-mapping.html">
+      <div class="ct"><h2>Onboarding · Technical Mapping</h2><span class="badge live">data model · states · flows</span></div>
+      <span class="arrow">&rarr;</span>
+      <p>The decision tree made buildable, grounded in the real precon_web schema (OrgType, BusinessType, AccountProfile, TeamInvite). Full data model and enums, the OnboardingSession state machine (S0 to S10 / W5 to W10 plus transition table), the six-agent swarm as services, the event catalog, the cold, warm, and white-glove sequence flows, the router as a pure function, and the production rigor: idempotency, retry and backoff, ship-dark feature flags, kill switch, graceful fallback to today's 6-step form. Closes Brock's technical-mapping ask.</p>
+    </a>
+    <a class="card rv" href="journey-map.html">
+      <div class="ct"><h2>Customer Journey Mind Map</h2><span class="badge live">every customer type</span></div>
+      <span class="arrow">&rarr;</span>
+      <p>The full matrix the team makes product decisions against. One engine (role, then what Perch does, then their dollar lever, then the next question), then six anchor journeys across GC and sub, small to enterprise, each bent by who lands. Plus the role-bend (estimator vs owner vs field) and the trade-bend (Electrical, Concrete, Drywall: counts vs volume vs area), with the other 31 trades following the same spine.</p>
+    </a>
+    <a class="card rv" href="trade-library.html">
+      <div class="ct"><h2>Trade-Config Library</h2><span class="badge live">all 34 trades</span></div>
+      <span class="arrow">&rarr;</span>
+      <p>The structured levers the onboarding generator multiplies. Per trade: the <code>/{trade}</code> "{Trade} OS" lander, what Sarah extracts, the dollar lever, and the money flag (the change-order or lead-time gotcha). The 34 trades collapse into 6 takeoff families, so it's a finite library rather than a 150-cell matrix, and it feeds the marketing landers, the data model (TradeConfig), and Sarah's recipes all at once.</p>
+    </a>
+    <a class="card rv" href="walkthrough-squires.html">
+      <div class="ct"><h2>Walkthrough · Squires (self-serve)</h2><span class="badge live">applied · visual</span></div>
+      <span class="arrow">&rarr;</span>
+      <p>One real test customer run end-to-end through the self-serve funnel as a top-to-bottom diagram. Each step is a simple wireframe of the actual app surface (lander, email-only signup, research swarm, confirm, pre-filled pipeline, the next question, Sarah scope, team, in-flow close), with a "customization required here" callout at every node. Closes with a build-ledger that seeds the decision tree.</p>
+    </a>
+    <a class="card rv" href="walkthrough-cve.html">
+      <div class="ct"><h2>Walkthrough · Cache Valley Electric (white-glove)</h2><span class="badge live">applied · visual</span></div>
+      <span class="arrow">&rarr;</span>
+      <p>A large electrical sub run through the human-guided funnel: same engine, two actors. The 🤖 agents do all the prep off-stage (deep account dossier, a pre-run Sarah takeoff on CVE's real data-center pursuit, drafted outbound, pre-filled MEDDPICC) so the 👤 AE/SDR shows up armed, with real outbound email, an insight-not-discovery call, and objection handling. Then it converges on the same product surfaces. Closes with a self-serve vs white-glove contrast.</p>
+    </a>
+    <a class="card rv" href="onboarding-model.html">
+      <div class="ct"><h2>Journey · Onboarding · Initialization</h2><span class="badge plan">the model</span></div>
+      <span class="arrow">&rarr;</span>
+      <p>The mental model behind it all. Three related but distinct layers (find us, set up, use it), Brock's point that the last four or five steps are really initialization (where stickiness is made), the role overlay (each role uses Perch differently), and the sub-agent research that fires on first contact to pre-fill and steer onboarding.</p>
+    </a>
+    <a class="card rv" href="test-clients.html">
+      <div class="ct"><h2>Onboarding Test Clients</h2><span class="badge draft">format-check batch</span></div>
+      <span class="arrow">&rarr;</span>
+      <p>Real, verified Utah companies, the exemplars we model mock-up customers on for end-to-end onboarding and sales test runs. v0 format-check batch: 3 GCs (S/M/L), 5 trades at med and large, 1 self-serve micro. Scales to the full 34 trades once the bands and field set are locked.</p>
+    </a>
+  </div>
+
+  <section class="stand rv">
+    <div class="sec-head"><span class="num">§</span><h3>Where this stands</h3></div>
+    <div class="decisions">
+      <div class="dec"><span class="dn">01</span><p><strong>Re-axis from price tier to journey.</strong> v0 segmented by Core/Pro/Enterprise; the funnel says cut by self-serve vs white-glove. Load-bearing.</p></div>
+      <div class="dec"><span class="dn">02</span><p><strong>Re-band to the whiteboard.</strong> GC under $10M / $10 to 500M / over $500M. Sub under $10M / $10 to 100M / $100M+ (v0 used different thresholds).</p></div>
+      <div class="dec"><span class="dn">03</span><p><strong>Self-serve coverage.</strong> One small example per trade (34&times;3), or a separate small set? <span class="q">Self-serve is under-represented in v0.</span></p></div>
+      <div class="dec"><span class="dn">04</span><p><strong>Role day-to-day in Perch.</strong> Define what each role actually does in-app (needs the real precon_web service list). <span class="q">HO = homeowner, resolved: 3rd account type, not a track.</span></p></div>
+      <div class="dec"><span class="dn">05</span><p><strong>Revenue vs ACV.</strong> <span class="q">Which gates the journey when they disagree?</span></p></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap frow">
+    <span class="label">Perch · internal onboarding workstream</span>
+    <span class="label">Pre-launch · confirm figures before external use</span>
+  </div>
+</footer>
+
+<script>
+  const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+</script>
+<script src="/nav.js" defer></script>
+</body>
+</html>

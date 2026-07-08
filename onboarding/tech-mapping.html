@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Perch · Onboarding: Technical Mapping</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E8E6DF; --panel:#FBFAF6; --panel2:#F5F3EE; --line:#CECBC1; --line2:#BDB8AC;
+    --ink:#181917; --ink2:#5D5F5A; --ink3:#8A8B84;
+    --blue:#3E6E8E; --green:#5E7E52; --amber:#9A7B1F; --violet:#6F5499; --red:#B23A2E;
+    --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 'Archivo',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1120px;margin:0 auto;padding:34px 26px 100px}
+  a{color:var(--blue)}
+  h1{font-size:26px;margin:0 0 6px;letter-spacing:-.01em}
+  .sub{color:var(--ink2);margin:0 0 14px;max-width:880px}
+  .sub b{color:var(--ink)}
+  .meta{color:var(--ink3);font-size:13px;margin:0 0 8px}
+  h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin:14px 0 14px;border-bottom:1px solid var(--line);padding-bottom:8px;scroll-margin-top:110px}
+  h3{font-size:14px;color:var(--ink2);margin:20px 0 9px}
+  code,.mono{font-family:var(--mono)}
+  .legendline{font-size:12px;color:var(--ink3);margin:0 0 4px}
+
+  /* in-page toc */
+  .toc{position:sticky;top:50px;z-index:40;background:rgba(232,230,223,.93);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--line2);border-radius:12px;padding:9px 12px;margin:14px 0 22px;display:flex;flex-wrap:wrap;gap:5px}
+  .toc a{font-size:11.5px;color:var(--ink2);text-decoration:none;padding:5px 10px;border-radius:7px;white-space:nowrap}
+  .toc a:hover{background:rgba(24,25,23,.05);color:var(--ink)}
+
+  .pill{font-size:10px;font-weight:800;letter-spacing:.04em;padding:2px 7px;border-radius:6px;text-transform:uppercase;vertical-align:middle}
+  .p-real{background:rgba(94,126,82,.14);color:var(--green);border:1px solid rgba(94,126,82,.3)}
+  .p-new{background:rgba(111,84,153,.14);color:var(--violet);border:1px solid rgba(111,84,153,.35)}
+  .p-ext{background:rgba(62,110,142,.14);color:var(--blue);border:1px solid rgba(62,110,142,.3)}
+
+  /* architecture stack */
+  .arch{display:grid;grid-template-columns:1fr 240px;gap:12px}
+  @media(max-width:820px){.arch{grid-template-columns:1fr}}
+  .layers{display:flex;flex-direction:column;gap:8px}
+  .layer{background:var(--panel);border:1px solid var(--line2);border-radius:11px;padding:11px 14px}
+  .layer .ln{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3)}
+  .layer .lc{font-size:12.5px;color:var(--ink2);margin-top:3px}
+  .layer .lc b{color:var(--ink)} .layer .lc .mono{color:var(--green);font-size:11.5px}
+  .layer.cap{border-left:3px solid var(--blue)}
+  .layer.enr{border-left:3px solid var(--violet)}
+  .layer.rt{border-left:3px solid var(--amber)}
+  .layer.sm{border-left:3px solid var(--green)}
+  .layer.srf{border-left:3px solid var(--blue)}
+  .lconn{text-align:center;color:var(--ink3);font-size:13px;margin:-3px 0}
+  .spine{background:var(--panel2);border:1px solid var(--line2);border-radius:11px;padding:12px 14px}
+  .spine .sn{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px}
+  .spine ul{margin:0;padding-left:15px} .spine li{font-size:11.5px;color:var(--ink2);margin:6px 0}
+  .spine li b{color:var(--ink)}
+
+  /* entity cards */
+  .ents{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:820px){.ents{grid-template-columns:1fr}}
+  .ent{background:var(--panel);border:1px solid var(--line2);border-radius:12px;overflow:hidden}
+  .ent .eh{display:flex;align-items:center;gap:8px;padding:9px 13px;background:var(--panel2);border-bottom:1px solid var(--line)}
+  .ent .en{font-weight:700;font-size:13.5px;font-family:var(--mono);color:var(--ink)}
+  .ent .eb{padding:8px 13px}
+  .fr{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:11.5px;padding:3px 0;border-bottom:1px solid rgba(206,203,193,.5)}
+  .fr:last-child{border-bottom:0}
+  .fr .fn{font-family:var(--mono);color:var(--blue)}
+  .fr .ft{font-family:var(--mono);color:var(--amber);font-size:11px}
+  .fr .note{grid-column:1/-1;color:var(--ink3);font-size:11px;margin-top:-1px}
+  .rel{font-size:11px;color:var(--ink3);padding:7px 13px;border-top:1px solid var(--line);background:rgba(245,243,238,.4)}
+  .rel b{color:var(--violet)}
+
+  .enum{background:var(--panel);border:1px solid var(--line2);border-radius:10px;padding:10px 13px;margin:7px 0;font-size:12px}
+  .enum .ek{font-family:var(--mono);color:var(--green);font-weight:700}
+  .enum .ev{font-family:var(--mono);color:var(--ink2)}
+  .enum .src{color:var(--ink3);font-size:11px}
+
+  /* state machine */
+  .rail{display:flex;flex-wrap:wrap;gap:0;align-items:stretch;margin:6px 0 4px}
+  .snode{background:var(--panel);border:1px solid var(--line2);border-radius:9px;padding:7px 10px;font-size:11px}
+  .snode .sk{font-family:var(--mono);font-size:10px;color:var(--ink3)}
+  .snode b{display:block;color:var(--ink);font-size:11.5px;margin-top:1px}
+  .snode.ss{border-color:rgba(62,110,142,.4)} .snode.wg{border-color:rgba(94,126,82,.4)} .snode.term{border-color:rgba(154,123,31,.4)}
+  .sarrow{align-self:center;color:var(--ink3);padding:0 5px;font-size:12px}
+
+  table.t{width:100%;border-collapse:collapse;font-size:12px;border:1px solid var(--line);border-radius:11px;overflow:hidden;margin-top:8px}
+  table.t th{background:var(--panel2);color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;font-size:9.5px;text-align:left;padding:8px 11px;border-bottom:1px solid var(--line)}
+  table.t td{padding:8px 11px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink2)}
+  table.t tr:last-child td{border-bottom:0}
+  table.t td.m,table.t td .m{font-family:var(--mono);color:var(--green);font-size:11px}
+  table.t td.ev{font-family:var(--mono);color:var(--blue);font-size:11px;white-space:nowrap}
+  table.t td.k{color:var(--ink);font-weight:600;white-space:nowrap}
+  .gd{color:var(--amber);font-family:var(--mono);font-size:11px}
+
+  /* sequence */
+  .seq{background:var(--panel);border:1px solid var(--line2);border-radius:12px;padding:6px 0;margin:8px 0}
+  .seq .sl{display:grid;grid-template-columns:84px 1fr;gap:10px;padding:6px 14px;font-size:12px;border-bottom:1px solid rgba(206,203,193,.5)}
+  .seq .sl:last-child{border-bottom:0}
+  .seq .actor{font-size:10px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--ink3);text-align:right;padding-top:2px}
+  .seq .actor.web{color:var(--blue)} .seq .actor.enr{color:var(--violet)} .seq .actor.rtr{color:var(--amber)} .seq .actor.srf{color:var(--green)} .seq .actor.ae{color:var(--green)} .seq .actor.usr{color:var(--ink2)}
+  .seq .act{color:var(--ink2)} .seq .act b{color:var(--ink)} .seq .act .em{font-family:var(--mono);color:var(--blue);font-size:11px}
+
+  pre.code{background:#EFEBE2;border:1px solid var(--line2);border-radius:11px;padding:13px 15px;overflow:auto;font-family:var(--mono);font-size:11.5px;line-height:1.6;color:var(--ink2);margin:8px 0}
+  pre.code .kw{color:var(--violet)} pre.code .fn{color:var(--blue)} pre.code .st{color:var(--green)} pre.code .cm{color:var(--ink3)} pre.code .nm{color:var(--amber)}
+
+  .cards2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:820px){.cards2{grid-template-columns:1fr}}
+  .cc{background:var(--panel);border:1px solid var(--line2);border-radius:12px;padding:13px 16px}
+  .cc h4{margin:0 0 7px;font-size:13px;color:var(--ink)}
+  .cc p{margin:0;font-size:12px;color:var(--ink2)} .cc p b{color:var(--ink)} .cc .mono{font-family:var(--mono);color:var(--green);font-size:11px}
+  .phase{display:flex;gap:11px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line)}
+  .phase:last-child{border-bottom:0}
+  .pn{flex:0 0 auto;width:58px;font-family:var(--mono);font-size:11px;color:var(--amber);padding-top:2px}
+  .pd{font-size:12.5px;color:var(--ink2)} .pd b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Onboarding: <span style="color:var(--green)">Technical Mapping</span></h1>
+  <p class="sub">The <a href="decision-tree">decision tree</a> made buildable: data model, state machine, the swarm as services, event catalog, flows, routing logic, and the production rigor. Grounded in the real <span class="mono" style="color:var(--green)">precon_web</span> schema. This <b>extends the app, it doesn't reinvent it.</b></p>
+  <p class="meta">Perch · CRO cockpit · Jun 25 2026 · <span class="pill p-real">real</span> exists in code · <span class="pill p-ext">extend</span> add fields to real · <span class="pill p-new">new</span> greenfield</p>
+
+  <div class="toc">
+    <a href="#arch">Architecture</a>
+    <a href="#data">Data model</a>
+    <a href="#enums">Enums</a>
+    <a href="#states">State machine</a>
+    <a href="#swarm">Swarm services</a>
+    <a href="#events">Event catalog</a>
+    <a href="#flows">Flows</a>
+    <a href="#routing">Routing logic</a>
+    <a href="#cross">Cross-cutting</a>
+    <a href="#mapping">Maps to app</a>
+    <a href="#phasing">Build order</a>
+  </div>
+
+  <!-- ARCHITECTURE -->
+  <h2 id="arch">Architecture: capture to close</h2>
+  <div class="arch">
+    <div class="layers">
+      <div class="layer cap"><div class="ln">1 · Capture</div><div class="lc"><b>Channel → Lead.</b> PLG link / referral / search / outbound / bid-portal. Warm carries identity; cold carries only an email (or nothing yet). <span class="mono">→ Lead</span></div></div>
+      <div class="lconn">↓</div>
+      <div class="layer enr"><div class="ln">2 · Enrichment swarm</div><div class="lc"><b>6 agents fan out.</b> Cold = on the critical path; warm = pre-fetched before arrival. Each field confidence-scored. <span class="mono">→ Profile</span></div></div>
+      <div class="lconn">↓</div>
+      <div class="layer rt"><div class="ln">3 · Router (decision tree G0–G7)</div><div class="lc"><b>Pure function of Profile.</b> Picks track · persona · surface · next question · close motion. <span class="mono">→ RouteDecision</span></div></div>
+      <div class="lconn">↓</div>
+      <div class="layer sm"><div class="ln">4 · Onboarding session</div><div class="lc"><b>State machine instance.</b> One per lead/org. Drives confirm → value → activate, branching self-serve vs white-glove. <span class="mono">→ OnboardingSession</span></div></div>
+      <div class="lconn">↓</div>
+      <div class="layer srf"><div class="ln">5 · Surfaces + close</div><div class="lc"><b>Real app surfaces</b> (Jobs · Chat · Sarah · Team · Plan), seeded with the Profile's pursuits/network. Close = in-flow card or AE+MEDDPICC.</div></div>
+    </div>
+    <div class="spine">
+      <div class="sn">Cross-cutting (every layer)</div>
+      <ul>
+        <li><b>Event bus + audit:</b> every transition + agent action logged</li>
+        <li><b>Idempotency + retry:</b> keyed per (lead, stage); backoff</li>
+        <li><b>Feature flags</b> (ships dark; defaults to today's 6-step form)</li>
+        <li><b>Kill switch:</b> disable swarm → graceful manual fallback</li>
+        <li><b>Confidence gate:</b> assert if high, ask if low (~100% bar)</li>
+        <li><b>Consent / PII:</b> email + inbox access gated</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- DATA MODEL -->
+  <h2 id="data">Data model</h2>
+  <p class="legendline">TS-ish types. <span class="pill p-real">real</span> already in precon_web · <span class="pill p-ext">extend</span> add columns to an existing table · <span class="pill p-new">new</span> greenfield table.</p>
+  <div class="ents">
+
+    <div class="ent">
+      <div class="eh"><span class="en">Lead</span><span class="pill p-new">new</span></div>
+      <div class="eb">
+        <div class="fr"><span class="fn">id</span><span class="ft">uuid</span></div>
+        <div class="fr"><span class="fn">email</span><span class="ft">string?</span><span class="note">null only in fully-anonymous cold pre-capture</span></div>
+        <div class="fr"><span class="fn">name</span><span class="ft">string?</span></div>
+        <div class="fr"><span class="fn">source</span><span class="ft">LeadSource</span></div>
+        <div class="fr"><span class="fn">warmth</span><span class="ft">Warmth</span></div>
+        <div class="fr"><span class="fn">identityKnown</span><span class="ft">boolean</span></div>
+        <div class="fr"><span class="fn">consent</span><span class="ft">{inbox,marketing}</span></div>
+        <div class="fr"><span class="fn">idempotencyKey</span><span class="ft">string</span></div>
+        <div class="fr"><span class="fn">capturedAt</span><span class="ft">timestamp</span></div>
+      </div>
+      <div class="rel">→ has one <b>EnrichmentRun</b>, one <b>OnboardingSession</b>; becomes an <b>Org</b> + <b>User</b> on activate</div>
+    </div>
+
+    <div class="ent">
+      <div class="eh"><span class="en">EnrichmentRun</span><span class="pill p-new">new</span></div>
+      <div class="eb">
+        <div class="fr"><span class="fn">id</span><span class="ft">uuid</span></div>
+        <div class="fr"><span class="fn">leadId</span><span class="ft">uuid</span></div>
+        <div class="fr"><span class="fn">mode</span><span class="ft">sync_critical | async_prefetch</span><span class="note">cold = sync; warm = prefetch before arrival</span></div>
+        <div class="fr"><span class="fn">status</span><span class="ft">EnrichmentStatus</span></div>
+        <div class="fr"><span class="fn">attempts</span><span class="ft">int</span></div>
+        <div class="fr"><span class="fn">startedAt / completedAt</span><span class="ft">timestamp</span></div>
+      </div>
+      <div class="rel">→ has many <b>EnrichmentSignal</b>; emits <span class="mono" style="color:var(--blue)">enrichment.*</span></div>
+    </div>
+
+    <div class="ent">
+      <div class="eh"><span class="en">EnrichmentSignal</span><span class="pill p-new">new</span></div>
+      <div class="eb">
+        <div class="fr"><span class="fn">id</span><span class="ft">uuid</span></div>
+        <div class="fr"><span class="fn">runId</span><span class="ft">uuid</span></div>
+        <div class="fr"><span class="fn">field</span><span class="ft">ProfileField</span><span class="note">company|orgType|sizeBand|revenue|acv|role|trade|sectors|serviceArea</span></div>
+        <div class="fr"><span class="fn">value</span><span class="ft">json</span></div>
+        <div class="fr"><span class="fn">confidence</span><span class="ft">float 0–1</span></div>
+        <div class="fr"><span class="fn">agent</span><span class="ft">AgentId</span><span class="note">provenance: which swarm agent</span></div>
+      </div>
+      <div class="rel">resolves into the materialized <b>Profile</b></div>
+    </div>
+
+    <div class="ent">
+      <div class="eh"><span class="en">Profile</span><span class="pill p-new">new</span> <span class="pill p-ext">view</span></div>
+      <div class="eb">
+        <div class="fr"><span class="fn">leadId</span><span class="ft">uuid</span></div>
+        <div class="fr"><span class="fn">company</span><span class="ft">string</span></div>
+        <div class="fr"><span class="fn">orgType</span><span class="ft">OrgType</span><span class="note">contractor|sub_contractor|consumer (REAL enum)</span></div>
+        <div class="fr"><span class="fn">sizeBand</span><span class="ft">SizeBand</span></div>
+        <div class="fr"><span class="fn">revenueEst / acvEst</span><span class="ft">money</span></div>
+        <div class="fr"><span class="fn">role / persona</span><span class="ft">Persona</span></div>
+        <div class="fr"><span class="fn">trade</span><span class="ft">TradeValue?</span><span class="note">one of 34 (trades-data.ts), subs only</span></div>
+        <div class="fr"><span class="fn">sectors / serviceArea</span><span class="ft">string[]</span></div>
+        <div class="fr"><span class="fn">confidence</span><span class="ft">Record&lt;field,float&gt;</span></div>
+      </div>
+      <div class="rel">consumed by the <b>Router</b> (G0 to G7), read-only projection of signals</div>
+    </div>
+
+    <div class="ent">
+      <div class="eh"><span class="en">RouteDecision</span><span class="pill p-new">new</span></div>
+      <div class="eb">
+        <div class="fr"><span class="fn">id</span><span class="ft">uuid</span></div>
+        <div class="fr"><span class="fn">sessionId</span><span class="ft">uuid</span></div>
+        <div class="fr"><span class="fn">track</span><span class="ft">Track</span></div>
+        <div class="fr"><span class="fn">persona</span><span class="ft">Persona</span></div>
+        <div class="fr"><span class="fn">primarySurface</span><span class="ft">Surface</span></div>
+        <div class="fr"><span class="fn">closeMotion</span><span class="ft">CloseMotion</span></div>
+        <div class="fr"><span class="fn">nextQuestion</span><span class="ft">string</span></div>
+        <div class="fr"><span class="fn">gateTrace</span><span class="ft">json</span><span class="note">G0 to G7 outcomes, auditable why</span></div>
+      </div>
+      <div class="rel">output of the pure router; recomputed if a signal changes</div>
+    </div>
+
+    <div class="ent">
+      <div class="eh"><span class="en">OnboardingSession</span><span class="pill p-new">new</span></div>
+      <div class="eb">
+        <div class="fr"><span class="fn">id</span><span class="ft">uuid</span></div>
+        <div class="fr"><span class="fn">leadId / orgId</span><span class="ft">uuid</span></div>
+        <div class="fr"><span class="fn">state</span><span class="ft">SessionState</span></div>
+        <div class="fr"><span class="fn">warmth / track</span><span class="ft">enum</span></div>
+        <div class="fr"><span class="fn">version</span><span class="ft">int</span><span class="note">optimistic lock, concurrent transitions</span></div>
+        <div class="fr"><span class="fn">lastEventId</span><span class="ft">uuid</span></div>
+      </div>
+      <div class="rel">the FSM instance; replaces the FE <b>OnboardingStep</b> store <span class="pill p-real">real</span></div>
+    </div>
+
+    <div class="ent">
+      <div class="eh"><span class="en">Pursuit</span><span class="pill p-new">new</span> <span class="pill p-ext">→ Job</span></div>
+      <div class="eb">
+        <div class="fr"><span class="fn">id</span><span class="ft">uuid</span></div>
+        <div class="fr"><span class="fn">orgId</span><span class="ft">uuid</span></div>
+        <div class="fr"><span class="fn">name / value / bidDate</span><span class="ft">mixed</span></div>
+        <div class="fr"><span class="fn">source</span><span class="ft">permit|public_bid|news</span></div>
+        <div class="fr"><span class="fn">status</span><span class="ft">found|scoped|watching</span></div>
+      </div>
+      <div class="rel">seeds the real <b>Job</b> kanban; from <b>ProjectFinder</b> agent</div>
+    </div>
+
+    <div class="ent">
+      <div class="eh"><span class="en">TeamInvite</span><span class="pill p-real">real</span> <span class="pill p-ext">extend</span></div>
+      <div class="eb">
+        <div class="fr"><span class="fn">email</span><span class="ft">string</span><span class="note">already exists</span></div>
+        <div class="fr"><span class="fn">role</span><span class="ft">string</span><span class="note">already exists. Stop hardcoding "member"</span></div>
+        <div class="fr"><span class="fn">surface</span><span class="ft">chat | field_ops</span><span class="note">EXTEND: field roles route to Field Ops</span></div>
+        <div class="fr"><span class="fn">status</span><span class="ft">pending|accepted</span></div>
+      </div>
+      <div class="rel">extends the real <span class="mono">TeamInvite{email,role}</span></div>
+    </div>
+
+    <div class="ent">
+      <div class="eh"><span class="en">TradeConfig</span><span class="pill p-new">new</span> <span class="pill p-ext">seed</span></div>
+      <div class="eb">
+        <div class="fr"><span class="fn">trade</span><span class="ft">TradeValue</span><span class="note">TRADES[].value (trades-data.ts)</span></div>
+        <div class="fr"><span class="fn">lander</span><span class="ft">string</span><span class="note">/{trade} → "{Label} OS"</span></div>
+        <div class="fr"><span class="fn">takeoffFamily</span><span class="ft">TakeoffFamily</span><span class="note">count|area|linear|volume|weight|systems</span></div>
+        <div class="fr"><span class="fn">takeoffRecipe</span><span class="ft">string[]</span><span class="note">what Sarah extracts</span></div>
+        <div class="fr"><span class="fn">valueLever</span><span class="ft">string</span></div>
+        <div class="fr"><span class="fn">moneyFlag</span><span class="ft">string</span><span class="note">the change-order / lead-time gotcha</span></div>
+      </div>
+      <div class="rel">seed data = the 34-row <a href="trade-library">trade-library</a>; <span class="mono" style="color:var(--green)">composeQuestion()</span> reads it. Position overrides live in the white-glove <b>BattlePack</b>, not here.</div>
+    </div>
+
+    <div class="ent">
+      <div class="eh"><span class="en">Deal / BattlePack</span><span class="pill p-new">new</span></div>
+      <div class="eb">
+        <div class="fr"><span class="fn">id / orgId</span><span class="ft">uuid</span></div>
+        <div class="fr"><span class="fn">meddpicc</span><span class="ft">MeddpiccRecord</span><span class="note">seeded by research, AE confirms</span></div>
+        <div class="fr"><span class="fn">dossier</span><span class="ft">json</span></div>
+        <div class="fr"><span class="fn">draftedOutreach</span><span class="ft">string</span></div>
+        <div class="fr"><span class="fn">preRunTakeoffId</span><span class="ft">uuid</span><span class="note">Sarah, on their real pursuit</span></div>
+        <div class="fr"><span class="fn">aeOwner / stage</span><span class="ft">enum</span></div>
+      </div>
+      <div class="rel">white-glove only; reuses the Zwick MEDDPICC scorecard</div>
+    </div>
+
+    <div class="ent">
+      <div class="eh"><span class="en">Event</span><span class="pill p-new">new</span></div>
+      <div class="eb">
+        <div class="fr"><span class="fn">id</span><span class="ft">uuid</span></div>
+        <div class="fr"><span class="fn">sessionId</span><span class="ft">uuid</span></div>
+        <div class="fr"><span class="fn">type</span><span class="ft">EventType</span><span class="note">see catalog</span></div>
+        <div class="fr"><span class="fn">actor</span><span class="ft">agent|user|ae|system</span></div>
+        <div class="fr"><span class="fn">payload</span><span class="ft">json</span></div>
+        <div class="fr"><span class="fn">idempotencyKey</span><span class="ft">string</span></div>
+        <div class="fr"><span class="fn">at</span><span class="ft">timestamp</span></div>
+      </div>
+      <div class="rel">append-only log = audit trail + analytics + retry source-of-truth</div>
+    </div>
+
+    <div class="ent">
+      <div class="eh"><span class="en">Org / User / Subscription</span><span class="pill p-real">real</span></div>
+      <div class="eb">
+        <div class="fr"><span class="fn">Org.orgType</span><span class="ft">OrgType</span><span class="note">drives AccountProfile features</span></div>
+        <div class="fr"><span class="fn">User.role</span><span class="ft">Owner|Admin|Member</span></div>
+        <div class="fr"><span class="fn">Subscription</span><span class="ft">Stripe</span><span class="note">21-day trial, plan_selection</span></div>
+      </div>
+      <div class="rel">existing tables; Lead → Org+User on activation</div>
+    </div>
+
+  </div>
+
+  <!-- ENUMS -->
+  <h2 id="enums">Enums</h2>
+  <div class="enum"><span class="ek">OrgType</span> = <span class="ev">contractor | sub_contractor | consumer | platform</span> <span class="src">· REAL (account-profiles.ts)</span></div>
+  <div class="enum"><span class="ek">BusinessType</span> = <span class="ev">general_contractor | sub_contractor | homeowner</span> <span class="src">· REAL (onboarding-store.ts), the onboarding-facing label of OrgType</span></div>
+  <div class="enum"><span class="ek">Warmth</span> = <span class="ev">cold | warm | warmest</span> <span class="src">· cold=anonymous · warm=email+name · warmest=+role</span></div>
+  <div class="enum"><span class="ek">Track</span> = <span class="ev">self_serve | wg_mid | wg_enterprise</span></div>
+  <div class="enum"><span class="ek">Persona</span> = <span class="ev">estimator | owner_exec | pm | field</span> <span class="src">· field → Field Ops, not chat</span></div>
+  <div class="enum"><span class="ek">CloseMotion</span> = <span class="ev">in_flow_card | ae_meddpicc</span></div>
+  <div class="enum"><span class="ek">Surface</span> = <span class="ev">jobs | chat | sarah | company_brain | field_ops | analytics | network</span> <span class="src">· REAL surfaces</span></div>
+  <div class="enum"><span class="ek">SizeBand</span> = <span class="ev">micro | small | mid | large | enterprise</span> <span class="src">· thresholds differ GC vs sub (see Routing)</span></div>
+  <div class="enum"><span class="ek">TakeoffFamily</span> = <span class="ev">count | area | linear | volume | weight | systems</span> <span class="src">· the 34 trades collapse into 6 recipes. See <a href="trade-library">trade-library</a></span></div>
+  <div class="enum"><span class="ek">LeadSource</span> = <span class="ev">plg_invite | referral | search | ad | outbound | bid_portal | event</span></div>
+  <div class="enum"><span class="ek">AgentId</span> = <span class="ev">domain_site | classifier | size_estimator | role_resolver | project_finder | network_seeder</span></div>
+  <div class="enum"><span class="ek">EnrichmentStatus</span> = <span class="ev">queued | running | partial | complete | failed</span></div>
+
+  <!-- STATE MACHINE -->
+  <h2 id="states">State machine: OnboardingSession</h2>
+  <p class="legendline">Happy paths first, then the full transition table (incl. fallbacks/terminals). States map 1:1 to decision-tree gates.</p>
+
+  <h3>Shared front-end</h3>
+  <div class="rail">
+    <div class="snode"><span class="sk">S0</span><b>ENTRY</b></div><span class="sarrow">→</span>
+    <div class="snode"><span class="sk">S1</span><b>AWAIT_EMAIL</b><br><span style="color:var(--ink3)">cold only</span></div><span class="sarrow">→</span>
+    <div class="snode"><span class="sk">S2</span><b>ENRICHING</b></div><span class="sarrow">→</span>
+    <div class="snode"><span class="sk">S3</span><b>CONFIRM</b><br><span style="color:var(--ink3)">warm may skip</span></div><span class="sarrow">→</span>
+    <div class="snode"><span class="sk">S4</span><b>ROUTED</b></div>
+  </div>
+
+  <h3>Self-serve tail <span class="pill p-ext" style="vertical-align:middle">⚡</span></h3>
+  <div class="rail">
+    <div class="snode ss"><span class="sk">S5</span><b>VALUE</b></div><span class="sarrow">→</span>
+    <div class="snode ss"><span class="sk">S6</span><b>NEXT_Q</b></div><span class="sarrow">→</span>
+    <div class="snode ss"><span class="sk">S7</span><b>VALUE_PROOF</b><br><span style="color:var(--ink3)">Sarah</span></div><span class="sarrow">→</span>
+    <div class="snode ss"><span class="sk">S8</span><b>ACTIVATE</b></div><span class="sarrow">→</span>
+    <div class="snode ss"><span class="sk">S9</span><b>TRIAL</b></div><span class="sarrow">→</span>
+    <div class="snode term"><span class="sk">S10</span><b>CLOSED_WON</b><br><span style="color:var(--ink3)">card on file</span></div>
+  </div>
+
+  <h3>White-glove tail <span class="pill p-real" style="vertical-align:middle">🤝</span></h3>
+  <div class="rail">
+    <div class="snode wg"><span class="sk">W5</span><b>BATTLEPACK</b><br><span style="color:var(--ink3)">agents</span></div><span class="sarrow">→</span>
+    <div class="snode wg"><span class="sk">W6</span><b>OUTREACH</b><br><span style="color:var(--ink3)">SDR</span></div><span class="sarrow">→</span>
+    <div class="snode wg"><span class="sk">W7</span><b>DISCOVERY</b><br><span style="color:var(--ink3)">AE</span></div><span class="sarrow">→</span>
+    <div class="snode wg"><span class="sk">W8</span><b>DEMO</b></div><span class="sarrow">→</span>
+    <div class="snode wg"><span class="sk">W9</span><b>SEAT</b></div><span class="sarrow">→</span>
+    <div class="snode term"><span class="sk">W10</span><b>CLOSED_WON</b><br><span style="color:var(--ink3)">MEDDPICC</span></div>
+  </div>
+
+  <h3>Transition table</h3>
+  <table class="t">
+    <thead><tr><th>From</th><th>Event</th><th>Guard</th><th>To</th></tr></thead>
+    <tbody>
+      <tr><td class="m">S0 ENTRY</td><td class="ev">lead.captured</td><td class="gd">warmth==cold</td><td class="m">S1 AWAIT_EMAIL</td></tr>
+      <tr><td class="m">S0 ENTRY</td><td class="ev">lead.identified</td><td class="gd">warmth&gt;=warm</td><td class="m">S2 ENRICHING (prefetched)</td></tr>
+      <tr><td class="m">S1 AWAIT_EMAIL</td><td class="ev">email.submitted</td><td class="gd">.</td><td class="m">S2 ENRICHING</td></tr>
+      <tr><td class="m">S2 ENRICHING</td><td class="ev">enrichment.complete</td><td class="gd">conf&gt;=θ all gating fields</td><td class="m">S3 CONFIRM</td></tr>
+      <tr><td class="m">S2 ENRICHING</td><td class="ev">enrichment.partial</td><td class="gd">some fields low-conf</td><td class="m">S3 CONFIRM (ask only those)</td></tr>
+      <tr><td class="m">S2 ENRICHING</td><td class="ev">enrichment.failed</td><td class="gd">retries exhausted / killed</td><td class="m">→ FALLBACK_FORM</td></tr>
+      <tr><td class="m">S3 CONFIRM</td><td class="ev">onboarding.confirmed</td><td class="gd">warm &amp; role known</td><td class="m">S4 ROUTED (skip ask)</td></tr>
+      <tr><td class="m">S3 CONFIRM</td><td class="ev">onboarding.role_captured</td><td class="gd">role was unknown</td><td class="m">S4 ROUTED</td></tr>
+      <tr><td class="m">S4 ROUTED</td><td class="ev">route.decided</td><td class="gd">track==self_serve</td><td class="m">S5 VALUE</td></tr>
+      <tr><td class="m">S4 ROUTED</td><td class="ev">route.decided</td><td class="gd">track==wg_*</td><td class="m">W5 BATTLEPACK</td></tr>
+      <tr><td class="m">S4 ROUTED</td><td class="ev">route.decided</td><td class="gd">orgType==consumer</td><td class="m">→ DISQUALIFIED (route to HO product)</td></tr>
+      <tr><td class="m">S5→S8</td><td class="ev">value.revealed · takeoff.completed</td><td class="gd">.</td><td class="m">S9 TRIAL</td></tr>
+      <tr><td class="m">S9 TRIAL</td><td class="ev">card.captured</td><td class="gd">post-wow trigger</td><td class="m">S10 CLOSED_WON</td></tr>
+      <tr><td class="m">S5..S9 (self-serve)</td><td class="ev">expansion.detected</td><td class="gd">seats/ACV cross threshold</td><td class="m">→ W5 (hand to white-glove)</td></tr>
+      <tr><td class="m">W7 DISCOVERY</td><td class="ev">meddpicc.qualified</td><td class="gd">champion+EB confirmed</td><td class="m">W8 DEMO</td></tr>
+      <tr><td class="m">W9 SEAT</td><td class="ev">deal.closed_won</td><td class="gd">contract signed</td><td class="m">W10 CLOSED_WON</td></tr>
+      <tr><td class="m">any active</td><td class="ev">session.timeout</td><td class="gd">no event &gt; TTL</td><td class="m">→ ABANDONED (re-engage queue)</td></tr>
+      <tr><td class="m">FALLBACK_FORM</td><td class="ev">manual steps done</td><td class="gd">.</td><td class="m">→ today's 6-step flow → activate</td></tr>
+    </tbody>
+  </table>
+
+  <!-- SWARM -->
+  <h2 id="swarm">The swarm: six agents as services</h2>
+  <table class="t">
+    <thead><tr><th>Agent</th><th>Input</th><th>Output (signals)</th><th>Sources</th><th>Mode / budget</th></tr></thead>
+    <tbody>
+      <tr><td class="k m">domain_site</td><td>email domain</td><td class="m">company, website, HQ</td><td>web</td><td>sync ~1s</td></tr>
+      <tr><td class="k m">classifier</td><td>website text</td><td class="m">orgType, trade, sectors, project mix</td><td>site, LLM</td><td>sync ~2s</td></tr>
+      <tr><td class="k m">size_estimator</td><td>company</td><td class="m">sizeBand, revenueEst, acvEst</td><td>aggregators, bonding</td><td>sync ~2s</td></tr>
+      <tr><td class="k m">role_resolver</td><td>email, name</td><td class="m">role, persona</td><td>signature, LinkedIn</td><td>sync ~2s</td></tr>
+      <tr><td class="k m">project_finder</td><td>company, trade, geo</td><td class="m">pursuits[]</td><td>permits, public bids, news</td><td>async, can lag</td></tr>
+      <tr><td class="k m">network_seeder</td><td>company</td><td class="m">network[] (subs/GCs)</td><td>CRM, bid invites (consent)</td><td>async, can lag</td></tr>
+    </tbody>
+  </table>
+  <p class="legendline" style="margin-top:8px"><b style="color:var(--ink)">Orchestration:</b> fan-out in parallel; the 4 sync agents gate <span class="mono">S2→S3</span> (the confirm needs them), the 2 async agents can resolve after the user is already in the workspace (pipeline fills in live). Warm = all six run as <span class="mono">async_prefetch</span> before arrival, so none are on the critical path.</p>
+
+  <!-- EVENTS -->
+  <h2 id="events">Event catalog</h2>
+  <table class="t">
+    <thead><tr><th>Event</th><th>Emitted when</th><th>Consumers</th></tr></thead>
+    <tbody>
+      <tr><td class="ev">lead.captured / lead.identified</td><td>entry (cold / warm)</td><td>enrichment, session, analytics</td></tr>
+      <tr><td class="ev">enrichment.requested</td><td>email known (or pre-capture)</td><td>swarm orchestrator</td></tr>
+      <tr><td class="ev">enrichment.agent.completed</td><td>each agent returns</td><td>signal store, confidence gate</td></tr>
+      <tr><td class="ev">profile.field_resolved</td><td>a field crosses confidence θ</td><td>router (may recompute)</td></tr>
+      <tr><td class="ev">enrichment.complete / .partial / .failed</td><td>run terminal</td><td>session FSM, retry engine</td></tr>
+      <tr><td class="ev">onboarding.confirmed / .role_captured</td><td>user taps confirm</td><td>session, router</td></tr>
+      <tr><td class="ev">route.decided</td><td>router runs</td><td>session, surfaces, sales</td></tr>
+      <tr><td class="ev">value.revealed / next_question.asked / takeoff.completed</td><td>self-serve value loop</td><td>analytics, close trigger</td></tr>
+      <tr><td class="ev">team.invited</td><td>invite sent</td><td>spawns a new warm Lead per invitee</td></tr>
+      <tr><td class="ev">trial.started / card.captured / account.activated</td><td>self-serve close</td><td>billing, CRM</td></tr>
+      <tr><td class="ev">deal.battlepack_ready / outreach.sent / meeting.booked / demo.delivered / deal.closed_won</td><td>white-glove</td><td>AE tooling, CRM, MEDDPICC</td></tr>
+      <tr><td class="ev">session.abandoned / session.handed_off</td><td>timeout / expansion</td><td>re-engage, sales queue</td></tr>
+    </tbody>
+  </table>
+
+  <!-- FLOWS -->
+  <h2 id="flows">Flows</h2>
+
+  <h3>Cold · self-serve (Squires, cold)</h3>
+  <div class="seq">
+    <div class="sl"><span class="actor usr">Visitor</span><span class="act">lands on GC lander → submits email <span class="em">email.submitted</span></span></div>
+    <div class="sl"><span class="actor enr">Enrichment</span><span class="act">4 sync agents fan out; pipeline agents async <span class="em">enrichment.complete</span></span></div>
+    <div class="sl"><span class="actor web">Web</span><span class="act">renders <b>confirm</b> from Profile (chips) → one tap <span class="em">onboarding.confirmed</span></span></div>
+    <div class="sl"><span class="actor rtr">Router</span><span class="act">G0–G7 → <span class="m">{self_serve, owner_exec, jobs, in_flow_card}</span> <span class="em">route.decided</span></span></div>
+    <div class="sl"><span class="actor srf">Surfaces</span><span class="act">Jobs seeded w/ pursuits + subs; Tom alert; the next question fires</span></div>
+    <div class="sl"><span class="actor srf">Sarah</span><span class="act">scopes their real bid <span class="em">takeoff.completed</span> → post-wow card ask <span class="em">card.captured</span></span></div>
+  </div>
+
+  <h3>Warm · self-serve (Squires, warm)</h3>
+  <div class="seq">
+    <div class="sl"><span class="actor enr">Enrichment</span><span class="act"><b>pre-ran</b> at PLG capture <span class="em">enrichment.complete</span> (before arrival)</span></div>
+    <div class="sl"><span class="actor usr">Visitor</span><span class="act">clicks personalized link <span class="em">lead.identified</span> (no email/name ask)</span></div>
+    <div class="sl"><span class="actor rtr">Router</span><span class="act">role known? → skip confirm → <span class="em">route.decided</span>; role unknown → one tap</span></div>
+    <div class="sl"><span class="actor srf">Surfaces</span><span class="act">lands <b>directly</b> on the pre-filled board → same value loop → close</span></div>
+  </div>
+
+  <h3>White-glove (CVE)</h3>
+  <div class="seq">
+    <div class="sl"><span class="actor enr">Agents</span><span class="act">deep swarm → dossier + <b>Sarah pre-takeoff</b> + drafted outreach + MEDDPICC <span class="em">deal.battlepack_ready</span></span></div>
+    <div class="sl"><span class="actor ae">SDR</span><span class="act">sends generated, personalized outbound <span class="em">outreach.sent</span> → <span class="em">meeting.booked</span></span></div>
+    <div class="sl"><span class="actor ae">AE</span><span class="act">insight call (not discovery); confirms amber MEDDPICC cells <span class="em">meddpicc.qualified</span></span></div>
+    <div class="sl"><span class="actor srf">Demo</span><span class="act">pre-loaded with CVE's real pursuit <span class="em">demo.delivered</span></span></div>
+    <div class="sl"><span class="actor ae">AE</span><span class="act">FDE seats the dept + migrates jobs → annual close <span class="em">deal.closed_won</span></span></div>
+  </div>
+
+  <!-- ROUTING -->
+  <h2 id="routing">Routing logic: the pure function</h2>
+<pre class="code"><span class="cm">// Router: Profile -> RouteDecision. Pure, deterministic, re-runnable.</span>
+<span class="kw">const</span> θ = <span class="nm">0.85</span>; <span class="cm">// confidence threshold to assert vs ask</span>
+
+<span class="kw">function</span> <span class="fn">route</span>(p: Profile): RouteDecision {
+  <span class="cm">// G2: type (homeowner exits the B2B funnel)</span>
+  <span class="kw">if</span> (p.orgType === <span class="st">"consumer"</span>) <span class="kw">return</span> <span class="fn">disqualify</span>(<span class="st">"route_to_homeowner_product"</span>);
+
+  <span class="cm">// G3: track by size, ACV wins ties (open Q). Thresholds differ GC vs sub.</span>
+  <span class="kw">const</span> band = <span class="fn">sizeBand</span>(p);              <span class="cm">// GC: &lt;10M | 10–500M | 500M+   sub: &lt;10M | 10–100M | 100M+</span>
+  <span class="kw">const</span> track =
+    band === <span class="st">"micro_small"</span>      ? <span class="st">"self_serve"</span>
+    : band === <span class="st">"mid"</span>             ? <span class="st">"wg_mid"</span>
+    :                              <span class="st">"wg_enterprise"</span>;
+  <span class="kw">if</span> (<span class="fn">disagree</span>(p.revenueBand, p.acvBand)) <span class="fn">prefer</span>(p.acvBand); <span class="cm">// ACV gate</span>
+
+  <span class="cm">// G4: persona -> surface; field roles leave chat entirely</span>
+  <span class="kw">const</span> persona = p.role ?? <span class="st">"ask"</span>;     <span class="cm">// unknown -> the one allowed ask</span>
+  <span class="kw">const</span> surface = { estimator:<span class="st">"jobs"</span>, owner_exec:<span class="st">"analytics"</span>,
+                    pm:<span class="st">"network"</span>, field:<span class="st">"field_ops"</span> }[persona];
+
+  <span class="cm">// G5: trade lander + Sarah recipe (subs only)</span>
+  <span class="kw">const</span> trade = p.orgType === <span class="st">"sub_contractor"</span> ? <span class="fn">tradeConfig</span>(p.trade) : <span class="kw">null</span>;
+
+  <span class="cm">// G6/G7: compose the question + pick the close</span>
+  <span class="kw">return</span> {
+    track, persona, primarySurface: surface,
+    nextQuestion: <span class="fn">composeQuestion</span>(persona, band, trade),
+    closeMotion: track === <span class="st">"self_serve"</span> ? <span class="st">"in_flow_card"</span> : <span class="st">"ae_meddpicc"</span>,
+    gateTrace: <span class="fn">trace</span>(),
+  };
+}
+
+<span class="cm">// The "smart" rule, applied everywhere we read a field:</span>
+<span class="kw">const</span> <span class="fn">use</span> = (f) =&gt; p.confidence[f] &gt;= θ ? <span class="fn">assert</span>(p[f]) : <span class="fn">ask</span>(f); <span class="cm">// never re-ask what's known</span>
+</pre>
+
+  <!-- CROSS-CUTTING -->
+  <h2 id="cross">Cross-cutting concerns</h2>
+  <div class="cards2">
+    <div class="cc"><h4>Idempotency</h4><p>Every <b>Event</b> + <b>EnrichmentRun</b> carries an <span class="mono">idempotencyKey = (leadId, stage)</span>. Replays and at-least-once delivery are safe; the FSM uses an optimistic <span class="mono">version</span> lock so two concurrent transitions can't corrupt state.</p></div>
+    <div class="cc"><h4>Retry + backoff</h4><p>Failed agents / outreach retry on <span class="mono">2m → 10m → 1h → 6h → abandoned</span>. The Event log is the source of truth, so a retry cron replays from the last good event, same pattern as the Loops integration.</p></div>
+    <div class="cc"><h4>Feature flags: ship dark</h4><p>Every gate + agent sits behind a flag, default <b>off</b>. With all off, onboarding <b>is</b> today's 6-step form. Cutover flips one flag at a time (e.g. classifier first), per cohort.</p></div>
+    <div class="cc"><h4>Kill switch + fallback</h4><p>A global <span class="mono">SWARM_ENABLED</span> kill drops the whole flow to <b>FALLBACK_FORM</b> (the real <span class="mono">organization_type → … → invitations</span> steps). Onboarding never hard-depends on greenfield.</p></div>
+    <div class="cc"><h4>Confidence / human-in-loop</h4><p>The ~100% bar: assert only at <span class="mono">conf ≥ θ</span>, else ask that one field. A wrong pre-fill is worse than a blank. In white-glove a human stakes credibility on it, so the AE reviews before send.</p></div>
+    <div class="cc"><h4>Consent + PII</h4><p>Email enrichment is fair game; <b>inbox access</b> (bid-invite seeding) is explicit opt-in. Retention + delete honored on the Lead before it converts to an Org.</p></div>
+  </div>
+
+  <!-- MAPPING -->
+  <h2 id="mapping">Maps to the real app</h2>
+  <table class="t">
+    <thead><tr><th>New concept</th><th>Real precon_web anchor</th><th>Change</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Profile.orgType</td><td class="m">OrgType (account-profiles.ts)</td><td><span class="pill p-real">real</span> reuse enum + AccountProfile features</td></tr>
+      <tr><td class="k">Confirm step</td><td class="m">organization_type · service_area · trades · market_sectors</td><td><span class="pill p-ext">collapse</span> 4 backend steps → 1 confirm</td></tr>
+      <tr><td class="k">OnboardingSession FSM</td><td class="m">OnboardingStep store (zustand)</td><td><span class="pill p-ext">replace</span> FE store w/ server FSM</td></tr>
+      <tr><td class="k">route.persona → surface</td><td class="m">AccountProfile.features + sidebar gating</td><td><span class="pill p-new">new</span> capture role; field → fieldOps</td></tr>
+      <tr><td class="k">TeamInvite.surface</td><td class="m">TeamInvite{email,role}</td><td><span class="pill p-ext">extend</span> add surface; stop hardcoding "member"</td></tr>
+      <tr><td class="k">Pursuit</td><td class="m">Job (kanban)</td><td><span class="pill p-new">new</span> seeds real Jobs pre-signup</td></tr>
+      <tr><td class="k">TradeConfig (×34)</td><td class="m">trades-data.ts TRADES[]</td><td><span class="pill p-new">seed</span> the <a href="trade-library">trade-library</a>: 6 families, per-trade levers</td></tr>
+      <tr><td class="k">Value proof</td><td class="m">Sarah (precon_agents)</td><td><span class="pill p-real">real</span> tune recipe per type/trade</td></tr>
+      <tr><td class="k">Close (self-serve)</td><td class="m">plan_selection + Stripe 21-day trial</td><td><span class="pill p-ext">trigger</span> move ask to post-wow</td></tr>
+      <tr><td class="k">Deal / MEDDPICC</td><td class="m">Zwick MEDDPICC scorecard</td><td><span class="pill p-ext">seed</span> from research vs by hand</td></tr>
+      <tr><td class="k">context_notes</td><td class="m">Company Brain</td><td><span class="pill p-ext">auto</span> pre-fill from enrichment</td></tr>
+    </tbody>
+  </table>
+
+  <!-- PHASING -->
+  <h2 id="phasing">Build order: ship dark, cut over one flag at a time</h2>
+  <div class="phase"><div class="pn">Phase 0</div><div class="pd"><b>Spine, dark.</b> Event log + OnboardingSession FSM behind a flag, defaulting to today's 6-step form. No user-visible change: just instrumentation + the state shell.</div></div>
+  <div class="phase"><div class="pn">Phase 1</div><div class="pd"><b>Cold MVP swarm.</b> domain_site + classifier + size_estimator + role_resolver on the cold path → <b>confirm-don't-ask</b> replaces organization_type/service_area/trades/market_sectors. Biggest UX win; lowest risk (4 agents, all sync).</div></div>
+  <div class="phase"><div class="pn">Phase 2</div><div class="pd"><b>The value lever.</b> project_finder + network_seeder → pre-filled Jobs pipeline + subs. Wire the role-conditioned next question + post-wow card trigger. This is the stickiness jump.</div></div>
+  <div class="phase"><div class="pn">Phase 3</div><div class="pd"><b>Warm / PLG.</b> Identity passing on PLG links + <span class="mono">async_prefetch</span> enrichment before arrival. Each team invite becomes a warm lead.</div></div>
+  <div class="phase"><div class="pn">Phase 4</div><div class="pd"><b>White-glove.</b> Battle pack + MEDDPICC seeding + AE tooling (outreach draft, pre-run takeoff, demo seeding). Enterprise contracting + security-review path.</div></div>
+
+  <p class="meta" style="margin-top:22px">This is the implementation spec for the <a href="decision-tree">decision tree</a>; the <a href="walkthrough-squires">Squires</a> &amp; <a href="walkthrough-cve">CVE</a> walkthroughs are its acceptance tests. Closes Brock's technical-mapping ask.</p>
+
+</div>
+<script src="/nav.js" defer></script>
+</body>
+</html>

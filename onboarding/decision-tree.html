@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Perch · Onboarding Decision Tree</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E8E6DF; --panel:#FBFAF6; --panel2:#F5F3EE; --line:#CECBC1; --line2:#BDB8AC;
+    --ink:#181917; --ink2:#5D5F5A; --ink3:#8A8B84;
+    --blue:#3E6E8E; --green:#5E7E52; --amber:#9A7B1F; --violet:#6F5499; --red:#B23A2E;
+    --cold:#3E6E8E; --warm:#f0a868;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 'Archivo',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:38px 26px 90px}
+  a{color:var(--blue)}
+  h1{font-size:26px;margin:0 0 6px;letter-spacing:-.01em}
+  .sub{color:var(--ink2);margin:0 0 16px;max-width:850px}
+  .sub b{color:var(--ink)}
+  .meta{color:var(--ink3);font-size:13px;margin:0 0 18px}
+  h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin:40px 0 14px;border-bottom:1px solid var(--line);padding-bottom:8px}
+
+  .principle{background:linear-gradient(180deg,rgba(94,126,82,.08),rgba(94,126,82,.02));border:1px solid rgba(94,126,82,.26);border-radius:14px;padding:15px 19px;margin-bottom:8px;font-size:14px;color:var(--ink2)}
+  .principle b{color:var(--ink)} .principle .g{color:var(--green);font-weight:700}
+
+  /* matrix */
+  .matrix{display:grid;grid-template-columns:120px 1fr 1fr;gap:10px;margin-top:6px}
+  .mh{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--ink2);text-align:center;padding:6px}
+  .mh.ss{color:var(--blue)} .mh.wg{color:var(--green)}
+  .mrl{display:flex;align-items:center;font-size:12px;font-weight:700;padding:6px}
+  .mrl.cold{color:var(--cold)} .mrl.warm{color:var(--warm)}
+  .mcell{display:block;text-decoration:none;background:var(--panel);border:1px solid var(--line2);border-radius:12px;padding:13px 15px;transition:all .15s}
+  .mcell:hover{border-color:var(--blue);transform:translateY(-1px)}
+  .mcell .mt{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px}
+  .mcell .md{font-size:11.5px;color:var(--ink3)}
+  .mcell .mlink{font-size:11px;color:var(--blue);margin-top:7px;display:inline-block}
+  .mcell.ss{border-left:3px solid var(--blue)} .mcell.wg{border-left:3px solid var(--green)}
+
+  /* tree / gates */
+  .tree{counter-reset:gate -1;margin-top:6px}
+  .gate{position:relative;background:var(--panel);border:1px solid var(--line2);border-radius:14px;padding:14px 18px;margin:0 0 4px}
+  .gate.branchpt{border-color:rgba(154,123,31,.4)}
+  .gate.routept{border-color:rgba(94,126,82,.4)}
+  .ghead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+  .gid{counter-increment:gate;font-size:11px;font-weight:800;letter-spacing:.04em;color:var(--ink);background:var(--panel2);border:1px solid var(--line2);border-radius:7px;padding:3px 8px;white-space:nowrap}
+  .gid::before{content:"G" counter(gate)}
+  .gq{font-size:16px;font-weight:700;color:var(--ink)}
+  .greads{font-size:11.5px;color:var(--ink3);margin-left:auto}
+  .greads b{color:var(--violet)}
+  .branches{display:flex;flex-wrap:wrap;gap:8px}
+  .br{flex:1;min-width:210px;background:var(--panel2);border:1px solid var(--line2);border-radius:10px;padding:9px 12px}
+  .br .bv{font-size:12.5px;font-weight:700;color:var(--ink)}
+  .br .bc{font-size:11.5px;color:var(--ink2);margin-top:3px}
+  .br .bc b{color:var(--ink)}
+  .br.cold{border-color:rgba(62,110,142,.4)} .br.cold .bv{color:var(--cold)}
+  .br.warm{border-color:rgba(240,168,104,.42)} .br.warm .bv{color:var(--warm)}
+  .br.ss{border-color:rgba(62,110,142,.4)} .br.ss .bv{color:var(--blue)}
+  .br.wg{border-color:rgba(94,126,82,.4)} .br.wg .bv{color:var(--green)}
+  .br.out{border-color:rgba(178,58,46,.4)} .br.out .bv{color:var(--red)}
+  .fallback{font-size:11.5px;color:var(--amber);margin-top:9px}
+  .fallback b{color:var(--ink)}
+  .gstep{background:rgba(111,84,153,.05);border-color:rgba(111,84,153,.3)}
+  .conn{display:flex;justify-content:center;color:var(--ink3);font-size:15px;margin:1px 0}
+
+  .sets{font-size:11px;color:var(--ink3);margin-top:8px;font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace}
+  .sets b{color:var(--green)}
+
+  /* routes */
+  .route{background:var(--panel);border:1px solid var(--line2);border-radius:12px;padding:12px 15px;margin-bottom:9px}
+  .route .rt{font-size:12.5px;font-weight:700;margin-bottom:7px}
+  .route.r1 .rt{color:var(--cold)} .route.r2 .rt{color:var(--warm)} .route.r3 .rt{color:var(--green)} .route.r4 .rt{color:var(--green)}
+  .crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:5px;font-size:11.5px}
+  .cr{background:var(--panel2);border:1px solid var(--line2);border-radius:7px;padding:3px 9px;color:var(--ink2)}
+  .cr b{color:var(--ink)}
+  .crumbs .arr{color:var(--ink3)}
+  .route .rlink{font-size:11px;margin-top:7px;display:inline-block}
+
+  /* spec table */
+  .spec{width:100%;border-collapse:collapse;font-size:12px;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:8px}
+  .spec th{background:var(--panel2);color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;font-size:9.5px;text-align:left;padding:9px 11px;border-bottom:1px solid var(--line)}
+  .spec td{padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink2)}
+  .spec tr:last-child td{border-bottom:0}
+  .spec td.g{color:var(--ink);font-weight:700;white-space:nowrap}
+  .spec code{font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace;font-size:11px;color:var(--green);background:rgba(94,126,82,.07);padding:1px 4px;border-radius:4px}
+  .spec .src{color:var(--violet)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Onboarding Decision Tree: <span style="color:var(--green)">the routing brain</span></h1>
+  <p class="sub">The three walkthroughs, collapsed into one branching logic: from <b>"someone arrives"</b> down to the exact <b>next question</b> and <b>close</b>. Two things at once: a tree the team reads, and the programmable backbone for the technical mapping.</p>
+  <p class="meta">Perch · CRO cockpit · Jun 25 2026 · synthesizes <a href="walkthrough-squires">Squires</a> · <a href="walkthrough-cve">CVE</a> · <a href="journey-map">journey-map</a> · <span style="color:var(--violet)">violet = signal source (a swarm agent)</span></p>
+
+  <div class="principle">
+    <b>The rule that makes it smart:</b> every gate consumes a signal the research swarm already resolved, so we <span class="g">only ever ask what enrichment couldn't infer</span>. Each branch narrows the path; nothing is a dead or dumb step; every gate has a graceful fallback when confidence is low. Ask &rarr; confirm &rarr; <i>never re-ask</i>.
+  </div>
+
+  <!-- MATRIX -->
+  <h2>The shape: four routes (cold/warm × self-serve/white-glove)</h2>
+  <div class="matrix">
+    <div class="mh"></div>
+    <div class="mh ss">⚡ Self-serve &nbsp;<span style="color:var(--ink3);font-weight:500">(&lt;$10M · agent closes)</span></div>
+    <div class="mh wg">🤝 White-glove &nbsp;<span style="color:var(--ink3);font-weight:500">(M/L · human closes)</span></div>
+
+    <div class="mrl cold">❄ Cold<br><span style="color:var(--ink3);font-weight:500;font-size:10px">we know nothing</span></div>
+    <a class="mcell ss" href="walkthrough-squires">
+      <div class="mt">Stranger, small</div>
+      <div class="md">Email is the trigger → enrich → confirm → agent runs the wow → trial→card. ~2 asks.</div>
+      <span class="mlink">→ Squires (cold) ↗</span>
+    </a>
+    <a class="mcell wg" href="walkthrough-cve">
+      <div class="mt">Stranger, big (outbound)</div>
+      <div class="md">Agents build the battle pack → SDR reaches out armed → AE insight call → MEDDPICC.</div>
+      <span class="mlink">→ CVE ↗</span>
+    </a>
+
+    <div class="mrl warm">🔥 Warm<br><span style="color:var(--ink3);font-weight:500;font-size:10px">PLG · we know them</span></div>
+    <a class="mcell ss" href="walkthrough-squires">
+      <div class="mt">Known, small</div>
+      <div class="md">Enrichment pre-ran. Zero asks (maybe 1 role tap) → straight to the board → agent closes.</div>
+      <span class="mlink">→ Squires (warm) ↗</span>
+    </a>
+    <a class="mcell wg" href="walkthrough-cve">
+      <div class="mt">Known, big (inbound / expand)</div>
+      <div class="md">Agents pre-armed before contact; AE walks in fully briefed. Often a seat expanding to a dept.</div>
+      <span class="mlink">→ CVE (warm variant) ↗</span>
+    </a>
+  </div>
+
+  <!-- THE TREE -->
+  <h2>The tree: gates from arrival to close</h2>
+  <div class="tree">
+
+    <!-- G0 -->
+    <div class="gate branchpt">
+      <div class="ghead"><span class="gid"></span><span class="gq">Do we already know them?</span><span class="greads">reads: entry payload · src: <b>PLG capture / channel</b></span></div>
+      <div class="branches">
+        <div class="br warm"><div class="bv">🔥 Warm</div><div class="bc">Have email + name (maybe role). <b>No email ask;</b> enrichment pre-ran before arrival.</div></div>
+        <div class="br cold"><div class="bv">❄ Cold</div><div class="bc">Anonymous. <b>Email is the one ask;</b> enrichment fires after, on the critical path.</div></div>
+      </div>
+      <div class="fallback"><b>Fallback:</b> "warm" but identity stale/unverified → soft-confirm instead of assuming.</div>
+      <div class="sets">sets <b>identity.known</b> · identity.{email,name,role?}</div>
+    </div>
+    <div class="conn">↓</div>
+
+    <!-- G1 -->
+    <div class="gate gstep">
+      <div class="ghead"><span class="gid"></span><span class="gq">Enrich: resolve the profile</span><span class="greads">reads: email domain + public web · src: <b>6-agent swarm</b></span></div>
+      <div class="branches">
+        <div class="br"><div class="bv">The swarm</div><div class="bc">Domain→site · Classifier · Size · Role · Project-finder · Network-seeder → one profile.</div></div>
+        <div class="br"><div class="bv">Confidence-scored</div><div class="bc">Each field carries a confidence. <b>High → assert (confirm). Low → ask that one field.</b></div></div>
+      </div>
+      <div class="fallback"><b>Fallback (the smart bit):</b> thin data → don't guess; ask only the unresolved fields. ~100% bar. A wrong pre-fill is worse than a blank.</div>
+      <div class="sets">sets <b>profile</b>.{company,type,size,role,trade,pursuits[],network[],confidence}</div>
+    </div>
+    <div class="conn">↓</div>
+
+    <!-- G2 -->
+    <div class="gate branchpt">
+      <div class="ghead"><span class="gid"></span><span class="gq">What kind of account?</span><span class="greads">reads: profile.type · src: <b>Business classifier</b></span></div>
+      <div class="branches">
+        <div class="br"><div class="bv">GC (contractor)</div><div class="bc">Picks <b>sectors</b>. Pipeline/portfolio surfaces.</div></div>
+        <div class="br"><div class="bv">Sub (sub_contractor)</div><div class="bc">Picks a <b>trade</b> → routes through G5.</div></div>
+        <div class="br out"><div class="bv">Homeowner (consumer)</div><div class="bc">Different product (marketplace / milestones). <b>Out of this funnel's scope.</b></div></div>
+      </div>
+      <div class="fallback"><b>Fallback:</b> ambiguous → one tap "GC / Sub / Homeowner" (the only structural question we ever force).</div>
+      <div class="sets">sets <b>profile.type</b> ∈ {gc, sub, ho}</div>
+    </div>
+    <div class="conn">↓</div>
+
+    <!-- G3 -->
+    <div class="gate routept">
+      <div class="ghead"><span class="gid"></span><span class="gq">Which track? (size / ACV)</span><span class="greads">reads: profile.size + modeled ACV · src: <b>Size estimator</b></span></div>
+      <div class="branches">
+        <div class="br ss"><div class="bv">⚡ Self-serve</div><div class="bc">&lt;$10M. <b>Agent is the salesperson.</b> Closes trial→card in-flow.</div></div>
+        <div class="br wg"><div class="bv">🤝 White-glove · mid</div><div class="bc">$10–100M sub / $10–500M GC. <b>Land a seat, expand to the dept.</b></div></div>
+        <div class="br wg"><div class="bv">🤝 White-glove · enterprise</div><div class="bc">$100M+ sub / $500M+ GC. <b>Outbound, exec buyer, full MEDDPICC.</b></div></div>
+      </div>
+      <div class="fallback"><b>Fallback:</b> revenue vs ACV disagree → <b>ACV wins</b> (open Q). Borderline → start self-serve, flag for sales.</div>
+      <div class="sets">sets <b>route.track</b> ∈ {self_serve, wg_mid, wg_enterprise}</div>
+    </div>
+    <div class="conn">↓</div>
+
+    <!-- G4 -->
+    <div class="gate branchpt">
+      <div class="ghead"><span class="gid"></span><span class="gq">Who landed? → the wow + surface</span><span class="greads">reads: profile.role · src: <b>Role resolver</b></span></div>
+      <div class="branches">
+        <div class="br"><div class="bv">Estimator</div><div class="bc">Takeoff wow (<b>Sarah</b>) · Jobs. "What are you bidding this week?"</div></div>
+        <div class="br"><div class="bv">Owner / Exec</div><div class="bc">Portfolio + margin (<b>Tom</b> · Analytics). "Where did you lose your last 5 bids?"</div></div>
+        <div class="br"><div class="bv">PM / PE</div><div class="bc">Board + RFIs (<b>Carlos</b> · Network). "Your open RFIs + at-risk dates."</div></div>
+        <div class="br out"><div class="bv">Foreman / Field</div><div class="bc"><b>Route OUT of chat → Field Ops / mobile.</b> Different door entirely.</div></div>
+      </div>
+      <div class="fallback"><b>Fallback:</b> role unknown → the one allowed ask (warm = a tap; cold = captured at confirm).</div>
+      <div class="sets">sets <b>route.persona</b> ∈ {estimator, owner_exec, pm, field} · route.surface</div>
+    </div>
+    <div class="conn">↓</div>
+
+    <!-- G5 -->
+    <div class="gate">
+      <div class="ghead"><span class="gid"></span><span class="gq">Which trade? (subs only)</span><span class="greads">reads: profile.trade · src: <b>Classifier</b> · 34 canonical</span></div>
+      <div class="branches">
+        <div class="br"><div class="bv">Counts, e.g. Electrical</div><div class="bc">/electrical · device/gear counts + lead-time flag.</div></div>
+        <div class="br"><div class="bv">Volume, e.g. Concrete</div><div class="bc">/concrete · CY + formwork SF + rebar tons.</div></div>
+        <div class="br"><div class="bv">Area, e.g. Drywall</div><div class="bc">/drywall · wall area by type + LF of track.</div></div>
+      </div>
+      <div class="fallback"><b>Fallback:</b> trade unclear → generic sub lander, ask trade. (GC skips this gate.)</div>
+      <div class="sets">sets <b>trade</b>.{lander, takeoff_recipe, value_framing}</div>
+    </div>
+    <div class="conn">↓</div>
+
+    <!-- G6 -->
+    <div class="gate gstep">
+      <div class="ghead"><span class="gid"></span><span class="gq">Compose the next question</span><span class="greads">derived: persona × size × trade</span></div>
+      <div class="branches">
+        <div class="br"><div class="bv">The conversion lever</div><div class="bc">One motivating ask that <b>reveals $ AND pulls real data in</b>. This is the line the team signs off on per cell.</div></div>
+      </div>
+      <div class="fallback"><b>Note:</b> not a branch, just a template filled from the gates above. The single highest-leverage string in the whole flow.</div>
+      <div class="sets">sets <b>next_question</b> (string template)</div>
+    </div>
+    <div class="conn">↓</div>
+
+    <!-- G7 -->
+    <div class="gate routept">
+      <div class="ghead"><span class="gid"></span><span class="gq">How do we close?</span><span class="greads">reads: route.track</span></div>
+      <div class="branches">
+        <div class="br ss"><div class="bv">⚡ In-flow</div><div class="bc">Self-serve → agent closes: trial auto-starts → card after the wow. One session.</div></div>
+        <div class="br wg"><div class="bv">🤝 AE + MEDDPICC</div><div class="bc">White-glove → agents arm the AE → MEDDPICC → annual enterprise contract + migration.</div></div>
+      </div>
+      <div class="fallback"><b>Fallback:</b> self-serve stalls or expands past threshold → hand off to white-glove (assisted).</div>
+      <div class="sets">sets <b>close.motion</b> ∈ {in_flow_card, ae_meddpicc}</div>
+    </div>
+
+  </div>
+
+  <!-- ROUTES TRACED -->
+  <h2>Four routes traced through the gates</h2>
+
+  <div class="route r1">
+    <div class="rt">❄ Cold · Self-serve: Squires (cold)</div>
+    <div class="crumbs">
+      <span class="cr"><b>G0</b> Cold</span><span class="arr">→</span>
+      <span class="cr"><b>G1</b> enrich after email</span><span class="arr">→</span>
+      <span class="cr"><b>G2</b> GC</span><span class="arr">→</span>
+      <span class="cr"><b>G3</b> &lt;$10M · self-serve</span><span class="arr">→</span>
+      <span class="cr"><b>G4</b> owner</span><span class="arr">→</span>
+      <span class="cr"><b>G6</b> "which is worth winning?"</span><span class="arr">→</span>
+      <span class="cr"><b>G7</b> trial→card</span>
+    </div>
+    <a class="rlink" href="walkthrough-squires">open walkthrough (toggle cold) ↗</a>
+  </div>
+
+  <div class="route r2">
+    <div class="rt">🔥 Warm · Self-serve: Squires (warm)</div>
+    <div class="crumbs">
+      <span class="cr"><b>G0</b> Warm (have email+name)</span><span class="arr">→</span>
+      <span class="cr"><b>G1</b> pre-enriched</span><span class="arr">→</span>
+      <span class="cr"><b>G2</b> GC</span><span class="arr">→</span>
+      <span class="cr"><b>G3</b> self-serve</span><span class="arr">→</span>
+      <span class="cr"><b>G4</b> owner (role known → 0 asks)</span><span class="arr">→</span>
+      <span class="cr"><b>G7</b> agent closes</span>
+    </div>
+    <a class="rlink" href="walkthrough-squires">open walkthrough (toggle warm) ↗</a>
+  </div>
+
+  <div class="route r3">
+    <div class="rt">❄ Cold · White-glove: CVE (outbound)</div>
+    <div class="crumbs">
+      <span class="cr"><b>G0</b> Cold (target account)</span><span class="arr">→</span>
+      <span class="cr"><b>G1</b> deep swarm → battle pack</span><span class="arr">→</span>
+      <span class="cr"><b>G2</b> Sub</span><span class="arr">→</span>
+      <span class="cr"><b>G3</b> $100M+ · enterprise</span><span class="arr">→</span>
+      <span class="cr"><b>G4</b> VP Precon</span><span class="arr">→</span>
+      <span class="cr"><b>G5</b> Electrical</span><span class="arr">→</span>
+      <span class="cr"><b>G7</b> AE + MEDDPICC</span>
+    </div>
+    <a class="rlink" href="walkthrough-cve">open walkthrough ↗</a>
+  </div>
+
+  <div class="route r4">
+    <div class="rt">🔥 Warm · White-glove: CVE (inbound / expand)</div>
+    <div class="crumbs">
+      <span class="cr"><b>G0</b> Warm (a seat already in)</span><span class="arr">→</span>
+      <span class="cr"><b>G1</b> pre-armed</span><span class="arr">→</span>
+      <span class="cr"><b>G3</b> expand: seat → dept</span><span class="arr">→</span>
+      <span class="cr"><b>G4</b> estimator → champion</span><span class="arr">→</span>
+      <span class="cr"><b>G7</b> AE + MEDDPICC</span>
+    </div>
+    <a class="rlink" href="walkthrough-cve">open walkthrough ↗</a>
+  </div>
+
+  <!-- SPEC -->
+  <h2>The same tree, as a spec, for the technical mapping</h2>
+  <p class="sub" style="margin-bottom:12px">Each gate as a programmable unit. This is the backbone Brock asked for: wire a state machine + events onto these, and the data model is the union of the variables set.</p>
+  <table class="spec">
+    <thead><tr><th>Gate</th><th>Decision</th><th>Reads</th><th>Source</th><th>Sets</th><th>Fallback</th></tr></thead>
+    <tbody>
+      <tr><td class="g">G0</td><td>Known already?</td><td>entry payload</td><td class="src">PLG capture / channel</td><td><code>identity.known</code></td><td>stale → soft-confirm</td></tr>
+      <tr><td class="g">G1</td><td>Enrich profile</td><td>email domain + web</td><td class="src">6-agent swarm</td><td><code>profile{…}</code> + confidence</td><td>low conf → ask that field only</td></tr>
+      <tr><td class="g">G2</td><td>Account type</td><td><code>profile.type</code></td><td class="src">Classifier</td><td><code>type∈{gc,sub,ho}</code></td><td>ambiguous → 1 tap</td></tr>
+      <tr><td class="g">G3</td><td>Track</td><td>size + ACV</td><td class="src">Size estimator</td><td><code>track∈{self_serve,wg_mid,wg_ent}</code></td><td>conflict → ACV wins</td></tr>
+      <tr><td class="g">G4</td><td>Persona / surface</td><td><code>profile.role</code></td><td class="src">Role resolver</td><td><code>persona</code>, <code>surface</code></td><td>unknown → 1 ask; field → Field Ops</td></tr>
+      <tr><td class="g">G5</td><td>Trade (sub)</td><td><code>profile.trade</code></td><td class="src">Classifier</td><td><code>trade{lander,recipe,framing}</code></td><td>unclear → generic + ask</td></tr>
+      <tr><td class="g">G6</td><td>Next question</td><td>persona×size×trade</td><td class="src">derived</td><td><code>next_question</code></td><td>n/a</td></tr>
+      <tr><td class="g">G7</td><td>Close motion</td><td><code>route.track</code></td><td class="src">derived</td><td><code>close∈{in_flow_card,ae_meddpicc}</code></td><td>stall/expand → hand to WG</td></tr>
+    </tbody>
+  </table>
+  <p class="meta" style="margin-top:14px"><b style="color:var(--ink)">Next for the technical mapping:</b> a state machine over G0–G7 (states + transitions + events per gate), the data model (= union of the <code style="color:var(--green)">sets</code> column), and the swarm as real services behind G1. This page is the control flow; those are the implementation.</p>
+
+</div>
+<script src="/nav.js" defer></script>
+</body>
+</html>
