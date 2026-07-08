@@ -418,7 +418,7 @@ const PB = {
     {k:"wrong_person",l:"Wrong person",d:"Not the decider",c:"var(--purple)"},
     {k:"email",l:"Advised to email",d:"Send-me-an-email",c:"var(--blue)"},
     {k:"no_answer",l:"No answer",d:"No pickup",c:"var(--ink-subtle)"},
-    {k:"retry",l:"No answer — retry",d:"Bad day to dial; keeps the attempt",c:"var(--warn)"},
+    {k:"retry",l:"No answer — retry",d:"Rolls forward — tops tomorrow\u2019s batch",c:"var(--warn)"},
     {k:"callback",l:"Callback offered",d:"They invited a follow-up",c:"var(--blue)"},
     {k:"not_fit",l:"Not a fit",d:"Out of ICP",c:"var(--bad)"},
     {k:"dnc",l:"Do not call",d:"Remove from list",c:"var(--bad)"}
@@ -443,7 +443,7 @@ const WEDGE_PERCH = {
 };
 
 /* ============================ STATE ============================ */
-const BUILD = '2026-07-08.5-snooze-closed'; // bump every deploy — shown in ☁ badge title, greppable in prod
+const BUILD = '2026-07-08.7-hours-honesty'; // bump every deploy — shown in ☁ badge title, greppable in prod
 const LSK = 'perch-call-cockpit-v2';
 const QCACHE = 'perch-queue-cache-v1';
 let store = JSON.parse(localStorage.getItem(LSK) || '{}'); // {company:{calls:[...],override},__deleted:{}}
@@ -637,9 +637,10 @@ function sizeOf(l){
 
 /* ============================ RENDER: QUEUE RAIL ============================ */
 function batchProgress(){
-  if(!QUEUE) return {worked:0,total:0};
+  if(!QUEUE) return {worked:0,attempted:0,total:0};
   const worked=QUEUE.leads.filter(l=>l.worked).length;
-  return {worked,total:QUEUE.leads.length};
+  const attempted=QUEUE.leads.filter(l=>l.attempted||l.worked).length;
+  return {worked,attempted,total:QUEUE.leads.length};
 }
 function renderTopProgress(){
   const el=document.getElementById('bprog');
@@ -660,7 +661,7 @@ function renderQueueRail(banner){
     document.getElementById('qlist').innerHTML=''; document.getElementById('qchips').innerHTML=''; return;
   }
   const p=batchProgress();
-  const done=p.worked>=p.total&&p.total>0;
+  const done=(p.attempted||p.worked)>=p.total&&p.total>0; // retries don't block — they roll to the next batch
   bh.innerHTML=`${banner?`<div class="banner">${banner}</div>`:''}
     <div class="t">Discovery queue</div>
     <div class="n">Batch ${batchName(QUEUE)} <small>· ${p.total-p.worked} to go</small></div>
@@ -703,10 +704,10 @@ function select(k){ selKey=k; draft={}; renderQueueRail(); renderSel(); document
 function lastRetry(name){const c=liveCalls(name);return c.length&&c[c.length-1].outcome==='retry';}
 function selectNextUnworked(quiet, afterKey){
   if(!QUEUE) return;
-  let pool=QUEUE.leads.filter(x=>!x.worked);
+  let pool=QUEUE.leads.filter(x=>!x.worked&&!x.attempted);
   if(afterKey){ // advance PAST the just-retried lead instead of re-selecting it
     const i=QUEUE.leads.findIndex(x=>x.lead_key===afterKey);
-    pool=QUEUE.leads.slice(i+1).concat(QUEUE.leads.slice(0,i)).filter(x=>!x.worked);
+    pool=QUEUE.leads.slice(i+1).concat(QUEUE.leads.slice(0,i)).filter(x=>!x.worked&&!x.attempted);
   }
   if(SNOOZE){ // skip verified-closed leads — unless they're all that's left
     const open=pool.filter(x=>!isClosedNow(x));
@@ -746,14 +747,19 @@ function hoursState(hours,now){
   const dk=DAYK[now.getDay()], cur=now.getHours()*60+now.getMinutes(), w=h[dk];
   if(w&&cur>=_mins(w[0])&&cur<_mins(w[1])){
     const left=_mins(w[1])-cur;
-    return {open:true,assumed,urgent:left<=60,
-      label:`open${assumed?' · assumed 7–4 M–F':''} — ${left<=60?`closes in ${left}m ⏰`:`closes ${_fmt12(w[1])}`}`};
+    const allDay=_mins(w[1])-_mins(w[0])>=1439;
+    return {open:true,assumed,urgent:!allDay&&left<=60,
+      label:allDay?'open 24 hours today':`open${assumed?' · assumed 7–4 M–F':''} — ${left<=60?`closes in ${left}m ⏰`:`closes ${_fmt12(w[1])}`}`};
+  }
+  /* NO VERIFIED HOURS: never assert "closed" off an assumption — say what we know */
+  if(assumed){
+    return {open:false,assumed,label:`no hours on file — outside assumed 7–4 M–F, may still answer`};
   }
   if(w&&cur<_mins(w[0]))
-    return {open:false,assumed,label:`closed${assumed?' · assumed':''} — opens ${_fmt12(w[0])} today`};
+    return {open:false,assumed,label:`closed — opens ${_fmt12(w[0])} today`};
   for(let i=1;i<=7;i++){
     const d2=DAYK[(now.getDay()+i)%7], w2=h[d2];
-    if(w2) return {open:false,assumed,label:`closed${assumed?' · assumed':''} — opens ${i===1?'tomorrow':d2[0].toUpperCase()+d2.slice(1)} ${_fmt12(w2[0])}`};
+    if(w2) return {open:false,assumed,label:`closed — opens ${i===1?'tomorrow':d2[0].toUpperCase()+d2.slice(1)} ${_fmt12(w2[0])}`};
   }
   return {open:false,assumed,label:'closed'};
 }
@@ -1189,6 +1195,7 @@ function saveCall(){
   draft={};
   const isRetry = entry.outcome==='retry';
   l.worked = !isRetry;   // retry logs the call but does NOT burn the lead's attempt
+  l.attempted = true;    // ...but it counts as today's action — the lead rolls to the NEXT batch
   localStorage.setItem(QCACHE,JSON.stringify(QUEUE));
   renderQueueRail();
   if(DIAL){ renderDial(); }
@@ -1199,7 +1206,7 @@ function saveCall(){
     toast(ok?`✓ saved to cloud — ${cloudCalls!=null?cloudCalls+' calls total':'confirmed'}`
             :'⚠ logged on THIS DEVICE ONLY — cloud push failed (check ☁ badge)');
     const p=batchProgress();
-    if(p.worked>=p.total) selectNextUnworked();                    // batch done → celebrate
+    if((p.attempted||p.worked)>=p.total) selectNextUnworked();     // batch done → celebrate
     else setTimeout(()=>selectNextUnworked(false, l.lead_key),900); // advance past this lead
   });
 }
