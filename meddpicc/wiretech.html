@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WireTech · MEDDPICC Evidence Scorecard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E8E6DF;--surface:#F5F3EE;--surface-2:#FBFAF6;--ink:#181917;
+    --slate:#5D5F5A;--faint:#85877F;--line:#CECBC1;--line-soft:#DEDBD2;
+    --signal:#D2531D;--signal-deep:#A23C12;--green:#5E7E52;--gold:#9A7B1F;
+    --blue:#3E6E8E;--red:#B23A2E;--sans:'Archivo','Helvetica Neue',Arial,sans-serif;
+    --mono:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;--maxw:1120px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.58;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration-color:var(--signal);text-underline-offset:3px}
+  button,input{font:inherit}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+  header{padding:64px 0 34px;border-bottom:2px solid var(--ink)}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--signal);font-weight:600}
+  h1{font-size:clamp(38px,6vw,68px);line-height:.98;letter-spacing:-.035em;margin:15px 0 16px;font-weight:800}
+  .dek{font-size:20px;line-height:1.47;color:var(--slate);max-width:820px;margin:0}
+  .meta{display:flex;gap:10px 20px;flex-wrap:wrap;margin-top:24px;font-family:var(--mono);font-size:12px;color:var(--faint)}
+  .meta b{color:var(--ink);font-weight:600}
+  .actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:24px}
+  .btn{border:1px solid var(--ink);background:transparent;color:var(--ink);padding:8px 12px;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.03em;cursor:pointer}
+  .btn:hover,.btn:focus-visible{background:var(--ink);color:var(--surface-2);outline:none}
+  .btn.primary{background:var(--ink);color:var(--surface-2)}
+  .btn.primary:hover,.btn.primary:focus-visible{background:var(--signal);border-color:var(--signal)}
+  section{padding:48px 0 4px}
+  .section-head{display:flex;align-items:baseline;gap:14px;border-bottom:1px solid var(--ink);padding-bottom:9px;margin-bottom:24px}
+  .section-head .letter{font-family:var(--mono);font-size:13px;color:var(--signal);font-weight:600}
+  .section-head h2{font-size:25px;letter-spacing:-.01em;margin:0}
+  .rule-card{border:2px solid var(--ink);background:var(--surface-2);padding:24px 26px;margin:0 0 22px}
+  .rule-card .label,.micro-label{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--signal);font-weight:600}
+  .rule-card h3{font-size:28px;letter-spacing:-.02em;line-height:1.17;margin:8px 0 9px}
+  .rule-card p{font-size:17px;color:var(--slate);max-width:880px;margin:0}
+  .warning{border-left:4px solid var(--gold);background:var(--surface);padding:17px 19px;margin:20px 0}
+  .warning strong{display:block;margin-bottom:3px}
+  .warning p{margin:0;color:var(--slate)}
+  .score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0 24px}
+  .score-card{background:var(--surface-2);border:1px solid var(--line);padding:17px 17px 15px;min-height:150px;position:relative}
+  .score-card .score{font-size:39px;font-weight:800;line-height:1;letter-spacing:-.04em}
+  .score-card .score small{font-family:var(--mono);font-size:11px;color:var(--faint);font-weight:500;letter-spacing:0}
+  .score-card h3{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin:11px 0 7px;color:var(--slate)}
+  .score-card p{font-size:13.5px;line-height:1.45;color:var(--slate);margin:0}
+  .score-card.fit .score{color:var(--green)}.score-card.coverage .score{color:var(--red)}.score-card.next .score{color:var(--gold)}
+  .bar{height:5px;background:var(--line-soft);margin:12px 0 0;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--ink)}
+  .fit .bar i{background:var(--green)}.coverage .bar i{background:var(--red)}.next .bar i{background:var(--gold)}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .panel{background:var(--surface-2);border:1px solid var(--line);padding:20px 21px}
+  .panel h3{font-size:17px;margin:0 0 11px}
+  .panel ul{margin:0;padding-left:20px}.panel li{margin:0 0 8px;font-size:14.5px}
+  .panel.proves{border-top:4px solid var(--green)}.panel.unknown{border-top:4px solid var(--red)}
+  .quote{background:var(--surface-2);border-left:3px solid var(--signal);padding:14px 17px;margin:13px 0 0}
+  .quote q{font-size:15px;font-style:italic;line-height:1.5}
+  .quote span{display:block;font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-top:7px}
+  .model-top{display:grid;grid-template-columns:210px 1fr;gap:25px;align-items:center;margin:5px 0 24px}
+  .dial{--pct:10;width:190px;height:190px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--signal) calc(var(--pct)*1%),var(--line-soft) 0);position:relative}
+  .dial::after{content:"";position:absolute;inset:15px;border-radius:50%;background:var(--surface-2)}
+  .dial-inner{position:relative;z-index:1;text-align:center}
+  .dial-score{font-size:51px;font-weight:800;letter-spacing:-.05em;line-height:.95;color:var(--signal-deep)}
+  .dial-score small{font-size:14px;letter-spacing:0;color:var(--faint)}
+  .dial-label{font-family:var(--mono);font-size:10px;color:var(--slate);text-transform:uppercase;letter-spacing:.08em;margin-top:7px}
+  .model-note h3{font-size:24px;line-height:1.2;margin:0 0 8px}
+  .model-note p{color:var(--slate);max-width:720px;margin:0 0 12px}
+  .legend{display:flex;gap:7px;flex-wrap:wrap}
+  .legend span{font-family:var(--mono);font-size:10px;border:1px solid var(--line);padding:4px 7px;background:var(--surface)}
+  .dimension-list{display:grid;gap:12px}
+  .dimension{background:var(--surface-2);border:1px solid var(--line);display:grid;grid-template-columns:105px 1fr 260px;gap:18px;padding:18px 19px;align-items:start}
+  .dim-id{font-size:29px;font-weight:800;line-height:1;letter-spacing:-.03em}
+  .dim-name{font-family:var(--mono);font-size:10px;color:var(--slate);text-transform:uppercase;letter-spacing:.06em;margin-top:7px;line-height:1.4}
+  .dim-weight{font-family:var(--mono);font-size:10px;color:var(--faint);margin-top:5px}
+  .dim-body h3{font-size:17px;margin:0 0 7px}
+  .dim-body p{font-size:14px;color:var(--slate);margin:0 0 7px}
+  .evidence{font-size:13.5px!important;color:var(--ink)!important;border-left:2px solid var(--line);padding-left:11px;margin-top:10px!important}
+  .evidence b{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;color:var(--signal);letter-spacing:.08em;display:block;margin-bottom:3px}
+  .next-q{font-size:13.5px!important;color:var(--blue)!important;margin-top:9px!important}
+  .next-q b{color:var(--blue)}
+  .dim-score{border-left:1px solid var(--line-soft);padding-left:18px}
+  .level-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+  .level-row b{font-size:24px;line-height:1}.level-row span{font-family:var(--mono);font-size:10px;color:var(--faint)}
+  input[type=range]{width:100%;accent-color:var(--signal);cursor:pointer}
+  .level-name{font-family:var(--mono);font-size:10.5px;color:var(--signal-deep);margin-top:5px;min-height:32px}
+  .contribution{font-family:var(--mono);font-size:10px;color:var(--faint);border-top:1px solid var(--line-soft);padding-top:7px;margin-top:8px}
+  table{width:100%;border-collapse:collapse;margin:14px 0 22px;font-size:14px}
+  th{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--slate);text-align:left;border-bottom:2px solid var(--ink);padding:8px 10px 8px 0}
+  td{vertical-align:top;border-bottom:1px solid var(--line-soft);padding:10px 10px 10px 0}
+  td:first-child{font-weight:700}
+  .question-list{counter-reset:q;display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:16px 0}
+  .question{counter-increment:q;background:var(--surface-2);border:1px solid var(--line);padding:15px 16px 15px 49px;position:relative;font-size:14.5px}
+  .question::before{content:counter(q,decimal-leading-zero);position:absolute;left:15px;top:14px;font-family:var(--mono);font-size:11px;color:var(--signal);font-weight:600}
+  .question b{display:block;margin-bottom:3px}.question span{color:var(--slate)}
+  details{background:var(--surface-2);border:1px solid var(--line);margin:10px 0}
+  summary{cursor:pointer;padding:14px 16px;font-weight:700}
+  details .detail-body{padding:0 16px 16px;color:var(--slate);font-size:14px}
+  pre{background:var(--ink);color:#E9E5DA;padding:18px;overflow:auto;font-family:var(--mono);font-size:11px;line-height:1.55;max-height:390px;white-space:pre-wrap}
+  .status-line{font-family:var(--mono);font-size:10.5px;color:var(--green);min-height:18px;margin-top:7px}
+  footer{border-top:2px solid var(--ink);margin-top:60px;padding:25px 0 55px;font-family:var(--mono);font-size:11px;color:var(--faint)}
+  @media(max-width:900px){.score-grid{grid-template-columns:1fr 1fr}.dimension{grid-template-columns:86px 1fr}.dim-score{grid-column:2;border-left:0;padding-left:0}.model-top{grid-template-columns:1fr}.dial{margin:auto}}
+  @media(max-width:650px){.wrap{padding:0 18px}header{padding-top:42px}.score-grid,.two-col,.question-list{grid-template-columns:1fr}.dimension{grid-template-columns:1fr}.dim-score{grid-column:1}.dim-id{font-size:23px}.score-card{min-height:0}}
+  @media print{body{background:#fff}.actions,.dim-score{display:none}.wrap{max-width:none}.dimension{grid-template-columns:90px 1fr;break-inside:avoid}.score-card,.panel,.dimension,.rule-card{background:#fff}.dial::after{background:#fff}a{text-decoration:none}section{padding-top:28px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="eyebrow">Perch frontier · evidence-based opportunity intelligence · sample 001</div>
+    <h1>WireTech</h1>
+    <p class="dek">A reusable MEDDPICC scorecard built from one complete discovery record: pre-call research, call outline, 5:46 transcript, recording, and disposition. It scores what the evidence proves—not how promising the account feels.</p>
+    <div class="meta">
+      <span><b>Account</b> WireTech · Woods Cross, UT</span>
+      <span><b>Call</b> July 16, 2026 · outgoing · answered</span>
+      <span><b>Contact</b> Cody · role not established</span>
+      <span><b>Source quality</b> A · transcript + recording</span>
+    </div>
+    <div class="actions">
+      <a class="btn primary" href="https://perch-crm.pages.dev/#c=abdbb82f-3fc2-5a89-a34a-714916fd4947" target="_blank" rel="noopener">Open source record ↗</a>
+      <button class="btn" type="button" id="copyJson">Copy scorecard JSON</button>
+      <button class="btn" type="button" onclick="window.print()">Print / save PDF</button>
+    </div>
+    <div class="status-line" id="copyStatus" aria-live="polite"></div>
+  </div>
+</header>
+
+<main>
+  <section>
+    <div class="wrap">
+      <div class="section-head"><span class="letter">A</span><h2>The verdict</h2></div>
+      <div class="rule-card">
+        <div class="label">Disposition</div>
+        <h3>Advance the account. Do not call it a qualified opportunity.</h3>
+        <p>WireTech is an excellent fit for continued discovery: a commercial low-voltage subcontractor, bonded, self-performing, available, and open to bids. But this was supplier qualification under a Waterloo Builders project frame—not a conversation about WireTech buying Perch. The call created access and account truth; it did not create MEDDPICC qualification.</p>
+      </div>
+
+      <div class="score-grid">
+        <article class="score-card fit">
+          <div class="score">88<small>/100</small></div><h3>Account fit</h3>
+          <p>Commercial, design-to-install, multi-system scope, proven GC relationships, in-house execution.</p><div class="bar"><i style="width:88%"></i></div>
+        </article>
+        <article class="score-card">
+          <div class="score">68<small>/100</small></div><h3>Conversation yield</h3>
+          <p>Captured capability, capacity, bonding status, GC references, project range, and bid route.</p><div class="bar"><i style="width:68%"></i></div>
+        </article>
+        <article class="score-card coverage">
+          <div class="score" id="heroCoverage">10<small>/100</small></div><h3>MEDDPICC coverage</h3>
+          <p>Four early signals; no buyer, pain, champion, competition, or buying event established.</p><div class="bar"><i id="heroCoverageBar" style="width:10%"></i></div>
+        </article>
+        <article class="score-card next">
+          <div class="score">35<small>/100</small></div><h3>Next-step strength</h3>
+          <p>Permission to send details, but only to a generic inbox or Procore; no meeting or sponsor.</p><div class="bar"><i style="width:35%"></i></div>
+        </article>
+      </div>
+
+      <div class="warning">
+        <strong>Do not blend these scores.</strong>
+        <p>A rank-95 account can have 10% MEDDPICC coverage. That means “high-potential, still unknown,” not “bad prospect.” MEDDPICC measures opportunity evidence; it is not a replacement for ICP fit or call coaching.</p>
+      </div>
+
+      <div class="two-col">
+        <article class="panel proves">
+          <h3>What the call proves</h3>
+          <ul>
+            <li>WireTech primarily serves commercial work and performs turnkey low-voltage design, installation, monitoring, and service.</li>
+            <li>They can package fire alarm, telecom, access control, and CCTV.</li>
+            <li>Cody estimated a 60,000 SF full-system package at roughly $75K–$250K.</li>
+            <li>They are bonded, self-perform installation, and expect capacity for early 2027.</li>
+            <li>They work with named Utah GCs and accept invitations through Procore or <code>estimating@</code>.</li>
+          </ul>
+        </article>
+        <article class="panel unknown">
+          <h3>What remains unknown</h3>
+          <ul>
+            <li>Who owns estimating operations, budget, or a decision about Perch.</li>
+            <li>How bids are produced today, where work stalls, and what the cost of that friction is.</li>
+            <li>Whether there is urgency, a buying event, or an active evaluation.</li>
+            <li>Who must approve a change, how vendors are evaluated, or how procurement works.</li>
+            <li>Whether Cody has influence, access, or any desire to advocate internally.</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="meddpicc">
+    <div class="wrap">
+      <div class="section-head"><span class="letter">B</span><h2>MEDDPICC evidence ledger</h2></div>
+      <div class="model-top">
+        <div class="dial" id="dial" style="--pct:10">
+          <div class="dial-inner"><div class="dial-score"><span id="totalScore">10</span><small>/100</small></div><div class="dial-label">evidence coverage</div></div>
+        </div>
+        <div class="model-note">
+          <h3>Score the maturity of evidence, not the presence of a topic.</h3>
+          <p>Each dimension is rated 0–4 and weighted by its importance. Adjust the sliders to challenge the assessment. Unknowns score zero without becoming negative evidence.</p>
+          <div class="legend">
+            <span>0 · unknown</span><span>1 · signal</span><span>2 · prospect-confirmed</span><span>3 · actionable</span><span>4 · validated</span>
+          </div>
+        </div>
+      </div>
+      <div class="dimension-list" id="dimensionList"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="section-head"><span class="letter">C</span><h2>The call, coached</h2></div>
+      <table>
+        <thead><tr><th>Move</th><th>Result</th><th>MEDDPICC consequence</th></tr></thead>
+        <tbody>
+          <tr><td>Established a credible project frame</td><td>Earned 5:46 with a live person and concrete answers.</td><td>Good access creation; not buyer discovery.</td></tr>
+          <tr><td>Qualified scope, size, bonding, execution, and capacity</td><td>Strong ICP and subcontractor-fit evidence.</td><td>Supports Decision Criteria and Paper Process only at signal level.</td></tr>
+          <tr><td>Asked for the bid channel</td><td>Captured generic estimating email and Procore route.</td><td>A route is not a Decision Process; no named owner or evaluation path.</td></tr>
+          <tr><td>Did not reach the prepared estimating-pain questions</td><td>No workflow, throughput, error, rework, or tool evidence.</td><td>Identify Pain and Metrics remain empty.</td></tr>
+          <tr><td>Closed with “hoping we can find a project”</td><td>Friendly ending, but no dated commitment.</td><td>No champion test and weak next-step control.</td></tr>
+        </tbody>
+      </table>
+      <div class="quote"><q>It doesn't matter.</q><span>Cody, when asked whether JP should reference his name in the follow-up</span></div>
+      <p style="color:var(--slate);max-width:800px">This is not rejection. It is simply evidence that Cody is a cooperative contact, not yet a champion. A champion would help navigate the account, attach their name to the next step, and have something to gain from change.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="section-head"><span class="letter">D</span><h2>The next conversation</h2></div>
+      <div class="rule-card">
+        <div class="label">Single objective</div>
+        <h3>Turn access into a named estimating-workflow discovery.</h3>
+        <p>Send the promised project context, then ask for 20 minutes with the person who owns commercial estimating. The second call should quantify a problem and map authority—not repeat firmographic qualification.</p>
+      </div>
+      <div class="question-list">
+        <div class="question"><b>Find the owner</b><span>“Who owns commercial estimating and decides how your team runs takeoff and bid review?”</span></div>
+        <div class="question"><b>Map the workflow</b><span>“When a set lands, walk me from invite to submitted number. Who touches it and where does it wait?”</span></div>
+        <div class="question"><b>Quantify throughput</b><span>“How many invitations do you see in a month, and how many can the team seriously price?”</span></div>
+        <div class="question"><b>Find the cost</b><span>“When a bid goes sideways, is the loss estimator hours, missed scope, vendor quotes, addenda, or follow-up?”</span></div>
+        <div class="question"><b>Expose status quo</b><span>“What do you use today—Bluebeam, spreadsheets, Procore, another takeoff tool—and what still happens manually?”</span></div>
+        <div class="question"><b>Test urgency</b><span>“Is this annoying but manageable, or is it actively limiting the work you can pursue this year?”</span></div>
+        <div class="question"><b>Map the decision</b><span>“If you found a better approach, who would need to believe in it and what would they need to see?”</span></div>
+        <div class="question"><b>Test sponsorship</b><span>“If the workflow review is useful, would you bring the estimating owner into a follow-up?”</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="section-head"><span class="letter">E</span><h2>Reusable scoring rules</h2></div>
+      <details open><summary>Evidence hierarchy</summary><div class="detail-body">Transcript or recording evidence beats notes. Prospect-stated facts beat seller claims. Named people, dates, amounts, and documented processes beat adjectives. External research can create a hypothesis but cannot qualify an opportunity by itself.</div></details>
+      <details><summary>Common false positives</summary><div class="detail-body">Friendliness is not a Champion. A generic inbox is not a Decision Process. Project contract value is not a Perch value Metric. “We are bonded” is not a complete Paper Process. A seller explaining a pain does not mean the prospect has identified it.</div></details>
+      <details><summary>Stage interpretation</summary><div class="detail-body"><strong>0–19:</strong> account only; pursue discovery. <strong>20–39:</strong> early opportunity hypothesis. <strong>40–59:</strong> discovery underway with material gaps. <strong>60–79:</strong> qualified opportunity with a credible path. <strong>80–100:</strong> validated, multi-threaded, execution-ready. Scores should never advance stage without a dated next step.</div></details>
+      <details><summary>Call scoring interpretation</summary><div class="detail-body">Score every call separately for account fit, conversation yield, and next-step strength. Use MEDDPICC only as the cumulative opportunity evidence ledger. A call can be excellent even when the cumulative MEDDPICC score remains low.</div></details>
+      <h3 style="margin-top:28px">Portable structured output</h3>
+      <p style="color:var(--slate);max-width:820px">The artifact exports the adjusted assessment as JSON. The same shape can be produced from every transcript and aggregated across calls without overwriting earlier evidence.</p>
+      <pre id="jsonPreview"></pre>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">Perch frontier · MEDDPICC sample 001 · WireTech · generated from CRM record abdbb82f-3fc2-5a89-a34a-714916fd4947 · source data remains in Perch CRM</div>
+</footer>
+
+<script>
+const LEVELS=[
+  {name:'Unknown',rule:'No usable evidence'},
+  {name:'Signal / hypothesis',rule:'A clue exists, but it is incomplete or indirect'},
+  {name:'Prospect-confirmed',rule:'The prospect stated the fact directly'},
+  {name:'Actionable',rule:'Named people, amounts, dates, or a usable process'},
+  {name:'Validated',rule:'Confirmed across stakeholders, behavior, or documents'}
+];
+
+const DIMENSIONS=[
+  {id:'M',name:'Metrics',weight:15,level:1,title:'Project economics surfaced; business value did not.',
+   evidence:'Cody estimated the full-system package at “anywhere from 75 to 250” thousand.',
+   rationale:'Useful deal context, but it measures subcontract value—not the economic value of solving WireTech’s estimating problem.',
+   missing:'Bid volume, estimator hours, missed bids, rework, win rate, margin leakage, or capacity recovered.',
+   question:'How many viable bids do you pass on because the estimating team cannot turn them in time?'},
+  {id:'EB',name:'Economic Buyer',weight:15,level:0,title:'No authority was established.',
+   evidence:'Cody answered the main line; title and budget authority are unknown. He referred to “our guys.”',
+   rationale:'A helpful respondent cannot be treated as the person who can authorize spend.',
+   missing:'Named budget owner, financial authority, access path, and their desired outcome.',
+   question:'Who owns the estimating budget and signs off when the team changes software or process?'},
+  {id:'DC',name:'Decision Criteria',weight:10,level:1,title:'Operational fit criteria appeared.',
+   evidence:'WireTech primarily does commercial work, self-performs, and evaluates opportunity fit by project and system scope.',
+   rationale:'This qualifies WireTech for a project. It does not reveal how WireTech would evaluate Perch.',
+   missing:'Required outcomes, technical requirements, implementation constraints, proof threshold, and priority order.',
+   question:'If you evaluated a better estimating workflow, what would it absolutely have to improve or preserve?'},
+  {id:'DP',name:'Decision Process',weight:10,level:1,title:'A bid-delivery route—not a buying process.',
+   evidence:'Details can go to estimating@wiretechllc.com or through Procore; “our guys should catch it.”',
+   rationale:'This is a route into the estimating queue. No evaluation stages, stakeholders, or decision date were mapped.',
+   missing:'Named evaluator, sequence, meeting cadence, approval events, and target decision date.',
+   question:'Once your estimating team likes a new approach, what happens before the company can say yes?'},
+  {id:'PP',name:'Paper Process',weight:5,level:1,title:'Bonding status is confirmed; procurement is not.',
+   evidence:'Cody confirmed WireTech is bonded but did not know the program limit.',
+   rationale:'Bonding matters to the project relationship. It is only adjacent to the process for buying Perch.',
+   missing:'Contract owner, security or IT review, legal terms, insurance, vendor setup, budget timing, and signature path.',
+   question:'What paperwork or approvals are required before you can add a new software or services vendor?'},
+  {id:'IP',name:'Identify Pain',weight:20,level:0,title:'No Perch-relevant pain was discovered.',
+   evidence:'The prepared takeoff and estimating-pain questions were not reached during the call.',
+   rationale:'Seller knowledge about scope gaps, addenda, or manual counts cannot be credited as the prospect’s pain.',
+   missing:'Problem, impact, owner, frequency, current workaround, and consequence of doing nothing.',
+   question:'Where does bid day actually break down for your team, and what happens when it does?'},
+  {id:'CH',name:'Champion',weight:15,level:0,title:'Cooperative contact, not a champion.',
+   evidence:'Cody provided information and the generic inbox, then said it did not matter whether JP referenced his name.',
+   rationale:'A champion has influence, actively sells internally, provides access, and has a personal win. None is evidenced yet.',
+   missing:'Influence, internal credibility, personal win, active advocacy, and access to power.',
+   question:'If this could free estimating capacity, who inside WireTech would care most—and would you bring them in?'},
+  {id:'CO',name:'Competition',weight:10,level:0,title:'The status quo and alternatives are unknown.',
+   evidence:'No estimating tools, competing vendors, internal projects, or “do nothing” rationale were discussed.',
+   rationale:'Named GC relationships are not competition for a Perch opportunity.',
+   missing:'Current stack, internal workaround, active evaluations, incumbent preference, and cost of no change.',
+   question:'What are you using today, what have you already tried, and why has the current approach survived?'},
+];
+
+function contribution(d){return d.weight*(d.level/4)}
+function total(){return Math.round(DIMENSIONS.reduce((sum,d)=>sum+contribution(d),0))}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+function renderDimensions(){
+  const root=document.getElementById('dimensionList');
+  root.innerHTML=DIMENSIONS.map((d,i)=>`
+    <article class="dimension" data-index="${i}">
+      <div><div class="dim-id">${esc(d.id)}</div><div class="dim-name">${esc(d.name)}</div><div class="dim-weight">weight · ${d.weight}%</div></div>
+      <div class="dim-body">
+        <h3>${esc(d.title)}</h3>
+        <p>${esc(d.rationale)}</p>
+        <p class="evidence"><b>Evidence</b>“${esc(d.evidence)}”</p>
+        <p><strong>Missing:</strong> ${esc(d.missing)}</p>
+        <p class="next-q"><b>Next question:</b> “${esc(d.question)}”</p>
+      </div>
+      <div class="dim-score">
+        <div class="level-row"><b class="level-value">${d.level}</b><span>/ 4</span></div>
+        <input aria-label="${esc(d.name)} evidence level" type="range" min="0" max="4" step="1" value="${d.level}" data-index="${i}">
+        <div class="level-name">${LEVELS[d.level].name}<br>${LEVELS[d.level].rule}</div>
+        <div class="contribution">weighted contribution · ${contribution(d).toFixed(1)} / ${d.weight}</div>
+      </div>
+    </article>`).join('');
+  root.querySelectorAll('input[type=range]').forEach(input=>input.addEventListener('input',e=>{
+    const idx=Number(e.target.dataset.index);DIMENSIONS[idx].level=Number(e.target.value);
+    const card=e.target.closest('.dimension');
+    card.querySelector('.level-value').textContent=DIMENSIONS[idx].level;
+    card.querySelector('.level-name').innerHTML=`${LEVELS[DIMENSIONS[idx].level].name}<br>${LEVELS[DIMENSIONS[idx].level].rule}`;
+    card.querySelector('.contribution').textContent=`weighted contribution · ${contribution(DIMENSIONS[idx]).toFixed(1)} / ${DIMENSIONS[idx].weight}`;
+    renderTotal();renderJson();
+  }));
+}
+
+function exportObject(){return{
+  schema_version:'perch.meddpicc.v1',
+  account:{id:'abdbb82f-3fc2-5a89-a34a-714916fd4947',name:'WireTech',domain:'wiretechllc.com',crm_url:'https://perch-crm.pages.dev/#c=abdbb82f-3fc2-5a89-a34a-714916fd4947'},
+  source:{type:'call',at:'2026-07-16T22:12:52.032Z',duration_seconds:346,transcript:true,recording:true,contact:'Cody',contact_role:null},
+  scores:{account_fit:88,conversation_yield:68,next_step_strength:35,meddpicc_coverage:total()},
+  disposition:'advance_to_estimating_workflow_discovery',
+  dimensions:Object.fromEntries(DIMENSIONS.map(d=>[d.id,{name:d.name,weight:d.weight,level:d.level,weighted_score:Number(contribution(d).toFixed(2)),evidence:d.evidence,missing:d.missing,next_question:d.question}])),
+  guardrails:['unknown_is_not_negative','seller_claims_do_not_qualify','friendliness_is_not_champion','project_value_is_not_solution_metric','generic_inbox_is_not_decision_process']
+}}
+
+function renderTotal(){const n=total();document.getElementById('totalScore').textContent=n;document.getElementById('dial').style.setProperty('--pct',n);document.getElementById('heroCoverage').innerHTML=`${n}<small>/100</small>`;document.getElementById('heroCoverageBar').style.width=`${n}%`}
+function renderJson(){document.getElementById('jsonPreview').textContent=JSON.stringify(exportObject(),null,2)}
+
+document.getElementById('copyJson').addEventListener('click',async()=>{
+  const status=document.getElementById('copyStatus');
+  try{await navigator.clipboard.writeText(JSON.stringify(exportObject(),null,2));status.textContent='Scorecard JSON copied.'}
+  catch{status.textContent='Clipboard access was blocked; copy from the JSON panel below.'}
+  setTimeout(()=>status.textContent='',3500)
+});
+
+renderDimensions();renderTotal();renderJson();
+</script>
+</body>
+</html>
